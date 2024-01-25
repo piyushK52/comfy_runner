@@ -1,0 +1,16 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# environment
+venv
+.vscode
+
+# system
+.DS_Store
+
+# user
+ComfyUI/
+test.py
+main.py
