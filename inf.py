@@ -8,10 +8,12 @@ import re
 import websocket
 import uuid
 from git import Repo
-from constants import APP_PORT, MODEL_DOWNLOAD_PATH_LIST, SERVER_ADDR
+from constants import APP_PORT, DEBUG_LOG_ENABLED, MODEL_DOWNLOAD_PATH_LIST, SERVER_ADDR
 from utils.comfy.api import ComfyAPI
 from utils.comfy.methods import ComfyMethod
+from utils.common import copy_files
 from utils.file_downloader import ModelDownloader
+from utils.logger import LoggingType, app_logger
 
 class ComfyRunner:
     def __init__(self):
@@ -26,19 +28,27 @@ class ComfyRunner:
         # checking if comfy is already running
         if not self.is_server_running():
             command = "python ./ComfyUI/main.py"
-            self.server_process = subprocess.Popen(command, shell=True)
+            kwargs = {
+                "shell" : True,
+            }
+            # TODO: remove comfyUI output from the console
+            if DEBUG_LOG_ENABLED:
+                kwargs["stdout"] = subprocess.DEVNULL
+                kwargs["stderr"] = subprocess.DEVNULL
+
+            self.server_process = subprocess.Popen(command, **kwargs)
 
             # waiting for server to start accepting requests
             while not self.is_server_running():
                 time.sleep(0.5)
             
-            print("comfy server is running")
+            app_logger.log(LoggingType.DEBUG, "comfy server is running")
         else:
             try:
                 if not self.comfy_api.health_check():
                     raise Exception(f"Port {APP_PORT} blocked")
                 else:
-                    print("Server already running")
+                    app_logger.log(LoggingType.DEBUG, "Server already running")
             except Exception as e:
                 raise Exception(f"Port {APP_PORT} blocked")
 
@@ -49,7 +59,7 @@ class ComfyRunner:
                 if proc and 'connections' in proc.info and proc.info['connections']:
                     for conn in proc.info['connections']:
                         if conn.status == psutil.CONN_LISTEN and conn.laddr.port == port:
-                            print(f"Process {proc.info['pid']} (Port {port})")
+                            app_logger.log(LoggingType.DEBUG, f"Process {proc.info['pid']} (Port {port})")
                             pid = proc.info['pid']
                             break
             except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
@@ -144,6 +154,7 @@ class ComfyRunner:
         return ans
 
     def download_models(self, workflow, extra_models_list) -> dict:
+        self.model_downloader.load_comfy_models()
         models_to_download = []
         download_filetypes = [
             ".ckpt",
@@ -163,16 +174,22 @@ class ComfyRunner:
                     ):
                         models_to_download.append(input)
 
+        models_not_found = []
         for model in models_to_download:
-            self.model_downloader.download_model(model)
+            status, similar_models = self.model_downloader.download_model(model)
+            if not status:
+                models_not_found.append({
+                    'model': model,
+                    'similar_models': similar_models
+                })
 
         for model in extra_models_list:
             self.model_downloader.download_file(model["filename"], model["url"], model["dest"])
 
         return {
-            'data': None,
-            'message': '',
-            'status': True
+            'data': models_not_found,
+            'message': 'model(s) not found' if len(models_not_found) else '',
+            'status': False if len(models_not_found) else True,
         }
     
     def download_custom_nodes(self, workflow, extra_node_urls) -> dict:
@@ -182,7 +199,7 @@ class ComfyRunner:
             if node['installed'] in ['False', False]:
                 status = self.comfy_api.install_custom_node(node)
                 if status != {}:
-                    print("Error: Failed to install custom node ", node["title"])
+                    app_logger.log(LoggingType.ERROR, "Failed to install custom node ", node["title"])
 
         # installing custom git repos
         if len(extra_node_urls):
@@ -215,16 +232,13 @@ class ComfyRunner:
                 for n in nodes_to_install:
                     status = self.comfy_api.install_custom_node(n)
                     if status != {}:
-                        print("Error: Failed to install custom node ", n["title"])
+                        app_logger.log(LoggingType.ERROR, "Failed to install custom node ", n["title"])
 
         return {
             'data': None,
             'message': '',
             'status': True
         }
-
-    def copy_files(self, file_path_dict, overwrite=False):
-        pass
 
     def load_workflow(self, workflow_path):
         if not os.path.exists(workflow_path):
@@ -237,7 +251,7 @@ class ComfyRunner:
             if not ComfyMethod.is_api_json(data):
                 return None
         except Exception as e:
-            print("Exception: ", str(e))
+            app_logger.log(LoggingType.ERROR, "Exception: ", str(e))
             return None   
 
         return data
@@ -246,11 +260,11 @@ class ComfyRunner:
         # TODO: add support for image and normal json files
         workflow = self.load_workflow(workflow_path)
         if not workflow:
-            print("Error: Invalid workflow file")
+            app_logger.log(LoggingType.ERROR, "Invalid workflow file")
             return
 
         # cloning comfy repo
-        print("cloning comfy repo")
+        app_logger.log(LoggingType.DEBUG, "cloning comfy repo")
         comfy_repo_url = "https://github.com/comfyanonymous/ComfyUI"
         comfy_manager_url = "https://github.com/ltdrdata/ComfyUI-Manager"
         if not os.path.exists("ComfyUI"):
@@ -269,16 +283,29 @@ class ComfyRunner:
         # download custom nodes
         res = self.download_custom_nodes(workflow, extra_node_urls)
         if not res['status']:
-            raise Exception(res['message'])     # when node links are not available
+            app_logger.log(LoggingType.ERROR, res['message'])
+            return
 
         # download models if not already present
         res = self.download_models(workflow, extra_models_list)
         if not res['status']:
-            raise Exception(res['message'])     # when model links are not available
+            app_logger.log(LoggingType.ERROR, res['message'])
+            if len(res['data']):
+                app_logger.log(LoggingType.INFO, "Please provide custom model urls for the models listed below or modify the workflow json to one of the alternative models listed")
+                for model in res['data']:
+                    print("Model: ", model['model'])
+                    print("Alternatives: ")
+                    if len(model['similar_models']):
+                        for alternative in model['similar_models']:
+                            print(" - ", alternative)
+                    else:
+                        print(" - None")
+                    print("---------------------------")
+            return
 
-        # if len(file_path_dict.keys()):
-        #     for filename, filepath in file_path_dict.items():
-        #         self.copy_files(filepath, "./ComfyUI/input/", overwrite=True)
+        if len(file_path_dict.keys()):
+            for filename, filepath in file_path_dict.items():
+                copy_files(filepath, "./ComfyUI/input/", overwrite=True)
 
         # # get the result
         # client_id = str(uuid.uuid4())

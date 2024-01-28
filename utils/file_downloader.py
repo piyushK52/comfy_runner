@@ -3,10 +3,10 @@ import os
 import requests
 import json
 from tqdm import tqdm
-from constants import APP_PORT, COMFY_MODEL_LIST_PATH, SERVER_ADDR
-from utils.comfy.api import ComfyAPI
+from constants import COMFY_MODEL_LIST_PATH
 
-from utils.common import get_file_size
+from utils.common import fuzzy_text_match, get_file_size
+from utils.logger import LoggingType, app_logger
 
 
 class FileDownloader:
@@ -15,7 +15,7 @@ class FileDownloader:
 
     def is_file_downloaded(self, filename, url, dest):
         dest_path = f"{dest}/{filename}"
-        print("checking file: ", dest_path)
+        app_logger.log(LoggingType.DEBUG, "checking file: ", dest_path)
         if os.path.exists(dest_path):
             return os.path.getsize(dest_path) == get_file_size(url)
         return False
@@ -25,7 +25,7 @@ class FileDownloader:
 
         # checking if the file is already downloaded
         if self.is_file_downloaded(filename, url, dest):
-            print(f"{filename} already present")
+            app_logger.log(LoggingType.DEBUG, f"{filename} already present")
             return
         else:
             # deleting partial downloads
@@ -46,7 +46,6 @@ class ModelDownloader(FileDownloader):
         super().__init__()
         self.model_download_dict = self.comfy_model_dict = {}
         self.download_similar_model = download_similar_model
-        self.comfy_api = ComfyAPI(SERVER_ADDR, APP_PORT)
 
         # loading local data
         for model_weights_file_path in model_weights_file_path_list:
@@ -60,18 +59,25 @@ class ModelDownloader(FileDownloader):
                             'dest': data[model_name]['dest']
                         }
 
+    def _get_similar_models(self, model_name):
+        app_logger.log(LoggingType.DEBUG, "matching model: ", model_name)
+        # matching with local data
+        model_list = self.model_download_dict.keys()
+        similar_models = fuzzy_text_match(model_list, model_name)
+
+        # matching with comfy data
+        model_list = self.comfy_model_dict.keys()
+        similar_models += fuzzy_text_match(model_list, model_name)
+
+        return similar_models
+
+    def load_comfy_models(self):
         with open(COMFY_MODEL_LIST_PATH, 'rb') as file:
             model_list = json.load(file)["models"]
             
         # loading comfy data
         self.comfy_model_dict = {}
         for model in model_list:
-            # storing both the name as keys (easy for approximate search)
-            if model['name'] not in self.comfy_model_dict:
-                self.comfy_model_dict[model['name']] = [model]
-            else:
-                self.comfy_model_dict[model['name']].append(model)
-
             if model['filename'] not in self.comfy_model_dict:
                 self.comfy_model_dict[model['filename']] = [model]
             else:
@@ -94,8 +100,12 @@ class ModelDownloader(FileDownloader):
             )
             
         else:
-            print(f"ERROR: Model {model_name} not found in model_weights_file_path")
-            # TODO: perform approximate search
-            if self.download_similar_model:
+            app_logger.log(LoggingType.DEBUG, f"Model {model_name} not found in model weights")
+            similar_models = self._get_similar_models(model_name)
+            if self.download_similar_model and len(similar_models):
                 pass
+            else:
+                return (False, similar_models)
+            
+        return (True, [])
     

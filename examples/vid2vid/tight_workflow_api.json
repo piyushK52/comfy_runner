@@ -1,7 +1,7 @@
 {
   "1": {
     "inputs": {
-      "ckpt_name": "Realistic_Vision_V5.0.safetensors",
+      "ckpt_name": "Realistic_Vision_V5.1.safetensors",
       "beta_schedule": "sqrt_linear (AnimateDiff)",
       "use_custom_scale_factor": false,
       "scale_factor": 0.18215
@@ -376,7 +376,7 @@
   },
   "169": {
     "inputs": {
-      "clip_name": "SD1.5/pytorch_model.bin"
+      "clip_name": "CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors"
     },
     "class_type": "CLIPVisionLoader",
     "_meta": {
