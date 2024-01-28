@@ -1,0 +1,1118 @@
+{
+    "512-inpainting-ema.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/checkpoints/512-inpainting-ema.safetensors.tar",
+      "dest": "ComfyUI/models/checkpoints"
+    },
+    "albedobaseXL_v13.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/checkpoints/albedobaseXL_v13.safetensors.tar",
+      "dest": "ComfyUI/models/checkpoints"
+    },
+    "anything-v3-fp16-pruned.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/checkpoints/anything-v3-fp16-pruned.safetensors.tar",
+      "dest": "ComfyUI/models/checkpoints"
+    },
+    "Deliberate_v2.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/checkpoints/Deliberate_v2.safetensors.tar",
+      "dest": "ComfyUI/models/checkpoints"
+    },
+    "dreamlabsoil_V2_v2.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/checkpoints/dreamlabsoil_V2_v2.safetensors.tar",
+      "dest": "ComfyUI/models/checkpoints"
+    },
+    "DreamShaper_6.2_BakedVae_pruned.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/checkpoints/DreamShaper_6.2_BakedVae_pruned.safetensors.tar",
+      "dest": "ComfyUI/models/checkpoints"
+    },
+    "DreamShaper_6.31_BakedVae.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/checkpoints/DreamShaper_6.31_BakedVae.safetensors.tar",
+      "dest": "ComfyUI/models/checkpoints"
+    },
+    "DreamShaper_6.31_BakedVae_pruned.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/checkpoints/DreamShaper_6.31_BakedVae_pruned.safetensors.tar",
+      "dest": "ComfyUI/models/checkpoints"
+    },
+    "DreamShaper_6.31_INPAINTING.inpainting.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/checkpoints/DreamShaper_6.31_INPAINTING.inpainting.safetensors.tar",
+      "dest": "ComfyUI/models/checkpoints"
+    },
+    "DreamShaper_6_BakedVae.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/checkpoints/DreamShaper_6_BakedVae.safetensors.tar",
+      "dest": "ComfyUI/models/checkpoints"
+    },
+    "dreamshaper_8.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/checkpoints/dreamshaper_8.safetensors.tar",
+      "dest": "ComfyUI/models/checkpoints"
+    },
+    "dreamshaper_8LCM.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/checkpoints/dreamshaper_8LCM.safetensors.tar",
+      "dest": "ComfyUI/models/checkpoints"
+    },
+    "juggernautXL_v8Rundiffusion.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/checkpoints/juggernautXL_v8Rundiffusion.safetensors.tar",
+      "dest": "ComfyUI/models/checkpoints"
+    },
+    "LCM_Dreamshaper_v7_4k.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/checkpoints/LCM_Dreamshaper_v7_4k.safetensors.tar",
+      "dest": "ComfyUI/models/checkpoints"
+    },
+    "motionctrl.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/checkpoints/motionctrl.pth.tar",
+      "dest": "ComfyUI/models/checkpoints"
+    },
+    "proteus_v02.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/checkpoints/proteus_v02.safetensors.tar",
+      "dest": "ComfyUI/models/checkpoints"
+    },
+    "Realistic_Vision_V5.1-inpainting.ckpt": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/checkpoints/Realistic_Vision_V5.1-inpainting.ckpt.tar",
+      "dest": "ComfyUI/models/checkpoints"
+    },
+    "Realistic_Vision_V5.1-inpainting.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/checkpoints/Realistic_Vision_V5.1-inpainting.safetensors.tar",
+      "dest": "ComfyUI/models/checkpoints"
+    },
+    "Realistic_Vision_V5.1.ckpt": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/checkpoints/Realistic_Vision_V5.1.ckpt.tar",
+      "dest": "ComfyUI/models/checkpoints"
+    },
+    "Realistic_Vision_V5.1.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/checkpoints/Realistic_Vision_V5.1.safetensors.tar",
+      "dest": "ComfyUI/models/checkpoints"
+    },
+    "Realistic_Vision_V5.1_fp16-no-ema-inpainting.ckpt": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/checkpoints/Realistic_Vision_V5.1_fp16-no-ema-inpainting.ckpt.tar",
+      "dest": "ComfyUI/models/checkpoints"
+    },
+    "Realistic_Vision_V5.1_fp16-no-ema-inpainting.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/checkpoints/Realistic_Vision_V5.1_fp16-no-ema-inpainting.safetensors.tar",
+      "dest": "ComfyUI/models/checkpoints"
+    },
+    "Realistic_Vision_V5.1_fp16-no-ema.ckpt": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/checkpoints/Realistic_Vision_V5.1_fp16-no-ema.ckpt.tar",
+      "dest": "ComfyUI/models/checkpoints"
+    },
+    "Realistic_Vision_V5.1_fp16-no-ema.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/checkpoints/Realistic_Vision_V5.1_fp16-no-ema.safetensors.tar",
+      "dest": "ComfyUI/models/checkpoints"
+    },
+    "Realistic_Vision_V6.0_NV_B1.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/checkpoints/Realistic_Vision_V6.0_NV_B1.safetensors.tar",
+      "dest": "ComfyUI/models/checkpoints"
+    },
+    "Realistic_Vision_V6.0_NV_B1_fp16.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/checkpoints/Realistic_Vision_V6.0_NV_B1_fp16.safetensors.tar",
+      "dest": "ComfyUI/models/checkpoints"
+    },
+    "Realistic_Vision_V6.0_NV_B1_inpainting.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/checkpoints/Realistic_Vision_V6.0_NV_B1_inpainting.safetensors.tar",
+      "dest": "ComfyUI/models/checkpoints"
+    },
+    "Realistic_Vision_V6.0_NV_B1_inpainting_fp16.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/checkpoints/Realistic_Vision_V6.0_NV_B1_inpainting_fp16.safetensors.tar",
+      "dest": "ComfyUI/models/checkpoints"
+    },
+    "RealVisXL_V2.0.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/checkpoints/RealVisXL_V2.0.safetensors.tar",
+      "dest": "ComfyUI/models/checkpoints"
+    },
+    "RealVisXL_V3.0.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/checkpoints/RealVisXL_V3.0.safetensors.tar",
+      "dest": "ComfyUI/models/checkpoints"
+    },
+    "RealVisXL_V3.0_Turbo.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/checkpoints/RealVisXL_V3.0_Turbo.safetensors.tar",
+      "dest": "ComfyUI/models/checkpoints"
+    },
+    "sd_xl_base_1.0.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/checkpoints/sd_xl_base_1.0.safetensors.tar",
+      "dest": "ComfyUI/models/checkpoints"
+    },
+    "sd_xl_base_1.0_0.9vae.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/checkpoints/sd_xl_base_1.0_0.9vae.safetensors.tar",
+      "dest": "ComfyUI/models/checkpoints"
+    },
+    "sd_xl_refiner_1.0.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/checkpoints/sd_xl_refiner_1.0.safetensors.tar",
+      "dest": "ComfyUI/models/checkpoints"
+    },
+    "sd_xl_refiner_1.0_0.9vae.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/checkpoints/sd_xl_refiner_1.0_0.9vae.safetensors.tar",
+      "dest": "ComfyUI/models/checkpoints"
+    },
+    "sd_xl_turbo_1.0.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/checkpoints/sd_xl_turbo_1.0.safetensors.tar",
+      "dest": "ComfyUI/models/checkpoints"
+    },
+    "sd_xl_turbo_1.0_fp16.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/checkpoints/sd_xl_turbo_1.0_fp16.safetensors.tar",
+      "dest": "ComfyUI/models/checkpoints"
+    },
+    "segmind-vega.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/checkpoints/segmind-vega.safetensors.tar",
+      "dest": "ComfyUI/models/checkpoints"
+    },
+    "SSD-1B.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/checkpoints/SSD-1B.safetensors.tar",
+      "dest": "ComfyUI/models/checkpoints"
+    },
+    "starlightXLAnimated_v3.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/checkpoints/starlightXLAnimated_v3.safetensors.tar",
+      "dest": "ComfyUI/models/checkpoints"
+    },
+    "svd.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/checkpoints/svd.safetensors.tar",
+      "dest": "ComfyUI/models/checkpoints"
+    },
+    "svd_xt.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/checkpoints/svd_xt.safetensors.tar",
+      "dest": "ComfyUI/models/checkpoints"
+    },
+    "turbovisionxlSuperFastXLBasedOnNew_tvxlV32Bakedvae.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/checkpoints/turbovisionxlSuperFastXLBasedOnNew_tvxlV32Bakedvae.safetensors.tar",
+      "dest": "ComfyUI/models/checkpoints"
+    },
+    "v1-5-pruned-emaonly.ckpt": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/checkpoints/v1-5-pruned-emaonly.ckpt.tar",
+      "dest": "ComfyUI/models/checkpoints"
+    },
+    "v2-1_512-ema-pruned.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/checkpoints/v2-1_512-ema-pruned.safetensors.tar",
+      "dest": "ComfyUI/models/checkpoints"
+    },
+    "v2-1_768-ema-pruned.ckpt": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/checkpoints/v2-1_768-ema-pruned.ckpt.tar",
+      "dest": "ComfyUI/models/checkpoints"
+    },
+    "v2-1_768-ema-pruned.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/checkpoints/v2-1_768-ema-pruned.safetensors.tar",
+      "dest": "ComfyUI/models/checkpoints"
+    },
+    "v2-1_768-nonema-pruned.ckpt": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/checkpoints/v2-1_768-nonema-pruned.ckpt.tar",
+      "dest": "ComfyUI/models/checkpoints"
+    },
+    "v2-1_768-nonema-pruned.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/checkpoints/v2-1_768-nonema-pruned.safetensors.tar",
+      "dest": "ComfyUI/models/checkpoints"
+    },
+    "wd-illusion-fp16.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/checkpoints/wd-illusion-fp16.safetensors.tar",
+      "dest": "ComfyUI/models/checkpoints"
+    },
+    "x4-upscaler-ema.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/checkpoints/x4-upscaler-ema.safetensors.tar",
+      "dest": "ComfyUI/models/checkpoints"
+    },
+    "4x-AnimeSharp.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/upscale_models/4x-AnimeSharp.pth.tar",
+      "dest": "ComfyUI/models/upscale_models"
+    },
+    "4x-UltraSharp.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/upscale_models/4x-UltraSharp.pth.tar",
+      "dest": "ComfyUI/models/upscale_models"
+    },
+    "4x_foolhardy_Remacri.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/upscale_models/4x_foolhardy_Remacri.pth.tar",
+      "dest": "ComfyUI/models/upscale_models"
+    },
+    "4x_NMKD-Siax_200k.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/upscale_models/4x_NMKD-Siax_200k.pth.tar",
+      "dest": "ComfyUI/models/upscale_models"
+    },
+    "8x_NMKD-Superscale_150000_G.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/upscale_models/8x_NMKD-Superscale_150000_G.pth.tar",
+      "dest": "ComfyUI/models/upscale_models"
+    },
+    "ESRGAN_4x.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/upscale_models/ESRGAN_4x.pth.tar",
+      "dest": "ComfyUI/models/upscale_models"
+    },
+    "RealESRGAN_x2.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/upscale_models/RealESRGAN_x2.pth.tar",
+      "dest": "ComfyUI/models/upscale_models"
+    },
+    "RealESRGAN_x4.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/upscale_models/RealESRGAN_x4.pth.tar",
+      "dest": "ComfyUI/models/upscale_models"
+    },
+    "RealESRGAN_x4plus.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/upscale_models/RealESRGAN_x4plus.pth.tar",
+      "dest": "ComfyUI/models/upscale_models"
+    },
+    "RealESRGAN_x4plus_anime_6B.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/upscale_models/RealESRGAN_x4plus_anime_6B.pth.tar",
+      "dest": "ComfyUI/models/upscale_models"
+    },
+    "RealESRGAN_x8.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/upscale_models/RealESRGAN_x8.pth.tar",
+      "dest": "ComfyUI/models/upscale_models"
+    },
+    "CLIP-ViT-bigG-14-laion2B-39B-b160k.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/clip_vision/CLIP-ViT-bigG-14-laion2B-39B-b160k.safetensors.tar",
+      "dest": "ComfyUI/models/clip_vision"
+    },
+    "CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/clip_vision/CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors.tar",
+      "dest": "ComfyUI/models/clip_vision"
+    },
+    "clip-vit-large-patch14.bin": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/clip_vision/clip-vit-large-patch14.bin.tar",
+      "dest": "ComfyUI/models/clip_vision"
+    },
+    "clip_vision_g.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/clip_vision/clip_vision_g.safetensors.tar",
+      "dest": "ComfyUI/models/clip_vision"
+    },
+    "model.15.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/clip_vision/model.15.safetensors.tar",
+      "dest": "ComfyUI/models/clip_vision"
+    },
+    "model.sdxl.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/clip_vision/model.sdxl.safetensors.tar",
+      "dest": "ComfyUI/models/clip_vision"
+    },
+    "COOLKIDS_MERGE_V2.5.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/loras/COOLKIDS_MERGE_V2.5.safetensors.tar",
+      "dest": "ComfyUI/models/loras"
+    },
+    "Harrlogos_v2.0.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/loras/Harrlogos_v2.0.safetensors.tar",
+      "dest": "ComfyUI/models/loras"
+    },
+    "lcm-lora-sdv1-5.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/loras/lcm-lora-sdv1-5.safetensors.tar",
+      "dest": "ComfyUI/models/loras"
+    },
+    "lcm-lora-ssd-1b.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/loras/lcm-lora-ssd-1b.safetensors.tar",
+      "dest": "ComfyUI/models/loras"
+    },
+    "lcm_lora_sdxl.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/loras/lcm_lora_sdxl.safetensors.tar",
+      "dest": "ComfyUI/models/loras"
+    },
+    "sd_xl_offset_example-lora_1.0.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/loras/sd_xl_offset_example-lora_1.0.safetensors.tar",
+      "dest": "ComfyUI/models/loras"
+    },
+    "Segmind-VegaRT.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/loras/Segmind-VegaRT.safetensors.tar",
+      "dest": "ComfyUI/models/loras"
+    },
+    "theovercomer8sContrastFix_sd15.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/loras/theovercomer8sContrastFix_sd15.safetensors.tar",
+      "dest": "ComfyUI/models/loras"
+    },
+    "theovercomer8sContrastFix_sd21768.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/loras/theovercomer8sContrastFix_sd21768.safetensors.tar",
+      "dest": "ComfyUI/models/loras"
+    },
+    "bad_prompt_version2-neg.pt": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/embeddings/bad_prompt_version2-neg.pt.tar",
+      "dest": "ComfyUI/models/embeddings"
+    },
+    "easynegative.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/embeddings/easynegative.safetensors.tar",
+      "dest": "ComfyUI/models/embeddings"
+    },
+    "negative_hand-neg.pt": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/embeddings/negative_hand-neg.pt.tar",
+      "dest": "ComfyUI/models/embeddings"
+    },
+    "ng_deepnegative_v1_75t.pt": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/embeddings/ng_deepnegative_v1_75t.pt.tar",
+      "dest": "ComfyUI/models/embeddings"
+    },
+    "control-lora-canny-rank128.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control-lora-canny-rank128.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control-lora-canny-rank256.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control-lora-canny-rank256.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control-lora-depth-rank128.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control-lora-depth-rank128.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control-lora-depth-rank256.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control-lora-depth-rank256.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control-lora-recolor-rank128.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control-lora-recolor-rank128.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control-lora-recolor-rank256.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control-lora-recolor-rank256.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control-lora-sketch-rank128-metadata.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control-lora-sketch-rank128-metadata.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control-lora-sketch-rank256.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control-lora-sketch-rank256.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control_boxdepth_LooseControlfp16.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control_boxdepth_LooseControlfp16.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control_lora_rank128_v11e_sd15_ip2p_fp16.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control_lora_rank128_v11e_sd15_ip2p_fp16.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control_lora_rank128_v11e_sd15_shuffle_fp16.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control_lora_rank128_v11e_sd15_shuffle_fp16.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control_lora_rank128_v11f1e_sd15_tile_fp16.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control_lora_rank128_v11f1e_sd15_tile_fp16.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control_lora_rank128_v11f1p_sd15_depth_fp16.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control_lora_rank128_v11f1p_sd15_depth_fp16.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control_lora_rank128_v11p_sd15_canny_fp16.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control_lora_rank128_v11p_sd15_canny_fp16.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control_lora_rank128_v11p_sd15_inpaint_fp16.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control_lora_rank128_v11p_sd15_inpaint_fp16.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control_lora_rank128_v11p_sd15_lineart_fp16.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control_lora_rank128_v11p_sd15_lineart_fp16.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control_lora_rank128_v11p_sd15_mlsd_fp16.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control_lora_rank128_v11p_sd15_mlsd_fp16.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control_lora_rank128_v11p_sd15_normalbae_fp16.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control_lora_rank128_v11p_sd15_normalbae_fp16.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control_lora_rank128_v11p_sd15_openpose_fp16.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control_lora_rank128_v11p_sd15_openpose_fp16.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control_lora_rank128_v11p_sd15_scribble_fp16.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control_lora_rank128_v11p_sd15_scribble_fp16.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control_lora_rank128_v11p_sd15_seg_fp16.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control_lora_rank128_v11p_sd15_seg_fp16.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control_lora_rank128_v11p_sd15_softedge_fp16.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control_lora_rank128_v11p_sd15_softedge_fp16.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control_lora_rank128_v11p_sd15s2_lineart_anime_fp16.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control_lora_rank128_v11p_sd15s2_lineart_anime_fp16.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control_sd15_inpaint_depth_hand_fp16.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control_sd15_inpaint_depth_hand_fp16.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control_v11e_sd15_ip2p.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control_v11e_sd15_ip2p.pth.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control_v11e_sd15_ip2p_fp16.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control_v11e_sd15_ip2p_fp16.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control_v11e_sd15_shuffle.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control_v11e_sd15_shuffle.pth.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control_v11e_sd15_shuffle_fp16.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control_v11e_sd15_shuffle_fp16.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control_v11f1e_sd15_tile.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control_v11f1e_sd15_tile.pth.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control_v11f1e_sd15_tile_fp16.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control_v11f1e_sd15_tile_fp16.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control_v11f1p_sd15_depth.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control_v11f1p_sd15_depth.pth.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control_v11f1p_sd15_depth_fp16.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control_v11f1p_sd15_depth_fp16.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control_v11p_sd15_canny.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control_v11p_sd15_canny.pth.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control_v11p_sd15_canny_fp16.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control_v11p_sd15_canny_fp16.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control_v11p_sd15_inpaint.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control_v11p_sd15_inpaint.pth.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control_v11p_sd15_inpaint_fp16.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control_v11p_sd15_inpaint_fp16.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control_v11p_sd15_lineart.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control_v11p_sd15_lineart.pth.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control_v11p_sd15_lineart_fp16.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control_v11p_sd15_lineart_fp16.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control_v11p_sd15_mlsd.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control_v11p_sd15_mlsd.pth.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control_v11p_sd15_mlsd_fp16.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control_v11p_sd15_mlsd_fp16.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control_v11p_sd15_normalbae.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control_v11p_sd15_normalbae.pth.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control_v11p_sd15_normalbae_fp16.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control_v11p_sd15_normalbae_fp16.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control_v11p_sd15_openpose.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control_v11p_sd15_openpose.pth.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control_v11p_sd15_openpose_fp16.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control_v11p_sd15_openpose_fp16.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control_v11p_sd15_scribble.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control_v11p_sd15_scribble.pth.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control_v11p_sd15_scribble_fp16.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control_v11p_sd15_scribble_fp16.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control_v11p_sd15_seg.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control_v11p_sd15_seg.pth.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control_v11p_sd15_seg_fp16.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control_v11p_sd15_seg_fp16.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control_v11p_sd15_softedge.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control_v11p_sd15_softedge.pth.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control_v11p_sd15_softedge_fp16.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control_v11p_sd15_softedge_fp16.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control_v11p_sd15s2_lineart_anime.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control_v11p_sd15s2_lineart_anime.pth.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control_v11p_sd15s2_lineart_anime_fp16.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control_v11p_sd15s2_lineart_anime_fp16.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "control_v11u_sd15_tile_fp16.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/control_v11u_sd15_tile_fp16.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "controllllite_v01032064e_sdxl_canny_anime.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/controllllite_v01032064e_sdxl_canny_anime.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "controlnet-canny-sdxl-1.0.fp16.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/controlnet-canny-sdxl-1.0.fp16.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "controlnet-depth-sdxl-1.0.fp16.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/controlnet-depth-sdxl-1.0.fp16.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "controlnet-sd-xl-1.0-softedge-dexined.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/controlnet-sd-xl-1.0-softedge-dexined.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "controlnet-temporalnet-sdxl-1.0.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/controlnet-temporalnet-sdxl-1.0.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "depth-zoe-xl-v1.0-controlnet.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/depth-zoe-xl-v1.0-controlnet.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "diffusers_xl_canny_full.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/diffusers_xl_canny_full.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "diffusers_xl_canny_mid.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/diffusers_xl_canny_mid.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "diffusers_xl_canny_small.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/diffusers_xl_canny_small.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "diffusers_xl_depth_full.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/diffusers_xl_depth_full.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "diffusers_xl_depth_mid.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/diffusers_xl_depth_mid.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "diffusers_xl_depth_small.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/diffusers_xl_depth_small.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "ioclab_sd15_recolor.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/ioclab_sd15_recolor.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "ip-adapter_sd15.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/ip-adapter_sd15.pth.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "ip-adapter_sd15_plus.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/ip-adapter_sd15_plus.pth.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "ip-adapter_xl.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/ip-adapter_xl.pth.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "kohya_controllllite_xl_blur.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/kohya_controllllite_xl_blur.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "kohya_controllllite_xl_blur_anime.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/kohya_controllllite_xl_blur_anime.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "kohya_controllllite_xl_blur_anime_beta.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/kohya_controllllite_xl_blur_anime_beta.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "kohya_controllllite_xl_canny.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/kohya_controllllite_xl_canny.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "kohya_controllllite_xl_canny_anime.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/kohya_controllllite_xl_canny_anime.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "kohya_controllllite_xl_depth.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/kohya_controllllite_xl_depth.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "kohya_controllllite_xl_depth_anime.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/kohya_controllllite_xl_depth_anime.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "kohya_controllllite_xl_openpose_anime.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/kohya_controllllite_xl_openpose_anime.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "kohya_controllllite_xl_openpose_anime_v2.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/kohya_controllllite_xl_openpose_anime_v2.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "kohya_controllllite_xl_scribble_anime.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/kohya_controllllite_xl_scribble_anime.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "OpenPoseXL2.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/OpenPoseXL2.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "sai_xl_canny_128lora.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/sai_xl_canny_128lora.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "sai_xl_canny_256lora.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/sai_xl_canny_256lora.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "sai_xl_depth_128lora.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/sai_xl_depth_128lora.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "sai_xl_depth_256lora.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/sai_xl_depth_256lora.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "sai_xl_recolor_128lora.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/sai_xl_recolor_128lora.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "sai_xl_recolor_256lora.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/sai_xl_recolor_256lora.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "sai_xl_sketch_128lora.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/sai_xl_sketch_128lora.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "sai_xl_sketch_256lora.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/sai_xl_sketch_256lora.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "sargezt_xl_depth.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/sargezt_xl_depth.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "sargezt_xl_depth_faid_vidit.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/sargezt_xl_depth_faid_vidit.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "sargezt_xl_depth_zeed.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/sargezt_xl_depth_zeed.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "sargezt_xl_softedge.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/sargezt_xl_softedge.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "t2i-adapter_diffusers_xl_canny.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/t2i-adapter_diffusers_xl_canny.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "t2i-adapter_diffusers_xl_depth_midas.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/t2i-adapter_diffusers_xl_depth_midas.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "t2i-adapter_diffusers_xl_depth_zoe.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/t2i-adapter_diffusers_xl_depth_zoe.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "t2i-adapter_diffusers_xl_lineart.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/t2i-adapter_diffusers_xl_lineart.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "t2i-adapter_diffusers_xl_openpose.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/t2i-adapter_diffusers_xl_openpose.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "t2i-adapter_diffusers_xl_sketch.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/t2i-adapter_diffusers_xl_sketch.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "t2i-adapter_xl_canny.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/t2i-adapter_xl_canny.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "t2i-adapter_xl_openpose.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/t2i-adapter_xl_openpose.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "t2i-adapter_xl_sketch.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/t2i-adapter_xl_sketch.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "t2iadapter_canny_sd14v1.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/t2iadapter_canny_sd14v1.pth.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "t2iadapter_color_sd14v1.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/t2iadapter_color_sd14v1.pth.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "t2iadapter_depth_sd14v1.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/t2iadapter_depth_sd14v1.pth.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "t2iadapter_keypose_sd14v1.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/t2iadapter_keypose_sd14v1.pth.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "t2iadapter_openpose_sd14v1.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/t2iadapter_openpose_sd14v1.pth.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "t2iadapter_seg_sd14v1.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/t2iadapter_seg_sd14v1.pth.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "t2iadapter_sketch_sd14v1.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/t2iadapter_sketch_sd14v1.pth.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "t2iadapter_style_sd14v1.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/t2iadapter_style_sd14v1.pth.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "temporalnetversion2.ckpt": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/temporalnetversion2.ckpt.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "thibaud_xl_openpose.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/thibaud_xl_openpose.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "thibaud_xl_openpose_256lora.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/controlnet/thibaud_xl_openpose_256lora.safetensors.tar",
+      "dest": "ComfyUI/models/controlnet"
+    },
+    "ip-adapter-faceid-plus_sd15.bin": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/ipadapter/ip-adapter-faceid-plus_sd15.bin.tar",
+      "dest": "ComfyUI/models/ipadapter"
+    },
+    "ip-adapter-faceid-plus_sd15_lora.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/ipadapter/ip-adapter-faceid-plus_sd15_lora.safetensors.tar",
+      "dest": "ComfyUI/models/ipadapter"
+    },
+    "ip-adapter-faceid-plusv2_sd15.bin": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/ipadapter/ip-adapter-faceid-plusv2_sd15.bin.tar",
+      "dest": "ComfyUI/models/ipadapter"
+    },
+    "ip-adapter-faceid-plusv2_sd15_lora.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/ipadapter/ip-adapter-faceid-plusv2_sd15_lora.safetensors.tar",
+      "dest": "ComfyUI/models/ipadapter"
+    },
+    "ip-adapter-faceid-plusv2_sdxl.bin": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/ipadapter/ip-adapter-faceid-plusv2_sdxl.bin.tar",
+      "dest": "ComfyUI/models/ipadapter"
+    },
+    "ip-adapter-faceid-plusv2_sdxl_lora.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/ipadapter/ip-adapter-faceid-plusv2_sdxl_lora.safetensors.tar",
+      "dest": "ComfyUI/models/ipadapter"
+    },
+    "ip-adapter-faceid-portrait_sd15.bin": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/ipadapter/ip-adapter-faceid-portrait_sd15.bin.tar",
+      "dest": "ComfyUI/models/ipadapter"
+    },
+    "ip-adapter-faceid_sd15.bin": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/ipadapter/ip-adapter-faceid_sd15.bin.tar",
+      "dest": "ComfyUI/models/ipadapter"
+    },
+    "ip-adapter-faceid_sd15_lora.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/ipadapter/ip-adapter-faceid_sd15_lora.safetensors.tar",
+      "dest": "ComfyUI/models/ipadapter"
+    },
+    "ip-adapter-faceid_sdxl.bin": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/ipadapter/ip-adapter-faceid_sdxl.bin.tar",
+      "dest": "ComfyUI/models/ipadapter"
+    },
+    "ip-adapter-faceid_sdxl_lora.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/ipadapter/ip-adapter-faceid_sdxl_lora.safetensors.tar",
+      "dest": "ComfyUI/models/ipadapter"
+    },
+    "ip-adapter-full-face_sd15.bin": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/ipadapter/ip-adapter-full-face_sd15.bin.tar",
+      "dest": "ComfyUI/models/ipadapter"
+    },
+    "ip-adapter-full-face_sd15.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/ipadapter/ip-adapter-full-face_sd15.safetensors.tar",
+      "dest": "ComfyUI/models/ipadapter"
+    },
+    "ip-adapter-plus-face_sd15.bin": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/ipadapter/ip-adapter-plus-face_sd15.bin.tar",
+      "dest": "ComfyUI/models/ipadapter"
+    },
+    "ip-adapter-plus-face_sd15.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/ipadapter/ip-adapter-plus-face_sd15.safetensors.tar",
+      "dest": "ComfyUI/models/ipadapter"
+    },
+    "ip-adapter-plus-face_sdxl_vit-h.bin": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/ipadapter/ip-adapter-plus-face_sdxl_vit-h.bin.tar",
+      "dest": "ComfyUI/models/ipadapter"
+    },
+    "ip-adapter-plus-face_sdxl_vit-h.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/ipadapter/ip-adapter-plus-face_sdxl_vit-h.safetensors.tar",
+      "dest": "ComfyUI/models/ipadapter"
+    },
+    "ip-adapter-plus_sd15.bin": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/ipadapter/ip-adapter-plus_sd15.bin.tar",
+      "dest": "ComfyUI/models/ipadapter"
+    },
+    "ip-adapter-plus_sd15.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/ipadapter/ip-adapter-plus_sd15.safetensors.tar",
+      "dest": "ComfyUI/models/ipadapter"
+    },
+    "ip-adapter-plus_sdxl_vit-h.bin": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/ipadapter/ip-adapter-plus_sdxl_vit-h.bin.tar",
+      "dest": "ComfyUI/models/ipadapter"
+    },
+    "ip-adapter-plus_sdxl_vit-h.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/ipadapter/ip-adapter-plus_sdxl_vit-h.safetensors.tar",
+      "dest": "ComfyUI/models/ipadapter"
+    },
+    "ip-adapter_sd15.bin": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/ipadapter/ip-adapter_sd15.bin.tar",
+      "dest": "ComfyUI/models/ipadapter"
+    },
+    "ip-adapter_sd15.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/ipadapter/ip-adapter_sd15.safetensors.tar",
+      "dest": "ComfyUI/models/ipadapter"
+    },
+    "ip-adapter_sd15_light.bin": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/ipadapter/ip-adapter_sd15_light.bin.tar",
+      "dest": "ComfyUI/models/ipadapter"
+    },
+    "ip-adapter_sd15_light.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/ipadapter/ip-adapter_sd15_light.safetensors.tar",
+      "dest": "ComfyUI/models/ipadapter"
+    },
+    "ip-adapter_sd15_vit-G.bin": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/ipadapter/ip-adapter_sd15_vit-G.bin.tar",
+      "dest": "ComfyUI/models/ipadapter"
+    },
+    "ip-adapter_sd15_vit-G.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/ipadapter/ip-adapter_sd15_vit-G.safetensors.tar",
+      "dest": "ComfyUI/models/ipadapter"
+    },
+    "ip-adapter_sdxl.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/ipadapter/ip-adapter_sdxl.safetensors.tar",
+      "dest": "ComfyUI/models/ipadapter"
+    },
+    "ip-adapter_sdxl_vit-h.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/ipadapter/ip-adapter_sdxl_vit-h.safetensors.tar",
+      "dest": "ComfyUI/models/ipadapter"
+    },
+    "vae-ft-mse-840000-ema-pruned.safetensors": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/vae/vae-ft-mse-840000-ema-pruned.safetensors.tar",
+      "dest": "ComfyUI/models/vae"
+    },
+    "photomaker-v1.bin": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/photomaker/photomaker-v1.bin.tar",
+      "dest": "ComfyUI/models/photomaker"
+    },
+    "UNet.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/comfyui_controlnet_aux/UNet.pth.tar",
+      "dest": "ComfyUI/custom_nodes/comfyui_controlnet_aux/ckpts/bdsqlsz/qinglong_controlnet-lllite/Annotators"
+    },
+    "mobile_sam.pt": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/comfyui_controlnet_aux/mobile_sam.pt.tar",
+      "dest": "ComfyUI/custom_nodes/comfyui_controlnet_aux/ckpts/dhkim2810/MobileSAM"
+    },
+    "hrnetv2_w64_imagenet_pretrained.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/comfyui_controlnet_aux/hrnetv2_w64_imagenet_pretrained.pth.tar",
+      "dest": "ComfyUI/custom_nodes/comfyui_controlnet_aux/ckpts/hr16/ControlNet-HandRefiner-pruned"
+    },
+    "graphormer_hand_state_dict.bin": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/comfyui_controlnet_aux/graphormer_hand_state_dict.bin.tar",
+      "dest": "ComfyUI/custom_nodes/comfyui_controlnet_aux/ckpts/hr16/ControlNet-HandRefiner-pruned"
+    },
+    "rtmpose-m_ap10k_256_bs5.torchscript.pt": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/comfyui_controlnet_aux/rtmpose-m_ap10k_256_bs5.torchscript.pt.tar",
+      "dest": "ComfyUI/custom_nodes/comfyui_controlnet_aux/ckpts/hr16/DWPose-TorchScript-BatchSize5"
+    },
+    "dw-ll_ucoco_384_bs5.torchscript.pt": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/comfyui_controlnet_aux/dw-ll_ucoco_384_bs5.torchscript.pt.tar",
+      "dest": "ComfyUI/custom_nodes/comfyui_controlnet_aux/ckpts/hr16/DWPose-TorchScript-BatchSize5"
+    },
+    "rtmpose-m_ap10k_256.onnx": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/comfyui_controlnet_aux/rtmpose-m_ap10k_256.onnx.tar",
+      "dest": "ComfyUI/custom_nodes/comfyui_controlnet_aux/ckpts/hr16/UnJIT-DWPose"
+    },
+    "yolo_nas_s_fp16.onnx": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/comfyui_controlnet_aux/yolo_nas_s_fp16.onnx.tar",
+      "dest": "ComfyUI/custom_nodes/comfyui_controlnet_aux/ckpts/hr16/yolo-nas-fp16"
+    },
+    "yolo_nas_m_fp16.onnx": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/comfyui_controlnet_aux/yolo_nas_m_fp16.onnx.tar",
+      "dest": "ComfyUI/custom_nodes/comfyui_controlnet_aux/ckpts/hr16/yolo-nas-fp16"
+    },
+    "yolox_l.torchscript.pt": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/comfyui_controlnet_aux/yolox_l.torchscript.pt.tar",
+      "dest": "ComfyUI/custom_nodes/comfyui_controlnet_aux/ckpts/hr16/yolox-onnx"
+    },
+    "densepose_r101_fpn_dl.torchscript": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/comfyui_controlnet_aux/densepose_r101_fpn_dl.torchscript.tar",
+      "dest": "ComfyUI/custom_nodes/comfyui_controlnet_aux/ckpts/LayerNorm/DensePose-TorchScript-with-hint-image"
+    },
+    "densepose_r50_fpn_dl.torchscript": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/comfyui_controlnet_aux/densepose_r50_fpn_dl.torchscript.tar",
+      "dest": "ComfyUI/custom_nodes/comfyui_controlnet_aux/ckpts/LayerNorm/DensePose-TorchScript-with-hint-image"
+    },
+    "mlsd_large_512_fp32.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/comfyui_controlnet_aux/mlsd_large_512_fp32.pth.tar",
+      "dest": "ComfyUI/custom_nodes/comfyui_controlnet_aux/ckpts/lllyasviel/Annotators"
+    },
+    "150_16_swin_l_oneformer_coco_100ep.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/comfyui_controlnet_aux/150_16_swin_l_oneformer_coco_100ep.pth.tar",
+      "dest": "ComfyUI/custom_nodes/comfyui_controlnet_aux/ckpts/lllyasviel/Annotators"
+    },
+    "ControlNetHED.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/comfyui_controlnet_aux/ControlNetHED.pth.tar",
+      "dest": "ComfyUI/custom_nodes/comfyui_controlnet_aux/ckpts/lllyasviel/Annotators"
+    },
+    "ZoeD_M12_N.pt": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/comfyui_controlnet_aux/ZoeD_M12_N.pt.tar",
+      "dest": "ComfyUI/custom_nodes/comfyui_controlnet_aux/ckpts/lllyasviel/Annotators"
+    },
+    "scannet.pt": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/comfyui_controlnet_aux/scannet.pt.tar",
+      "dest": "ComfyUI/custom_nodes/comfyui_controlnet_aux/ckpts/lllyasviel/Annotators"
+    },
+    "hand_pose_model.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/comfyui_controlnet_aux/hand_pose_model.pth.tar",
+      "dest": "ComfyUI/custom_nodes/comfyui_controlnet_aux/ckpts/lllyasviel/Annotators"
+    },
+    "upernet_global_small.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/comfyui_controlnet_aux/upernet_global_small.pth.tar",
+      "dest": "ComfyUI/custom_nodes/comfyui_controlnet_aux/ckpts/lllyasviel/Annotators"
+    },
+    "latest_net_G.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/comfyui_controlnet_aux/latest_net_G.pth.tar",
+      "dest": "ComfyUI/custom_nodes/comfyui_controlnet_aux/ckpts/lllyasviel/Annotators"
+    },
+    "netG.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/comfyui_controlnet_aux/netG.pth.tar",
+      "dest": "ComfyUI/custom_nodes/comfyui_controlnet_aux/ckpts/lllyasviel/Annotators"
+    },
+    "sk_model2.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/comfyui_controlnet_aux/sk_model2.pth.tar",
+      "dest": "ComfyUI/custom_nodes/comfyui_controlnet_aux/ckpts/lllyasviel/Annotators"
+    },
+    "dpt_hybrid-midas-501f0c75.pt": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/comfyui_controlnet_aux/dpt_hybrid-midas-501f0c75.pt.tar",
+      "dest": "ComfyUI/custom_nodes/comfyui_controlnet_aux/ckpts/lllyasviel/Annotators"
+    },
+    "table5_pidinet.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/comfyui_controlnet_aux/table5_pidinet.pth.tar",
+      "dest": "ComfyUI/custom_nodes/comfyui_controlnet_aux/ckpts/lllyasviel/Annotators"
+    },
+    "erika.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/comfyui_controlnet_aux/erika.pth.tar",
+      "dest": "ComfyUI/custom_nodes/comfyui_controlnet_aux/ckpts/lllyasviel/Annotators"
+    },
+    "250_16_swin_l_oneformer_ade20k_160k.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/comfyui_controlnet_aux/250_16_swin_l_oneformer_ade20k_160k.pth.tar",
+      "dest": "ComfyUI/custom_nodes/comfyui_controlnet_aux/ckpts/lllyasviel/Annotators"
+    },
+    "sk_model.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/comfyui_controlnet_aux/sk_model.pth.tar",
+      "dest": "ComfyUI/custom_nodes/comfyui_controlnet_aux/ckpts/lllyasviel/Annotators"
+    },
+    "body_pose_model.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/comfyui_controlnet_aux/body_pose_model.pth.tar",
+      "dest": "ComfyUI/custom_nodes/comfyui_controlnet_aux/ckpts/lllyasviel/Annotators"
+    },
+    "res101.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/comfyui_controlnet_aux/res101.pth.tar",
+      "dest": "ComfyUI/custom_nodes/comfyui_controlnet_aux/ckpts/lllyasviel/Annotators"
+    },
+    "facenet.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/comfyui_controlnet_aux/facenet.pth.tar",
+      "dest": "ComfyUI/custom_nodes/comfyui_controlnet_aux/ckpts/lllyasviel/Annotators"
+    },
+    "isnetis.ckpt": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/comfyui_controlnet_aux/isnetis.ckpt.tar",
+      "dest": "ComfyUI/custom_nodes/comfyui_controlnet_aux/ckpts/skytnt/anime-seg"
+    },
+    "yolox_l.onnx": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/comfyui_controlnet_aux/yolox_l.onnx.tar",
+      "dest": "ComfyUI/custom_nodes/comfyui_controlnet_aux/ckpts/yzd-v/DWPose"
+    },
+    "dw-ll_ucoco_384.onnx": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/comfyui_controlnet_aux/dw-ll_ucoco_384.onnx.tar",
+      "dest": "ComfyUI/custom_nodes/comfyui_controlnet_aux/ckpts/yzd-v/DWPose"
+    },
+    "mm_sd_v14.ckpt": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/ComfyUI-AnimateDiff-Evolved/mm_sd_v14.ckpt.tar",
+      "dest": "ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/models"
+    },
+    "mm_sd_v15.ckpt": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/ComfyUI-AnimateDiff-Evolved/mm_sd_v15.ckpt.tar",
+      "dest": "ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/models"
+    },
+    "mm_sd_v15_v2.ckpt": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/ComfyUI-AnimateDiff-Evolved/mm_sd_v15_v2.ckpt.tar",
+      "dest": "ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/models"
+    },
+    "mm_sdxl_v10_beta.ckpt": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/ComfyUI-AnimateDiff-Evolved/mm_sdxl_v10_beta.ckpt.tar",
+      "dest": "ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/models"
+    },
+    "v3_sd15_adapter.ckpt": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/ComfyUI-AnimateDiff-Evolved/v3_sd15_adapter.ckpt.tar",
+      "dest": "ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/models"
+    },
+    "v3_sd15_mm.ckpt": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/ComfyUI-AnimateDiff-Evolved/v3_sd15_mm.ckpt.tar",
+      "dest": "ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/models"
+    },
+    "v3_sd15_sparsectrl_rgb.ckpt": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/ComfyUI-AnimateDiff-Evolved/v3_sd15_sparsectrl_rgb.ckpt.tar",
+      "dest": "ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/models"
+    },
+    "v3_sd15_sparsectrl_scribble.ckpt": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/ComfyUI-AnimateDiff-Evolved/v3_sd15_sparsectrl_scribble.ckpt.tar",
+      "dest": "ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/models"
+    },
+    "temporaldiff-v1-animatediff.ckpt": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/ComfyUI-AnimateDiff-Evolved/temporaldiff-v1-animatediff.ckpt.tar",
+      "dest": "ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/models"
+    },
+    "mm-Stabilized_high.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/ComfyUI-AnimateDiff-Evolved/mm-Stabilized_high.pth.tar",
+      "dest": "ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/models"
+    },
+    "mm-Stabilized_mid.pth": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/ComfyUI-AnimateDiff-Evolved/mm-Stabilized_mid.pth.tar",
+      "dest": "ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/models"
+    },
+    "lt_long_mm_32_frames.ckpt": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/ComfyUI-AnimateDiff-Evolved/lt_long_mm_32_frames.ckpt.tar",
+      "dest": "ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/models"
+    },
+    "lt_long_mm_16_64_frames.ckpt": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/ComfyUI-AnimateDiff-Evolved/lt_long_mm_16_64_frames.ckpt.tar",
+      "dest": "ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/models"
+    },
+    "lt_long_mm_16_64_frames_v1.1.ckpt": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/ComfyUI-AnimateDiff-Evolved/lt_long_mm_16_64_frames_v1.1.ckpt.tar",
+      "dest": "ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/models"
+    },
+    "v2_lora_PanLeft.ckpt": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/ComfyUI-AnimateDiff-Evolved/v2_lora_PanLeft.ckpt.tar",
+      "dest": "ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/motion_lora"
+    },
+    "v2_lora_PanRight.ckpt": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/ComfyUI-AnimateDiff-Evolved/v2_lora_PanRight.ckpt.tar",
+      "dest": "ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/motion_lora"
+    },
+    "v2_lora_RollingAnticlockwise.ckpt": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/ComfyUI-AnimateDiff-Evolved/v2_lora_RollingAnticlockwise.ckpt.tar",
+      "dest": "ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/motion_lora"
+    },
+    "v2_lora_RollingClockwise.ckpt": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/ComfyUI-AnimateDiff-Evolved/v2_lora_RollingClockwise.ckpt.tar",
+      "dest": "ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/motion_lora"
+    },
+    "v2_lora_TiltDown.ckpt": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/ComfyUI-AnimateDiff-Evolved/v2_lora_TiltDown.ckpt.tar",
+      "dest": "ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/motion_lora"
+    },
+    "v2_lora_TiltUp.ckpt": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/ComfyUI-AnimateDiff-Evolved/v2_lora_TiltUp.ckpt.tar",
+      "dest": "ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/motion_lora"
+    },
+    "v2_lora_ZoomIn.ckpt": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/ComfyUI-AnimateDiff-Evolved/v2_lora_ZoomIn.ckpt.tar",
+      "dest": "ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/motion_lora"
+    },
+    "v2_lora_ZoomOut.ckpt": {
+      "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/ComfyUI-AnimateDiff-Evolved/v2_lora_ZoomOut.ckpt.tar",
+      "dest": "ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/motion_lora"
+    }
+  }
