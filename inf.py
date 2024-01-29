@@ -72,14 +72,10 @@ class ComfyRunner:
         if pid:
             psutil.Process(pid).terminate()
 
-    def queue_prompt(self, prompt, client_id):
-        p = {"prompt": prompt, "client_id": client_id}
-        data = json.dumps(p).encode('utf-8')
-        req =  urllib.request.Request(self.SERVER_URL + self.QUEUE_PROMPT_URL, data=data)
-        return json.loads(urllib.request.urlopen(req).read())
-
-    def get_output(self, ws, prompt, client_id, ext=None):
-        prompt_id = self.queue_prompt(prompt, client_id)['prompt_id']
+    def get_output(self, ws, prompt_path, client_id, ext=None):
+        with open(prompt_path, "r") as f:
+            prompt = json.loads(f.read())
+        prompt_id = self.comfy_api.queue_prompt(prompt, client_id)['prompt_id']
         
         # waiting for the execution to finish
         while True:
@@ -94,7 +90,7 @@ class ComfyRunner:
                 continue #previews are binary data
 
         # fetching results
-        history = self.get_history(prompt_id)[prompt_id]
+        history = self.comfy_api.get_history(prompt_id)[prompt_id]
         output_list = []
         for o in history['outputs']:
             for node_id in history['outputs']:
@@ -219,12 +215,12 @@ class ComfyRunner:
                         nodes_to_install.append(node)
                 else:
                     node = {
-                            'author': "", 
-                            'title': "", 
-                            'reference': git_url, 
-                            'files': [git_url], 
-                            'install_type': 'git-clone', 
-                            'description': "", 
+                            'author': "",
+                            'title': "",
+                            'reference': git_url,
+                            'files': [git_url],
+                            'install_type': 'git-clone',
+                            'description': "",
                             'installed': 'False'
                         }
                     nodes_to_install.append(node)
@@ -256,7 +252,7 @@ class ComfyRunner:
 
         return data
 
-    def predict(self, workflow_path, file_path_dict={}, extra_models_list=[], extra_node_urls=[], stop_sever_after_completion=False, output_ext=None):
+    def predict(self, workflow_path, file_path_list=[], extra_models_list=[], extra_node_urls=[], stop_sever_after_completion=False, output_ext=None):
         # TODO: add support for image and normal json files
         workflow = self.load_workflow(workflow_path)
         if not workflow:
@@ -303,22 +299,22 @@ class ComfyRunner:
                     print("---------------------------")
             return
 
-        if len(file_path_dict.keys()):
-            for filename, filepath in file_path_dict.items():
+        if len(file_path_list):
+            for filepath in file_path_list:
                 copy_files(filepath, "./ComfyUI/input/", overwrite=True)
 
-        # # get the result
-        # client_id = str(uuid.uuid4())
-        # ws = websocket.WebSocket()
-        # ws.connect("ws://{}/ws?clientId={}".format(self.server_address, client_id))
-        # output_list = self.get_output(ws, workflow_path, client_id, output_ext)
+        # get the result
+        client_id = str(uuid.uuid4())
+        ws = websocket.WebSocket()
+        print(SERVER_ADDR + ":" + str(APP_PORT))
+        ws.connect("ws://{}/ws?clientId={}".format("127.0.0.1:8188", client_id))
+        output_list = self.get_output(ws, workflow_path, client_id, output_ext)
 
-        # print("output: ", output_list)
+        print("output: ", output_list)
 
-        # # stopping the server
-        # self.copy_files("./ComfyUI/output", "./")
-        # if stop_sever_after_completion:
-        #     self.stop_server()
+        # stopping the server
+        output_list = copy_files("./ComfyUI/output", "./", overwrite=False, delete_original=True)
+        if stop_sever_after_completion:
+            self.stop_server()
         
-        # return output_list
-        return []
+        return output_list

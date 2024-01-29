@@ -78,3 +78,7 @@ class ComfyAPI(BaseAPI):
     
     def get_registered_nodes(self):
         return self.http_get(self.REGISTERED_NODE_LIST_URL)
+    
+    def queue_prompt(self, prompt, client_id):
+        p = {"prompt": prompt, "client_id": client_id}
+        return self.http_post(self.QUEUE_PROMPT_URL, data=p)

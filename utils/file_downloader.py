@@ -1,6 +1,8 @@
 import os
 
 import requests
+import tarfile
+import zipfile
 import json
 from tqdm import tqdm
 from constants import COMFY_MODEL_LIST_PATH
@@ -33,6 +35,7 @@ class FileDownloader:
                 os.remove(f"{dest}/{filename}")
 
         # download progress bar
+        app_logger.log(LoggingType.INFO, f"Downloading {filename}")
         response = requests.get(url, stream=True)
         total_size = int(response.headers.get('content-length', 0))
         progress_bar = tqdm(total=total_size, unit='B', unit_scale=True)
@@ -40,6 +43,19 @@ class FileDownloader:
             for data in tqdm(response.iter_content(chunk_size=1024)):
                 handle.write(data)
                 progress_bar.update(len(data))
+
+        # extract files if the downloaded file is a .zip or .tar
+        if url.endswith(".zip") or url.endswith(".tar"):
+            new_filename = filename + (".zip" if url.endswith(".zip") else ".tar")
+            os.rename(f"{dest}/{filename}", f"{dest}/{new_filename}")
+            if url.endswith(".zip"):
+                with zipfile.ZipFile(f"{dest}/{new_filename}", "r") as zip_ref:
+                    zip_ref.extractall(dest)
+            else:
+                with tarfile.open(f"{dest}/{new_filename}", "r") as tar_ref:
+                    tar_ref.extractall(dest)
+            # os.remove(f"{dest}/{new_filename}")
+
 
 class ModelDownloader(FileDownloader):
     def __init__(self, model_weights_file_path_list, download_similar_model=False):
@@ -90,7 +106,11 @@ class ModelDownloader(FileDownloader):
         if model_name in self.comfy_model_dict:
             for model in self.comfy_model_dict[model_name]:
                 if ((base and model['base'] == base) or not base):
-                    self.download_file(model['filename'], model['url'], "ComfyUI/models/" + model['save_path'])
+                    self.download_file(
+                        filename=model['filename'], 
+                        url=model['url'], 
+                        dest="ComfyUI/models/" + model['save_path']
+                    )
 
         elif model_name in self.model_download_dict:
             self.download_file(
