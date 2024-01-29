@@ -89,16 +89,14 @@ class ComfyRunner:
             else:
                 continue #previews are binary data
 
-        # fetching results
+        # fetching results (not is use rn)
         history = self.comfy_api.get_history(prompt_id)[prompt_id]
         output_list = []
-        for o in history['outputs']:
-            for node_id in history['outputs']:
-                node_output = history['outputs'][node_id]
-                
-                if 'gifs' in node_output:
-                    for gif in node_output['gifs']:
-                        output_list.append(gif['filename'])
+        for node_id in history['outputs']:
+            node_output = history['outputs'][node_id]
+            if 'gifs' in node_output:
+                for gif in node_output['gifs']:
+                    output_list.append(gif['filename'])
 
         return output_list
 
@@ -271,7 +269,8 @@ class ComfyRunner:
             os.chdir("../../")
         
         # installing requirements
-        subprocess.run(["pip", "install", "-r", "./ComfyUI/requirements.txt"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
+        app_logger.log(LoggingType.DEBUG, "Checking comfy requirements")
+        subprocess.run(["pip", "install", "-r", "./ComfyUI/requirements.txt"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
 
         # start the comfy server if not already running
         self.start_server()
@@ -308,13 +307,15 @@ class ComfyRunner:
         ws = websocket.WebSocket()
         print(SERVER_ADDR + ":" + str(APP_PORT))
         ws.connect("ws://{}/ws?clientId={}".format("127.0.0.1:8188", client_id))
-        output_list = self.get_output(ws, workflow_path, client_id, output_ext)
-
-        print("output: ", output_list)
+        node_output_list = self.get_output(ws, workflow_path, client_id, output_ext)
 
         # stopping the server
-        output_list = copy_files("./ComfyUI/output", "./", overwrite=False, delete_original=True)
+        output_list = copy_files("./ComfyUI/output", "./output", overwrite=False, delete_original=True)
         if stop_sever_after_completion:
             self.stop_server()
+
+        # TODO: implement a proper way to remove the log
+        if os.path.exists("comfyui.log"):
+            os.remove("comfyui.log")
         
         return output_list

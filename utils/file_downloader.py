@@ -16,6 +16,9 @@ class FileDownloader:
         pass
 
     def is_file_downloaded(self, filename, url, dest):
+        if url.endswith(".zip") or url.endswith(".tar"):
+            filename = filename + (".zip" if url.endswith(".zip") else ".tar")
+
         dest_path = f"{dest}/{filename}"
         app_logger.log(LoggingType.DEBUG, "checking file: ", dest_path)
         if os.path.exists(dest_path):
