@@ -227,7 +227,7 @@
   },
   "122": {
     "inputs": {
-      "video": "ppi_2 (1).mp4",
+      "video": "jb.mp4",
       "force_rate": 0,
       "force_size": "Disabled",
       "custom_width": 512,
@@ -560,7 +560,7 @@
   },
   "256": {
     "inputs": {
-      "image": "1.png",
+      "image": "qq.png",
       "upload": "image"
     },
     "class_type": "LoadImage",
@@ -621,7 +621,7 @@
   },
   "263": {
     "inputs": {
-      "image": "4d32b5c6-1c62-4f64-a093-f9bdd444f46b.webp",
+      "image": "qq.png",
       "upload": "image"
     },
     "class_type": "LoadImage",
@@ -646,7 +646,7 @@
   },
   "265": {
     "inputs": {
-      "image": "1 (1).png",
+      "image": "dd.png",
       "upload": "image"
     },
     "class_type": "LoadImage",
@@ -686,7 +686,7 @@
   },
   "268": {
     "inputs": {
-      "image": "v.jpeg",
+      "image": "dd.png",
       "upload": "image"
     },
     "class_type": "LoadImage",

@@ -32,7 +32,7 @@ class ComfyRunner:
                 "shell" : True,
             }
             # TODO: remove comfyUI output from the console
-            if DEBUG_LOG_ENABLED:
+            if not DEBUG_LOG_ENABLED:
                 kwargs["stdout"] = subprocess.DEVNULL
                 kwargs["stderr"] = subprocess.DEVNULL
 
@@ -189,7 +189,10 @@ class ComfyRunner:
     def download_custom_nodes(self, workflow, extra_node_urls) -> dict:
         # installing missing nodes
         missing_nodes = self.filter_missing_node(workflow)
+        if len(missing_nodes):
+            app_logger.log(LoggingType.INFO, f"Installing {len(missing_nodes)} custom nodes")
         for node in missing_nodes:
+            app_logger.log(LoggingType.DEBUG, f"Installing {node['title']}")
             if node['installed'] in ['False', False]:
                 status = self.comfy_api.install_custom_node(node)
                 if status != {}:
