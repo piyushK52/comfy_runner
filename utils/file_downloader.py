@@ -31,7 +31,7 @@ class FileDownloader:
         # checking if the file is already downloaded
         if self.is_file_downloaded(filename, url, dest):
             app_logger.log(LoggingType.DEBUG, f"{filename} already present")
-            return
+            return False
         else:
             # deleting partial downloads
             if os.path.exists(f"{dest}/{filename}"):
@@ -58,6 +58,8 @@ class FileDownloader:
                 with tarfile.open(f"{dest}/{new_filename}", "r") as tar_ref:
                     tar_ref.extractall(dest)
             # os.remove(f"{dest}/{new_filename}")
+                    
+        return True
 
 
 class ModelDownloader(FileDownloader):

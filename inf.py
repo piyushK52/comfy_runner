@@ -1,3 +1,4 @@
+import glob
 import json
 import os
 import time
@@ -148,6 +149,7 @@ class ComfyRunner:
         return ans
 
     def download_models(self, workflow, extra_models_list) -> dict:
+        models_downloaded = False
         self.model_downloader.load_comfy_models()
         models_to_download = []
         download_filetypes = [
@@ -176,17 +178,27 @@ class ComfyRunner:
                     'model': model,
                     'similar_models': similar_models
                 })
+            else:
+                models_downloaded = True
 
         for model in extra_models_list:
-            self.model_downloader.download_file(model["filename"], model["url"], model["dest"])
+            status = self.model_downloader.download_file(model["filename"], model["url"], model["dest"])
+            if status:
+                models_downloaded = True
+                for m in models_not_found:
+                    if m['model'] == model['filename']:
+                        models_not_found.remove(m)
+                        break
 
         return {
-            'data': models_not_found,
+            'data': {'models_not_found': models_not_found, 'models_downloaded': models_downloaded},
             'message': 'model(s) not found' if len(models_not_found) else '',
             'status': False if len(models_not_found) else True,
         }
     
     def download_custom_nodes(self, workflow, extra_node_urls) -> dict:
+        nodes_installed = False
+
         # installing missing nodes
         missing_nodes = self.filter_missing_node(workflow)
         if len(missing_nodes):
@@ -194,6 +206,7 @@ class ComfyRunner:
         for node in missing_nodes:
             app_logger.log(LoggingType.DEBUG, f"Installing {node['title']}")
             if node['installed'] in ['False', False]:
+                nodes_installed = True
                 status = self.comfy_api.install_custom_node(node)
                 if status != {}:
                     app_logger.log(LoggingType.ERROR, "Failed to install custom node ", node["title"])
@@ -227,12 +240,13 @@ class ComfyRunner:
                     nodes_to_install.append(node)
                 
                 for n in nodes_to_install:
+                    nodes_installed = True
                     status = self.comfy_api.install_custom_node(n)
                     if status != {}:
                         app_logger.log(LoggingType.ERROR, "Failed to install custom node ", n["title"])
 
         return {
-            'data': None,
+            'data': {'nodes_installed': nodes_installed},
             'message': '',
             'status': True
         }
@@ -279,18 +293,18 @@ class ComfyRunner:
         self.start_server()
 
         # download custom nodes
-        res = self.download_custom_nodes(workflow, extra_node_urls)
-        if not res['status']:
-            app_logger.log(LoggingType.ERROR, res['message'])
+        res_custom_nodes = self.download_custom_nodes(workflow, extra_node_urls)
+        if not res_custom_nodes['status']:
+            app_logger.log(LoggingType.ERROR, res_custom_nodes['message'])
             return
 
         # download models if not already present
-        res = self.download_models(workflow, extra_models_list)
-        if not res['status']:
-            app_logger.log(LoggingType.ERROR, res['message'])
-            if len(res['data']):
+        res_models = self.download_models(workflow, extra_models_list)
+        if not res_models['status']:
+            app_logger.log(LoggingType.ERROR, res_models['message'])
+            if len(res_models['data']['models_not_found']):
                 app_logger.log(LoggingType.INFO, "Please provide custom model urls for the models listed below or modify the workflow json to one of the alternative models listed")
-                for model in res['data']:
+                for model in res_models['data']:
                     print("Model: ", model['model'])
                     print("Alternatives: ")
                     if len(model['similar_models']):
@@ -300,6 +314,12 @@ class ComfyRunner:
                         print(" - None")
                     print("---------------------------")
             return
+        
+        # restart the server if custom nodes or models are installed
+        if res_custom_nodes['nodes_installed'] or res_models['models_downloaded']:
+            app_logger.log(LoggingType.INFO, "Restarting the server")
+            self.stop_server()
+            self.start_server()
 
         if len(file_path_list):
             for filepath in file_path_list:
@@ -318,7 +338,9 @@ class ComfyRunner:
             self.stop_server()
 
         # TODO: implement a proper way to remove the log
-        if os.path.exists("comfyui.log"):
-            os.remove("comfyui.log")
+        log_file_list = glob.glob("comfyui*.log")
+        for file in log_file_list:
+            if os.path.exists(file):
+                os.remove(file)
         
         return output_list
