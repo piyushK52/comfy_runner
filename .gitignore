@@ -14,5 +14,4 @@ venv
 # user
 ComfyUI/
 test.py
-main.py
 output/

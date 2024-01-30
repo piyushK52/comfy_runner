@@ -1,0 +1,745 @@
+{
+  "1": {
+    "inputs": {
+      "ckpt_name": "Realistic_Vision_V5.1.safetensors",
+      "beta_schedule": "sqrt_linear (AnimateDiff)",
+      "use_custom_scale_factor": false,
+      "scale_factor": 0.18215
+    },
+    "class_type": "CheckpointLoaderSimpleWithNoiseSelect",
+    "_meta": {
+      "title": "Load Checkpoint w/ Noise Select 🎭🅐🅓"
+    }
+  },
+  "2": {
+    "inputs": {
+      "vae_name": "vae-ft-mse-840000-ema-pruned.safetensors"
+    },
+    "class_type": "VAELoader",
+    "_meta": {
+      "title": "Load VAE"
+    }
+  },
+  "6": {
+    "inputs": {
+      "text": "(blurry), (Nipples:1.3) (nsfw, nude, naked:1.3), simplified, low resolution, face, smooth skin, mask, worst quality, low quality, text",
+      "clip": [
+        "1",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Prompt)"
+    }
+  },
+  "10": {
+    "inputs": {
+      "samples": [
+        "126",
+        0
+      ],
+      "vae": [
+        "2",
+        0
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE Decode"
+    }
+  },
+  "53": {
+    "inputs": {
+      "upscale_method": "nearest-exact",
+      "width": 512,
+      "height": 512,
+      "crop": "disabled",
+      "image": [
+        "122",
+        0
+      ]
+    },
+    "class_type": "ImageScale",
+    "_meta": {
+      "title": "Upscale Image"
+    }
+  },
+  "56": {
+    "inputs": {
+      "pixels": [
+        "53",
+        0
+      ],
+      "vae": [
+        "2",
+        0
+      ]
+    },
+    "class_type": "VAEEncode",
+    "_meta": {
+      "title": "VAE Encode"
+    }
+  },
+  "70": {
+    "inputs": {
+      "control_net_name": "control_v11p_sd15_lineart.pth"
+    },
+    "class_type": "ControlNetLoaderAdvanced",
+    "_meta": {
+      "title": "Load Advanced ControlNet Model 🛂🅐🅒🅝"
+    }
+  },
+  "71": {
+    "inputs": {
+      "coarse": "enable",
+      "resolution": 512,
+      "image": [
+        "53",
+        0
+      ]
+    },
+    "class_type": "LineArtPreprocessor",
+    "_meta": {
+      "title": "Realistic Lineart"
+    }
+  },
+  "93": {
+    "inputs": {
+      "model_name": "v3_sd15_mm.ckpt",
+      "beta_schedule": "sqrt_linear (AnimateDiff)",
+      "motion_scale": 1,
+      "apply_v2_models_properly": false,
+      "model": [
+        "262",
+        0
+      ],
+      "context_options": [
+        "94",
+        0
+      ]
+    },
+    "class_type": "ADE_AnimateDiffLoaderWithContext",
+    "_meta": {
+      "title": "AnimateDiff Loader 🎭🅐🅓"
+    }
+  },
+  "94": {
+    "inputs": {
+      "context_length": 16,
+      "context_stride": 1,
+      "context_overlap": 4,
+      "context_schedule": "uniform",
+      "closed_loop": false
+    },
+    "class_type": "ADE_AnimateDiffUniformContextOptions",
+    "_meta": {
+      "title": "Uniform Context Options 🎭🅐🅓"
+    }
+  },
+  "96": {
+    "inputs": {
+      "text": "\"0\": \"\",\n\n\"1300\": \"\"",
+      "max_frames": [
+        "122",
+        1
+      ],
+      "print_output": true,
+      "pre_text": [
+        "119",
+        0
+      ],
+      "app_text": [
+        "121",
+        0
+      ],
+      "start_frame": 0,
+      "pw_a": 0,
+      "pw_b": 0,
+      "pw_c": 0,
+      "pw_d": 0,
+      "clip": [
+        "1",
+        1
+      ]
+    },
+    "class_type": "BatchPromptSchedule",
+    "_meta": {
+      "title": "Batch Prompt Schedule 📅🅕🅝"
+    }
+  },
+  "100": {
+    "inputs": {
+      "strength": 0.45,
+      "start_percent": 0,
+      "end_percent": 0.5,
+      "control_net": [
+        "70",
+        0
+      ],
+      "image": [
+        "71",
+        0
+      ]
+    },
+    "class_type": "Control Net Stacker",
+    "_meta": {
+      "title": "Control Net Stacker"
+    }
+  },
+  "102": {
+    "inputs": {
+      "positive": [
+        "96",
+        0
+      ],
+      "negative": [
+        "6",
+        0
+      ],
+      "cnet_stack": [
+        "156",
+        0
+      ]
+    },
+    "class_type": "Apply ControlNet Stack",
+    "_meta": {
+      "title": "Apply ControlNet Stack"
+    }
+  },
+  "119": {
+    "inputs": {
+      "Text": "Sharp and consistent color scheme"
+    },
+    "class_type": "Text box",
+    "_meta": {
+      "title": "PRE TEXT"
+    }
+  },
+  "121": {
+    "inputs": {
+      "Text": "fantastic, masterpiece, cinematic lights, natural colors"
+    },
+    "class_type": "Text box",
+    "_meta": {
+      "title": "APP TEXT"
+    }
+  },
+  "122": {
+    "inputs": {
+      "video": "lab.mp4",
+      "force_rate": 0,
+      "force_size": "Disabled",
+      "custom_width": 512,
+      "custom_height": 512,
+      "frame_load_cap": 50,
+      "skip_first_frames": 0,
+      "select_every_nth": 1
+    },
+    "class_type": "VHS_LoadVideo",
+    "_meta": {
+      "title": "Load Video (Upload) 🎥🅥🅗🅢"
+    }
+  },
+  "125": {
+    "inputs": {
+      "frame_rate": 30,
+      "loop_count": 0,
+      "filename_prefix": "AnimateDiff",
+      "format": "video/h264-mp4",
+      "pix_fmt": "yuv420p",
+      "crf": 20,
+      "save_metadata": true,
+      "pingpong": false,
+      "save_output": true,
+      "images": [
+        "10",
+        0
+      ]
+    },
+    "class_type": "VHS_VideoCombine",
+    "_meta": {
+      "title": "LOW RES_Video Combine Ã°ÂÂÂ¥Ã°ÂÂÂ¥Ã°ÂÂÂÃ°ÂÂÂ¢"
+    }
+  },
+  "126": {
+    "inputs": {
+      "seed": 613052343382500,
+      "steps": 30,
+      "cfg": 7,
+      "sampler_name": "dpmpp_2m_sde",
+      "scheduler": "karras",
+      "denoise": 1,
+      "model": [
+        "191",
+        0
+      ],
+      "positive": [
+        "102",
+        0
+      ],
+      "negative": [
+        "102",
+        1
+      ],
+      "latent_image": [
+        "173",
+        0
+      ]
+    },
+    "class_type": "KSampler",
+    "_meta": {
+      "title": "KSampler"
+    }
+  },
+  "152": {
+    "inputs": {
+      "resolution": 512,
+      "image": [
+        "53",
+        0
+      ]
+    },
+    "class_type": "Zoe-DepthMapPreprocessor",
+    "_meta": {
+      "title": "Zoe Depth Map"
+    }
+  },
+  "153": {
+    "inputs": {
+      "control_net_name": "control_v11f1p_sd15_depth.pth"
+    },
+    "class_type": "ControlNetLoaderAdvanced",
+    "_meta": {
+      "title": "Load Advanced ControlNet Model 🛂🅐🅒🅝"
+    }
+  },
+  "156": {
+    "inputs": {
+      "strength": 0.4,
+      "start_percent": 0,
+      "end_percent": 0.85,
+      "control_net": [
+        "153",
+        0
+      ],
+      "image": [
+        "152",
+        0
+      ],
+      "cnet_stack": [
+        "100",
+        0
+      ]
+    },
+    "class_type": "Control Net Stacker",
+    "_meta": {
+      "title": "Control Net Stacker"
+    }
+  },
+  "160": {
+    "inputs": {
+      "frame_rate": 30,
+      "loop_count": 0,
+      "filename_prefix": "AnimateDiff",
+      "format": "video/h264-mp4",
+      "pix_fmt": "yuv420p",
+      "crf": 19,
+      "save_metadata": true,
+      "pingpong": false,
+      "save_output": true
+    },
+    "class_type": "VHS_VideoCombine",
+    "_meta": {
+      "title": "LATENT UPSCALE_Video Combine Ã°ÂÂÂ¥Ã°ÂÂÂ¥Ã°ÂÂÂÃ°ÂÂÂ¢"
+    }
+  },
+  "166": {
+    "inputs": {
+      "lora_name": null,
+      "strength": 0
+    },
+    "class_type": "ADE_AnimateDiffLoRALoader",
+    "_meta": {
+      "title": "AnimateDiff LoRA Loader 🎭🅐🅓"
+    }
+  },
+  "167": {
+    "inputs": {
+      "lora_name": null,
+      "strength": 0
+    },
+    "class_type": "ADE_AnimateDiffLoRALoader",
+    "_meta": {
+      "title": "AnimateDiff LoRA Loader 🎭🅐🅓"
+    }
+  },
+  "169": {
+    "inputs": {
+      "clip_name": "CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors"
+    },
+    "class_type": "CLIPVisionLoader",
+    "_meta": {
+      "title": "Load CLIP Vision"
+    }
+  },
+  "170": {
+    "inputs": {
+      "ipadapter_file": "ip-adapter-plus_sd15.safetensors"
+    },
+    "class_type": "IPAdapterModelLoader",
+    "_meta": {
+      "title": "Load IPAdapter Model"
+    }
+  },
+  "172": {
+    "inputs": {
+      "width": 512,
+      "height": 512,
+      "batch_size": [
+        "122",
+        1
+      ]
+    },
+    "class_type": "EmptyLatentImage",
+    "_meta": {
+      "title": "Empty Latent Image"
+    }
+  },
+  "173": {
+    "inputs": {
+      "blend_factor": 0.25,
+      "samples1": [
+        "56",
+        0
+      ],
+      "samples2": [
+        "172",
+        0
+      ]
+    },
+    "class_type": "LatentBlend",
+    "_meta": {
+      "title": "Latent Blend"
+    }
+  },
+  "178": {
+    "inputs": {
+      "control_net_name": "control_v11p_sd15_softedge.pth"
+    },
+    "class_type": "ControlNetLoaderAdvanced",
+    "_meta": {
+      "title": "Load Advanced ControlNet Model 🛂🅐🅒🅝"
+    }
+  },
+  "179": {
+    "inputs": {
+      "safe": "enable",
+      "resolution": 4352,
+      "image": [
+        "182",
+        0
+      ]
+    },
+    "class_type": "HEDPreprocessor",
+    "_meta": {
+      "title": "HED Lines"
+    }
+  },
+  "180": {
+    "inputs": {
+      "strength": 0.55,
+      "start_percent": 0,
+      "end_percent": 0.85,
+      "control_net": [
+        "178",
+        0
+      ],
+      "image": [
+        "179",
+        0
+      ],
+      "cnet_stack": [
+        "193",
+        0
+      ]
+    },
+    "class_type": "Control Net Stacker",
+    "_meta": {
+      "title": "Control Net Stacker"
+    }
+  },
+  "182": {
+    "inputs": {
+      "upscale_method": "nearest-exact",
+      "width": 4320,
+      "height": 8192,
+      "crop": "disabled",
+      "image": [
+        "122",
+        0
+      ]
+    },
+    "class_type": "ImageScale",
+    "_meta": {
+      "title": "Upscale Image"
+    }
+  },
+  "191": {
+    "inputs": {
+      "b1": 0.9500000000000001,
+      "b2": 1.2,
+      "s1": 0.9,
+      "s2": 1.1,
+      "model": [
+        "93",
+        0
+      ]
+    },
+    "class_type": "FreeU_V2",
+    "_meta": {
+      "title": "FreeU_V2"
+    }
+  },
+  "192": {
+    "inputs": {
+      "coarse": "enable",
+      "resolution": 4352,
+      "image": [
+        "182",
+        0
+      ]
+    },
+    "class_type": "LineArtPreprocessor",
+    "_meta": {
+      "title": "Realistic Lineart"
+    }
+  },
+  "193": {
+    "inputs": {
+      "strength": 0.35000000000000003,
+      "start_percent": 0,
+      "end_percent": 0.5,
+      "control_net": [
+        "194",
+        0
+      ],
+      "image": [
+        "192",
+        0
+      ]
+    },
+    "class_type": "Control Net Stacker",
+    "_meta": {
+      "title": "Control Net Stacker"
+    }
+  },
+  "194": {
+    "inputs": {
+      "control_net_name": "control_v11p_sd15_lineart.pth"
+    },
+    "class_type": "ControlNetLoaderAdvanced",
+    "_meta": {
+      "title": "Load Advanced ControlNet Model 🛂🅐🅒🅝"
+    }
+  },
+  "255": {
+    "inputs": {
+      "interpolation": "LANCZOS",
+      "crop_position": "center",
+      "sharpening": 0,
+      "image": [
+        "256",
+        0
+      ]
+    },
+    "class_type": "PrepImageForClipVision",
+    "_meta": {
+      "title": "Prepare Image For Clip Vision"
+    }
+  },
+  "256": {
+    "inputs": {
+      "image": "boy_sunshine.png",
+      "upload": "image"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "Load Image"
+    }
+  },
+  "261": {
+    "inputs": {
+      "ipadapter_plus": true,
+      "noise": 0,
+      "weight_1": 1,
+      "weight_2": 1,
+      "weight_3": 1,
+      "weight_4": 1,
+      "clip_vision": [
+        "169",
+        0
+      ],
+      "image_1": [
+        "255",
+        0
+      ],
+      "image_2": [
+        "264",
+        0
+      ]
+    },
+    "class_type": "IPAdapterEncoder",
+    "_meta": {
+      "title": "Encode IPAdapter Image"
+    }
+  },
+  "262": {
+    "inputs": {
+      "weight": 0.7000000000000001,
+      "weight_type": "original",
+      "start_at": 0,
+      "end_at": 1,
+      "unfold_batch": false,
+      "ipadapter": [
+        "170",
+        0
+      ],
+      "embeds": [
+        "261",
+        0
+      ],
+      "model": [
+        "1",
+        0
+      ]
+    },
+    "class_type": "IPAdapterApplyEncoded",
+    "_meta": {
+      "title": "Apply IPAdapter from Encoded"
+    }
+  },
+  "263": {
+    "inputs": {
+      "image": "boy_sunshine.png",
+      "upload": "image"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "Load Image"
+    }
+  },
+  "264": {
+    "inputs": {
+      "interpolation": "LANCZOS",
+      "crop_position": "top",
+      "sharpening": 0,
+      "image": [
+        "263",
+        0
+      ]
+    },
+    "class_type": "PrepImageForClipVision",
+    "_meta": {
+      "title": "Prepare Image For Clip Vision"
+    }
+  },
+  "265": {
+    "inputs": {
+      "image": "king_dark.png",
+      "upload": "image"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "Load Image"
+    }
+  },
+  "266": {
+    "inputs": {
+      "interpolation": "LANCZOS",
+      "crop_position": "pad",
+      "sharpening": 0,
+      "image": [
+        "265",
+        0
+      ]
+    },
+    "class_type": "PrepImageForClipVision",
+    "_meta": {
+      "title": "Prepare Image For Clip Vision"
+    }
+  },
+  "267": {
+    "inputs": {
+      "interpolation": "LANCZOS",
+      "crop_position": "top",
+      "sharpening": 0,
+      "image": [
+        "268",
+        0
+      ]
+    },
+    "class_type": "PrepImageForClipVision",
+    "_meta": {
+      "title": "Prepare Image For Clip Vision"
+    }
+  },
+  "268": {
+    "inputs": {
+      "image": "king_dark.png",
+      "upload": "image"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "Load Image"
+    }
+  },
+  "407": {
+    "inputs": {
+      "images": [
+        "264",
+        0
+      ]
+    },
+    "class_type": "PreviewImage",
+    "_meta": {
+      "title": "Preview Image"
+    }
+  },
+  "408": {
+    "inputs": {
+      "images": [
+        "255",
+        0
+      ]
+    },
+    "class_type": "PreviewImage",
+    "_meta": {
+      "title": "Preview Image"
+    }
+  },
+  "409": {
+    "inputs": {
+      "images": [
+        "266",
+        0
+      ]
+    },
+    "class_type": "PreviewImage",
+    "_meta": {
+      "title": "Preview Image"
+    }
+  },
+  "410": {
+    "inputs": {
+      "images": [
+        "267",
+        0
+      ]
+    },
+    "class_type": "PreviewImage",
+    "_meta": {
+      "title": "Preview Image"
+    }
+  }
+}

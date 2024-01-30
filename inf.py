@@ -4,7 +4,6 @@ import os
 import time
 import psutil
 import subprocess
-import urllib.request
 import re
 import websocket
 import uuid
@@ -12,7 +11,7 @@ from git import Repo
 from constants import APP_PORT, DEBUG_LOG_ENABLED, MODEL_DOWNLOAD_PATH_LIST, SERVER_ADDR
 from utils.comfy.api import ComfyAPI
 from utils.comfy.methods import ComfyMethod
-from utils.common import copy_files
+from utils.common import copy_files, find_process_by_port
 from utils.file_downloader import ModelDownloader
 from utils.logger import LoggingType, app_logger
 
@@ -21,8 +20,9 @@ class ComfyRunner:
         self.comfy_api = ComfyAPI(SERVER_ADDR, APP_PORT)
         self.model_downloader = ModelDownloader(MODEL_DOWNLOAD_PATH_LIST)
 
+    # TODO: create mixins for these kind of methods
     def is_server_running(self):
-        pid = self.find_process_by_port(APP_PORT)
+        pid = find_process_by_port(APP_PORT)
         return True if pid else False
             
     def start_server(self):
@@ -53,25 +53,16 @@ class ComfyRunner:
             except Exception as e:
                 raise Exception(f"Port {APP_PORT} blocked")
 
-    def find_process_by_port(self, port):
-        pid = None
-        for proc in psutil.process_iter(attrs=['pid', 'name', 'connections']):
-            try:
-                if proc and 'connections' in proc.info and proc.info['connections']:
-                    for conn in proc.info['connections']:
-                        if conn.status == psutil.CONN_LISTEN and conn.laddr.port == port:
-                            app_logger.log(LoggingType.DEBUG, f"Process {proc.info['pid']} (Port {port})")
-                            pid = proc.info['pid']
-                            break
-            except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
-                pass
-        
-        return pid
-
     def stop_server(self):
-        pid = self.find_process_by_port(APP_PORT)
+        pid = find_process_by_port(APP_PORT)
         if pid:
             psutil.Process(pid).terminate()
+
+    def clear_comfy_logs(self):
+        log_file_list = glob.glob("comfyui*.log")
+        for file in log_file_list:
+            if os.path.exists(file):
+                os.remove(file)
 
     def get_output(self, ws, prompt_path, client_id, ext=None):
         with open(prompt_path, "r") as f:
@@ -267,7 +258,7 @@ class ComfyRunner:
 
         return data
 
-    def predict(self, workflow_path, file_path_list=[], extra_models_list=[], extra_node_urls=[], stop_sever_after_completion=False, output_ext=None):
+    def predict(self, workflow_path, file_path_list=[], extra_models_list=[], extra_node_urls=[], stop_sever_after_completion=False, clear_comfy_logs=True):
         # TODO: add support for image and normal json files
         workflow = self.load_workflow(workflow_path)
         if not workflow:
@@ -304,7 +295,7 @@ class ComfyRunner:
             app_logger.log(LoggingType.ERROR, res_models['message'])
             if len(res_models['data']['models_not_found']):
                 app_logger.log(LoggingType.INFO, "Please provide custom model urls for the models listed below or modify the workflow json to one of the alternative models listed")
-                for model in res_models['data']:
+                for model in res_models['data']['models_not_found']:
                     print("Model: ", model['model'])
                     print("Alternatives: ")
                     if len(model['similar_models']):
@@ -316,7 +307,7 @@ class ComfyRunner:
             return
         
         # restart the server if custom nodes or models are installed
-        if res_custom_nodes['nodes_installed'] or res_models['models_downloaded']:
+        if res_custom_nodes['data']['nodes_installed'] or res_models['data']['models_downloaded']:
             app_logger.log(LoggingType.INFO, "Restarting the server")
             self.stop_server()
             self.start_server()
@@ -326,21 +317,21 @@ class ComfyRunner:
                 copy_files(filepath, "./ComfyUI/input/", overwrite=True)
 
         # get the result
+        app_logger.log(LoggingType.INFO, "Generating output please wait")
         client_id = str(uuid.uuid4())
         ws = websocket.WebSocket()
-        print(SERVER_ADDR + ":" + str(APP_PORT))
-        ws.connect("ws://{}/ws?clientId={}".format("127.0.0.1:8188", client_id))
-        node_output_list = self.get_output(ws, workflow_path, client_id, output_ext)
+        host = SERVER_ADDR + ":" + str(APP_PORT)
+        host = host.replace("http://", "").replace("https://", "")
+        ws.connect("ws://{}/ws?clientId={}".format(host, client_id))
+        node_output_list = self.get_output(ws, workflow_path, client_id, None)
 
         # stopping the server
         output_list = copy_files("./ComfyUI/output", "./output", overwrite=False, delete_original=True)
         if stop_sever_after_completion:
             self.stop_server()
 
-        # TODO: implement a proper way to remove the log
-        log_file_list = glob.glob("comfyui*.log")
-        for file in log_file_list:
-            if os.path.exists(file):
-                os.remove(file)
+        # TODO: implement a proper way to remove the logs
+        if clear_comfy_logs:
+            self.clear_comfy_logs()
         
         return output_list

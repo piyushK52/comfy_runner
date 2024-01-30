@@ -2,6 +2,11 @@ import requests
 from fuzzywuzzy import process
 import os
 import shutil
+import psutil
+
+from utils.logger import app_logger
+
+from utils.logger import LoggingType
 
 def get_file_size(url):
     response = requests.get(url, stream=True)
@@ -46,3 +51,18 @@ def copy_files(source_path, destination_path, overwrite=False, delete_original=F
             os.remove(source_path)
 
         return unique_name
+
+def find_process_by_port(port):
+        pid = None
+        for proc in psutil.process_iter(attrs=['pid', 'name', 'connections']):
+            try:
+                if proc and 'connections' in proc.info and proc.info['connections']:
+                    for conn in proc.info['connections']:
+                        if conn.status == psutil.CONN_LISTEN and conn.laddr.port == port:
+                            app_logger.log(LoggingType.DEBUG, f"Process {proc.info['pid']} (Port {port})")
+                            pid = proc.info['pid']
+                            break
+            except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+                pass
+        
+        return pid
