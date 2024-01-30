@@ -53,7 +53,7 @@ class ComfyAPI(BaseAPI):
         self.REGISTERED_NODE_LIST_URL = "/object_info"
         self.NODE_MAPPING_LIST_URL = "/customnode/getmappings"
         self.MODEL_LIST_URL = "/externalmodel/getlist"
-
+        self.CUSTOM_MODEL_URL = '/model/'
 
     def get_all_custom_node_list(self):
         return self.http_get(self.CUSTOM_NODE_LIST_URL + "?mode=local")
@@ -72,6 +72,9 @@ class ComfyAPI(BaseAPI):
 
     def install_custom_node(self, node):
         return self.http_post(self.CUSTOM_NODE_URL + "install", data=node)
+    
+    def install_custom_model(self, model):
+        return self.http_post(self.CUSTOM_MODEL_URL + "install", data=model)
     
     def get_node_mapping_list(self):
         return self.http_get(self.NODE_MAPPING_LIST_URL + "?mode=local")

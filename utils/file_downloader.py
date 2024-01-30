@@ -5,11 +5,11 @@ import tarfile
 import zipfile
 import json
 from tqdm import tqdm
-from constants import COMFY_MODEL_LIST_PATH
+from constants import APP_PORT, COMFY_MODEL_LIST_PATH, SERVER_ADDR
+from utils.comfy.api import ComfyAPI
 
 from utils.common import fuzzy_text_match, get_file_size
 from utils.logger import LoggingType, app_logger
-
 
 class FileDownloader:
     def __init__(self):
@@ -65,6 +65,7 @@ class ModelDownloader(FileDownloader):
         super().__init__()
         self.model_download_dict = self.comfy_model_dict = {}
         self.download_similar_model = download_similar_model
+        self.comfy_api = ComfyAPI(SERVER_ADDR, APP_PORT)
 
         # loading local data
         for model_weights_file_path in model_weights_file_path_list:
@@ -109,11 +110,8 @@ class ModelDownloader(FileDownloader):
         if model_name in self.comfy_model_dict:
             for model in self.comfy_model_dict[model_name]:
                 if ((base and model['base'] == base) or not base):
-                    self.download_file(
-                        filename=model['filename'], 
-                        url=model['url'], 
-                        dest="ComfyUI/models/" + model['save_path']
-                    )
+                    app_logger.log(LoggingType.INFO, f"Downloading {model['filename']}")
+                    self.comfy_api.install_custom_model(model)  # TODO: remove/streamline api dependency
 
         elif model_name in self.model_download_dict:
             self.download_file(
