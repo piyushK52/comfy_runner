@@ -66,3 +66,10 @@ def find_process_by_port(port):
                 pass
         
         return pid
+
+def find_file_in_directory(directory, target_file):
+    for root, dirs, files in os.walk(directory):
+        if target_file in files:
+            return os.path.join(root, target_file)
+
+    return None

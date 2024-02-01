@@ -5,7 +5,7 @@ import tarfile
 import zipfile
 import json
 from tqdm import tqdm
-from constants import APP_PORT, COMFY_MODEL_LIST_PATH, SERVER_ADDR
+from constants import APP_PORT, COMFY_MODEL_PATH_LIST, SERVER_ADDR
 from utils.comfy.api import ComfyAPI
 
 from utils.common import fuzzy_text_match, get_file_size
@@ -94,16 +94,21 @@ class ModelDownloader(FileDownloader):
         return similar_models
 
     def load_comfy_models(self):
-        with open(COMFY_MODEL_LIST_PATH, 'rb') as file:
-            model_list = json.load(file)["models"]
-            
-        # loading comfy data
         self.comfy_model_dict = {}
-        for model in model_list:
-            if model['filename'] not in self.comfy_model_dict:
-                self.comfy_model_dict[model['filename']] = [model]
-            else:
-                self.comfy_model_dict[model['filename']].append(model)
+        for model_list_path in COMFY_MODEL_PATH_LIST:
+            if not os.path.exists(model_list_path):
+                app_logger.log(LoggingType.DEBUG, f"model list path not found - {model_list_path}")
+                continue
+
+            with open(model_list_path, 'rb') as file:
+                model_list = json.load(file)["models"]
+                
+            # loading comfy data
+            for model in model_list:
+                if model['filename'] not in self.comfy_model_dict:
+                    self.comfy_model_dict[model['filename']] = [model]
+                else:
+                    self.comfy_model_dict[model['filename']].append(model)
 
     def download_model(self, model_name):
         # handling nomenclature like "SD1.5/pytorch_model.bin"

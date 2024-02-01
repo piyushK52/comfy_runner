@@ -2,12 +2,12 @@ from inf import ComfyRunner
 
 runner = ComfyRunner()
 runner.predict(
-    workflow_path="examples/vid2vid/workflow_api.json",
+    workflow_path="examples/steerable_motion/workflow_api.json",
     file_path_list=[
-        "./examples/vid2vid/lab.mp4",
         "./examples/vid2vid/boy_sunshine.png",
         "./examples/vid2vid/king_dark.png"
-    ]
+    ],
+    stop_server_after_completion=True
 )
 
 # vid2vid sample
