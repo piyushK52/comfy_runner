@@ -7,3 +7,4 @@ colorlog==6.8.2
 psutil==5.9.8
 requests==2.31.0
 tqdm==4.66.1
+onnxruntime-gpu

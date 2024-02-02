@@ -1,0 +1,25 @@
+{
+    "models": [
+      {
+        "name": "CLIPVision model (IP-Adapter) 1.5",
+        "type": "clip_vision",
+        "base": "SD1.5",
+        "save_path": "clip_vision/SD1.5",
+        "description": "[2.5GB] CLIPVision model (needed for IP-Adapter)",
+        "reference": "https://huggingface.co/h94/IP-Adapter",
+        "filename": "pytorch_model.bin",
+        "url": "https://huggingface.co/h94/IP-Adapter/resolve/main/models/image_encoder/pytorch_model.bin"
+      },
+      {
+        "name": "CLIPVision model (IP-Adapter) XL",
+        "type": "clip_vision",
+        "base": "SDXL",
+        "save_path": "clip_vision/SDXL",
+        "description": "[3.69GB] CLIPVision model (needed for IP-Adapter)",
+        "reference": "https://huggingface.co/h94/IP-Adapter",
+        "filename": "pytorch_model.bin",
+        "url": "https://huggingface.co/h94/IP-Adapter/resolve/main/sdxl_models/image_encoder/pytorch_model.bin"
+      }
+    ]
+  }
+  

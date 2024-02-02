@@ -8,10 +8,10 @@ import re
 import websocket
 import uuid
 from git import Repo
-from constants import APP_PORT, DEBUG_LOG_ENABLED, MODEL_DOWNLOAD_PATH_LIST, SERVER_ADDR
+from constants import APP_PORT, DEBUG_LOG_ENABLED, MODEL_DOWNLOAD_PATH_LIST, MODEL_FILETYPES, OPTIONAL_MODELS, SERVER_ADDR
 from utils.comfy.api import ComfyAPI
 from utils.comfy.methods import ComfyMethod
-from utils.common import copy_files, find_process_by_port
+from utils.common import clear_directory, copy_files, find_file_in_directory, find_process_by_port
 from utils.file_downloader import ModelDownloader
 from utils.logger import LoggingType, app_logger
 
@@ -64,9 +64,7 @@ class ComfyRunner:
             if os.path.exists(file):
                 os.remove(file)
 
-    def get_output(self, ws, prompt_path, client_id, ext=None):
-        with open(prompt_path, "r") as f:
-            prompt = json.loads(f.read())
+    def get_output(self, ws, prompt, client_id, ext=None):
         prompt_id = self.comfy_api.queue_prompt(prompt, client_id)['prompt_id']
         
         # waiting for the execution to finish
@@ -86,6 +84,7 @@ class ComfyRunner:
         output_list = []
         for node_id in history['outputs']:
             node_output = history['outputs'][node_id]
+            # print("node_output: ", node_output)
             if 'gifs' in node_output:
                 for gif in node_output['gifs']:
                     output_list.append(gif['filename'])
@@ -143,22 +142,13 @@ class ComfyRunner:
         models_downloaded = False
         self.model_downloader.load_comfy_models()
         models_to_download = []
-        download_filetypes = [
-            ".ckpt",
-            ".safetensors",
-            ".pt",
-            ".pth",
-            ".bin",
-            ".onnx",
-            ".torchscript",
-        ]
 
         for node in workflow:
             if "inputs" in workflow[node]:
                 for input in workflow[node]["inputs"].values():
                     if isinstance(input, str) and any(
-                        input.endswith(ft) for ft in download_filetypes
-                    ):
+                        input.endswith(ft) for ft in MODEL_FILETYPES
+                    ) and not any(input.endswith(m) for m in OPTIONAL_MODELS):
                         models_to_download.append(input)
 
         models_not_found = []
@@ -258,76 +248,100 @@ class ComfyRunner:
 
         return data
 
-    def predict(self, workflow_path, file_path_list=[], extra_models_list=[], extra_node_urls=[], stop_sever_after_completion=False, clear_comfy_logs=True):
-        # TODO: add support for image and normal json files
-        workflow = self.load_workflow(workflow_path)
-        if not workflow:
-            app_logger.log(LoggingType.ERROR, "Invalid workflow file")
-            return
+    def predict(self, workflow_path, file_path_list=[], extra_models_list=[], extra_node_urls=[], stop_server_after_completion=False, clear_comfy_logs=True):
+        output_list = []
+        try:    
+            # TODO: add support for image and normal json files
+            workflow = self.load_workflow(workflow_path)
+            if not workflow:
+                app_logger.log(LoggingType.ERROR, "Invalid workflow file")
+                return
 
-        # cloning comfy repo
-        app_logger.log(LoggingType.DEBUG, "cloning comfy repo")
-        comfy_repo_url = "https://github.com/comfyanonymous/ComfyUI"
-        comfy_manager_url = "https://github.com/ltdrdata/ComfyUI-Manager"
-        if not os.path.exists("ComfyUI"):
-            Repo.clone_from(comfy_repo_url, "ComfyUI")
-        if not os.path.exists("./ComfyUI/custom_nodes/ComfyUI-Manager"):
-            os.chdir("./ComfyUI/custom_nodes/")
-            Repo.clone_from(comfy_manager_url, "ComfyUI-Manager")
-            os.chdir("../../")
-        
-        # installing requirements
-        app_logger.log(LoggingType.DEBUG, "Checking comfy requirements")
-        subprocess.run(["pip", "install", "-r", "./ComfyUI/requirements.txt"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
+            # cloning comfy repo
+            app_logger.log(LoggingType.DEBUG, "cloning comfy repo")
+            comfy_repo_url = "https://github.com/comfyanonymous/ComfyUI"
+            comfy_manager_url = "https://github.com/ltdrdata/ComfyUI-Manager"
+            if not os.path.exists("ComfyUI"):
+                Repo.clone_from(comfy_repo_url, "ComfyUI")
+            if not os.path.exists("./ComfyUI/custom_nodes/ComfyUI-Manager"):
+                os.chdir("./ComfyUI/custom_nodes/")
+                Repo.clone_from(comfy_manager_url, "ComfyUI-Manager")
+                os.chdir("../../")
+            
+            # installing requirements
+            app_logger.log(LoggingType.DEBUG, "Checking comfy requirements")
+            subprocess.run(["pip", "install", "-r", "./ComfyUI/requirements.txt"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
 
-        # start the comfy server if not already running
-        self.start_server()
-
-        # download custom nodes
-        res_custom_nodes = self.download_custom_nodes(workflow, extra_node_urls)
-        if not res_custom_nodes['status']:
-            app_logger.log(LoggingType.ERROR, res_custom_nodes['message'])
-            return
-
-        # download models if not already present
-        res_models = self.download_models(workflow, extra_models_list)
-        if not res_models['status']:
-            app_logger.log(LoggingType.ERROR, res_models['message'])
-            if len(res_models['data']['models_not_found']):
-                app_logger.log(LoggingType.INFO, "Please provide custom model urls for the models listed below or modify the workflow json to one of the alternative models listed")
-                for model in res_models['data']['models_not_found']:
-                    print("Model: ", model['model'])
-                    print("Alternatives: ")
-                    if len(model['similar_models']):
-                        for alternative in model['similar_models']:
-                            print(" - ", alternative)
-                    else:
-                        print(" - None")
-                    print("---------------------------")
-            return
-        
-        # restart the server if custom nodes or models are installed
-        if res_custom_nodes['data']['nodes_installed'] or res_models['data']['models_downloaded']:
-            app_logger.log(LoggingType.INFO, "Restarting the server")
-            self.stop_server()
+            # start the comfy server if not already running
             self.start_server()
 
-        if len(file_path_list):
-            for filepath in file_path_list:
-                copy_files(filepath, "./ComfyUI/input/", overwrite=True)
+            # download custom nodes
+            res_custom_nodes = self.download_custom_nodes(workflow, extra_node_urls)
+            if not res_custom_nodes['status']:
+                app_logger.log(LoggingType.ERROR, res_custom_nodes['message'])
+                return
 
-        # get the result
-        app_logger.log(LoggingType.INFO, "Generating output please wait")
-        client_id = str(uuid.uuid4())
-        ws = websocket.WebSocket()
-        host = SERVER_ADDR + ":" + str(APP_PORT)
-        host = host.replace("http://", "").replace("https://", "")
-        ws.connect("ws://{}/ws?clientId={}".format(host, client_id))
-        node_output_list = self.get_output(ws, workflow_path, client_id, None)
+            # download models if not already present
+            res_models = self.download_models(workflow, extra_models_list)
+            if not res_models['status']:
+                app_logger.log(LoggingType.ERROR, res_models['message'])
+                if len(res_models['data']['models_not_found']):
+                    app_logger.log(LoggingType.INFO, "Please provide custom model urls for the models listed below or modify the workflow json to one of the alternative models listed")
+                    for model in res_models['data']['models_not_found']:
+                        print("Model: ", model['model'])
+                        print("Alternatives: ")
+                        if len(model['similar_models']):
+                            for alternative in model['similar_models']:
+                                print(" - ", alternative)
+                        else:
+                            print(" - None")
+                        print("---------------------------")
+                return
+            
+            # restart the server if custom nodes or models are installed
+            if res_custom_nodes['data']['nodes_installed'] or res_models['data']['models_downloaded']:
+                app_logger.log(LoggingType.INFO, "Restarting the server")
+                self.stop_server()
+                self.start_server()
 
+            if len(file_path_list):
+                clear_directory("./ComfyUI/input")
+                for filepath in file_path_list:
+                    copy_files(filepath, "./ComfyUI/input/", overwrite=True)
+
+            # checkpoints, lora, default etc..
+            comfy_directory = "./ComfyUI/models/"
+            comfy_model_folders = [folder for folder in os.listdir(comfy_directory) if os.path.isdir(os.path.join(comfy_directory, folder))]
+            # update model paths e.g. 'v3_sd15_sparsectrl_rgb.ckpt' --> 'SD1.5/animatediff/v3_sd15_sparsectrl_rgb.ckpt'
+            for node in workflow:
+                if "inputs" in workflow[node]:
+                    for key, input in workflow[node]["inputs"].items():
+                        if isinstance(input, str) and any(
+                            input.endswith(ft) for ft in MODEL_FILETYPES
+                        ) and not any(input.endswith(m) for m in OPTIONAL_MODELS):
+                            model_path = find_file_in_directory(comfy_directory, input)
+                            if model_path:
+                                model_path = model_path.replace(comfy_directory, "")
+                                if any(model_path.startswith(folder) for folder in comfy_model_folders):
+                                    model_path = model_path.split('/', 1)[-1]
+                                app_logger.log(LoggingType.DEBUG, f"Updating {input} to {model_path}")
+                                workflow[node]["inputs"][key] = model_path
+
+            # get the result
+            app_logger.log(LoggingType.INFO, "Generating output please wait")
+            client_id = str(uuid.uuid4())
+            ws = websocket.WebSocket()
+            host = SERVER_ADDR + ":" + str(APP_PORT)
+            host = host.replace("http://", "").replace("https://", "")
+            ws.connect("ws://{}/ws?clientId={}".format(host, client_id))
+            _ = self.get_output(ws, workflow, client_id, None)
+            output_list = copy_files("./ComfyUI/output", "./output", overwrite=False, delete_original=True)
+            clear_directory("./ComfyUI/output")
+        except Exception as e:
+            app_logger.log(LoggingType.INFO, "Error generating output " + str(e))
+        
         # stopping the server
-        output_list = copy_files("./ComfyUI/output", "./output", overwrite=False, delete_original=True)
-        if stop_sever_after_completion:
+        if stop_server_after_completion:
             self.stop_server()
 
         # TODO: implement a proper way to remove the logs

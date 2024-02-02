@@ -32,8 +32,9 @@ def copy_files(source_path, destination_path, overwrite=False, delete_original=F
     if os.path.isdir(source_path):
         res = []
         for file in os.listdir(source_path):
-            if not os.path.isdir(os.path.join(source_path, file)) and not is_ignored_file(file):
+            if not is_ignored_file(file):   # not os.path.isdir(os.path.join(source_path, file)) and 
                 res.append(copy_files(os.path.join(source_path, file), destination_path, overwrite, delete_original))
+
         return res
     else:
         if not overwrite and os.path.exists(destination_file):
@@ -66,3 +67,18 @@ def find_process_by_port(port):
                 pass
         
         return pid
+
+def find_file_in_directory(directory, target_file):
+    for root, dirs, files in os.walk(directory):
+        if target_file in files:
+            return os.path.join(root, target_file)
+
+    return None
+
+def clear_directory(directory):
+    for item in os.listdir(directory):
+        item_path = os.path.join(directory, item)
+        if os.path.isfile(item_path):
+            os.remove(item_path)
+        elif os.path.isdir(item_path):
+            shutil.rmtree(item_path)

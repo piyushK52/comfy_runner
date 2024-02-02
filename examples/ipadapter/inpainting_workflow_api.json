@@ -1,0 +1,157 @@
+{
+    "9": {
+      "inputs": {
+        "text": "in a bathroom, watercolour",
+        "clip": [
+          "19",
+          1
+        ]
+      },
+      "class_type": "CLIPTextEncode",
+      "_meta": {
+        "title": "CLIP Text Encode (Prompt)"
+      }
+    },
+    "10": {
+      "inputs": {
+        "text": "text, watermark",
+        "clip": [
+          "19",
+          1
+        ]
+      },
+      "class_type": "CLIPTextEncode",
+      "_meta": {
+        "title": "CLIP Text Encode (Prompt)"
+      }
+    },
+    "14": {
+      "inputs": {
+        "samples": [
+          "40",
+          0
+        ],
+        "vae": [
+          "19",
+          2
+        ]
+      },
+      "class_type": "VAEDecode",
+      "_meta": {
+        "title": "VAE Decode"
+      }
+    },
+    "19": {
+      "inputs": {
+        "ckpt_name": "sd_xl_base_1.0.safetensors"
+      },
+      "class_type": "CheckpointLoaderSimple",
+      "_meta": {
+        "title": "Load Checkpoint"
+      }
+    },
+    "28": {
+      "inputs": {
+        "images": [
+          "14",
+          0
+        ]
+      },
+      "class_type": "PreviewImage",
+      "_meta": {
+        "title": "Preview Image"
+      }
+    },
+    "33": {
+      "inputs": {
+        "image": "boy_sunshine.png",
+        "upload": "image"
+      },
+      "class_type": "LoadImage",
+      "_meta": {
+        "title": "Load Image"
+      }
+    },
+    "35": {
+      "inputs": {
+        "head": "fooocus_inpaint_head.pth",
+        "patch": "inpaint_v26.fooocus.patch"
+      },
+      "class_type": "INPAINT_LoadFooocusInpaint",
+      "_meta": {
+        "title": "Load Fooocus Inpaint"
+      }
+    },
+    "36": {
+      "inputs": {
+        "model": [
+          "19",
+          0
+        ],
+        "patch": [
+          "35",
+          0
+        ],
+        "latent": [
+          "38",
+          0
+        ]
+      },
+      "class_type": "INPAINT_ApplyFooocusInpaint",
+      "_meta": {
+        "title": "Apply Fooocus Inpaint"
+      }
+    },
+    "38": {
+      "inputs": {
+        "grow_mask_by": 8,
+        "pixels": [
+          "33",
+          0
+        ],
+        "vae": [
+          "19",
+          2
+        ],
+        "mask": [
+          "33",
+          1
+        ]
+      },
+      "class_type": "VAEEncodeForInpaint",
+      "_meta": {
+        "title": "VAE Encode (for Inpainting)"
+      }
+    },
+    "40": {
+      "inputs": {
+        "seed": 923431948001916,
+        "steps": 24,
+        "cfg": 5,
+        "sampler_name": "dpmpp_2m_sde_gpu",
+        "scheduler": "karras",
+        "denoise": 1,
+        "model": [
+          "36",
+          0
+        ],
+        "positive": [
+          "9",
+          0
+        ],
+        "negative": [
+          "10",
+          0
+        ],
+        "latent_image": [
+          "38",
+          0
+        ]
+      },
+      "class_type": "KSampler",
+      "_meta": {
+        "title": "KSampler"
+      }
+    }
+  }
+  
