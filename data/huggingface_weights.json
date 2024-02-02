@@ -1,0 +1,18 @@
+{
+    "fooocus_inpaint_head.pth": {
+        "url": "https://huggingface.co/lllyasviel/fooocus_inpaint/resolve/main/fooocus_inpaint_head.pth?download=true",
+        "dest": "ComfyUI/models/inpaint"
+    },
+    "inpaint_v26.fooocus.patch": {
+        "url": "https://huggingface.co/lllyasviel/fooocus_inpaint/resolve/main/inpaint_v26.fooocus.patch?download=true",
+        "dest": "ComfyUI/models/inpaint"
+    },
+    "inpaint_v25.fooocus.patch": {
+        "url": "https://huggingface.co/lllyasviel/fooocus_inpaint/resolve/main/inpaint_v25.fooocus.patch?download=true",
+        "dest": "ComfyUI/models/inpaint"
+    },
+    "inpaint.fooocus.patch": {
+        "url": "https://huggingface.co/lllyasviel/fooocus_inpaint/resolve/main/inpaint.fooocus.patch?download=true",
+        "dest": "ComfyUI/models/inpaint"
+    }
+}

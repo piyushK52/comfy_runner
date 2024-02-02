@@ -31,7 +31,7 @@ class FileDownloader:
         # checking if the file is already downloaded
         if self.is_file_downloaded(filename, url, dest):
             app_logger.log(LoggingType.DEBUG, f"{filename} already present")
-            return False
+            return True
         else:
             # deleting partial downloads
             if os.path.exists(f"{dest}/{filename}"):

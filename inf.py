@@ -11,7 +11,7 @@ from git import Repo
 from constants import APP_PORT, DEBUG_LOG_ENABLED, MODEL_DOWNLOAD_PATH_LIST, MODEL_FILETYPES, OPTIONAL_MODELS, SERVER_ADDR
 from utils.comfy.api import ComfyAPI
 from utils.comfy.methods import ComfyMethod
-from utils.common import copy_files, find_file_in_directory, find_process_by_port
+from utils.common import clear_directory, copy_files, find_file_in_directory, find_process_by_port
 from utils.file_downloader import ModelDownloader
 from utils.logger import LoggingType, app_logger
 
@@ -84,6 +84,7 @@ class ComfyRunner:
         output_list = []
         for node_id in history['outputs']:
             node_output = history['outputs'][node_id]
+            # print("node_output: ", node_output)
             if 'gifs' in node_output:
                 for gif in node_output['gifs']:
                     output_list.append(gif['filename'])
@@ -334,7 +335,7 @@ class ComfyRunner:
             ws.connect("ws://{}/ws?clientId={}".format(host, client_id))
             _ = self.get_output(ws, workflow, client_id, None)
             output_list = copy_files("./ComfyUI/output", "./output", overwrite=False, delete_original=True)
-
+            clear_directory("./ComfyUI/output")
         except Exception as e:
             app_logger.log(LoggingType.INFO, "Error generating output " + str(e))
         
