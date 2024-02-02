@@ -305,6 +305,7 @@ class ComfyRunner:
                 self.start_server()
 
             if len(file_path_list):
+                clear_directory("./ComfyUI/input")
                 for filepath in file_path_list:
                     copy_files(filepath, "./ComfyUI/input/", overwrite=True)
 
