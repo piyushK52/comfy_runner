@@ -1,0 +1,1 @@
+cog predict -i workflow_json=@examples/txt2img/workflow_api.json -i file_list=@only_images.zip

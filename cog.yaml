@@ -1,0 +1,66 @@
+build:
+  # set to true if your model requires a GPU
+  gpu: true
+
+  system_packages:
+    - ffmpeg
+
+  python_version: "3.10.6"
+  python_packages:
+    - torch
+    - torchsde
+    - einops
+    - transformers>=4.25.1
+    - safetensors>=0.3.0
+    - aiohttp
+    - accelerate
+    - pyyaml
+    - Pillow
+    - scipy
+    - tqdm
+    - numexpr==2.8.7
+    - opencv-python
+    - pandas
+    - psutil
+    - torchvision
+    - torchaudio
+    - cupy-cuda11x==13.0.0
+    - simpleeval
+    - websocket-client==1.6.3
+    - numba==0.58.1
+    - imageio==2.33.1
+    - imageio-ffmpeg==0.4.9
+    - matplotlib==3.8.2
+    - insightface==0.7.3
+    - lpips==0.1.4
+    - onnxruntime-gpu
+    - importlib_metadata
+    - ftfy
+    - addict
+    - yacs
+    - trimesh[easy]
+    - clip-interrogator
+    - ffmpy
+    - img2texture
+    - mediapipe
+    - tornado
+    - xformers==0.0.23
+    - Werkzeug
+    - nest-asyncio
+    - omegaconf
+    - prompt-toolkit
+    - Pygments
+    - PyMatting
+    - stack-data
+    - gitdb==4.0.11
+    - GitPython
+    - fuzzywuzzy==0.18.0
+    - python-Levenshtein
+    - colorlog==6.8.2
+    - psutil==5.9.8
+    - requests==2.31.0
+    - tqdm==4.66.1
+
+
+# predict.py defines how predictions are run on your model
+predict: "predict.py:Predictor"
