@@ -13,7 +13,7 @@ class Predictor(BasePredictor):
     def setup(self):
         self.comfy_runner = ComfyRunner()
 
-    def _copy_files_in_AD_repo(self, *args, **kwargs):
+    def _copy_files(self, *args, **kwargs):
         current_directory = os.getcwd()
         print("Current Working Directory:", current_directory)
         files = os.listdir(current_directory)
@@ -40,6 +40,15 @@ class Predictor(BasePredictor):
         
         return res
 
+    def flatten_list(self, lst):
+        flattened = []
+        for item in lst:
+            if isinstance(item, list):
+                flattened.extend(self.flatten_list(item))
+            else:
+                flattened.append(item)
+        return flattened
+
     def predict(
         self,
         workflow_json: Path = Input(description="workflow API json"), 
@@ -57,6 +66,7 @@ class Predictor(BasePredictor):
 
         extracted_dir = os.path.dirname(file_list)
         extracted_file_paths = []
+        unique_folder_path = "replicate_temp_input_" + str(uuid.uuid4())
         with zipfile.ZipFile(file_list, 'r') as zip_ref:
             for file_info in zip_ref.infolist():
                 if not file_info.is_dir():
@@ -65,7 +75,8 @@ class Predictor(BasePredictor):
                         extracted_file_paths.append(os.path.join(extracted_dir, file_info.filename))
         
         # copy img inside comfy
-        filename_list = self._copy_files_in_AD_repo(*extracted_file_paths)
+        filename_list = self._copy_files(*extracted_file_paths, loc=unique_folder_path)
+        filename_list = [ unique_folder_path + "/" + f for f in filename_list]
         extra_models_list = ast.literal_eval(extra_models_list)
         extra_node_urls = ast.literal_eval(extra_node_urls)
 
@@ -74,8 +85,10 @@ class Predictor(BasePredictor):
             file_path_list=filename_list,
             extra_models_list=extra_models_list,
             extra_node_urls=extra_node_urls,
-            stop_server_after_completion=stop_server_after_completion,
+            stop_server_after_completion=False,
             clear_comfy_logs=clear_comfy_logs
         )
 
-        return [Path(file) for file in output_list]
+        shutil.rmtree(unique_folder_path)
+
+        return [Path("./output/" + file) for file in self.flatten_list(output_list)]

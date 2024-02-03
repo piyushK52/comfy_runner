@@ -1,1 +1,1 @@
-cog predict -i workflow_json=@examples/txt2img/workflow_api.json -i file_list=@only_images.zip
+cog predict -i workflow_json=@examples/vid2vid/workflow_api.json -i file_list=@all.zip -i extra_models_list='[{"filename": "artUniverse_v80.safetensors","url": "https://civitai.com/api/download/models/158155","dest": "ComfyUI/models/checkpoints"}]'
