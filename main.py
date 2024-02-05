@@ -2,7 +2,7 @@ from inf import ComfyRunner
 
 runner = ComfyRunner()
 output = runner.predict(
-    workflow_path="output/workflows/sdxl_workflow_api.json",
+    workflow_input="./examples/txt2img/sdxl_workflow_api.json",
     file_path_list=[
         "./examples/vid2vid/boy_sunshine.png",
         "./examples/vid2vid/king_dark.png"

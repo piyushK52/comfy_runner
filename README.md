@@ -37,12 +37,12 @@ from inf import ComfyRunner
 
 runner = ComfyRunner()
 runner.predict(
-    workflow_path="examples/img2img/i2i_workflow_api.json",
-    stop_sever_after_completion=True
+    workflow_input="examples/img2img/i2i_workflow_api.json",
+    stop_server_after_completion=True
 )
 ```
 
-If you are running multiple queries then you can use ```stop_sever_after_completion=False``` and after completion manually stop the server using ```runner.stop_server()``` 
+If you are running multiple queries then you can use ```stop_server_after_completion=False``` and after completion manually stop the server using ```runner.stop_server()``` 
 
 ## Roadmap
 
