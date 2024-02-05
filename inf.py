@@ -8,12 +8,14 @@ import re
 import websocket
 import uuid
 from git import Repo
-from constants import APP_PORT, DEBUG_LOG_ENABLED, MODEL_DOWNLOAD_PATH_LIST, MODEL_FILETYPES, OPTIONAL_MODELS, SERVER_ADDR
+from constants import APP_PORT, DEBUG_LOG_ENABLED, MODEL_DOWNLOAD_PATH_LIST, MODEL_FILETYPES, \
+    OPTIONAL_MODELS, SERVER_ADDR
 from utils.comfy.api import ComfyAPI
 from utils.comfy.methods import ComfyMethod
 from utils.common import clear_directory, copy_files, find_file_in_directory, find_process_by_port
 from utils.file_downloader import ModelDownloader
 from utils.logger import LoggingType, app_logger
+
 
 class ComfyRunner:
     def __init__(self):
@@ -24,7 +26,7 @@ class ComfyRunner:
     def is_server_running(self):
         pid = find_process_by_port(APP_PORT)
         return True if pid else False
-            
+
     def start_server(self):
         # checking if comfy is already running
         if not self.is_server_running():
@@ -42,7 +44,7 @@ class ComfyRunner:
             # waiting for server to start accepting requests
             while not self.is_server_running():
                 time.sleep(0.5)
-            
+
             app_logger.log(LoggingType.DEBUG, "comfy server is running")
         else:
             try:
@@ -64,9 +66,9 @@ class ComfyRunner:
             if os.path.exists(file):
                 os.remove(file)
 
-    def get_output(self, ws, prompt, client_id, ext=None):
+    def get_output(self, ws, prompt, client_id, output_node_ids):
         prompt_id = self.comfy_api.queue_prompt(prompt, client_id)['prompt_id']
-        
+
         # waiting for the execution to finish
         while True:
             out = ws.recv()
@@ -79,15 +81,20 @@ class ComfyRunner:
             else:
                 continue #previews are binary data
 
-        # fetching results (not is use rn)
+        # fetching results
         history = self.comfy_api.get_history(prompt_id)[prompt_id]
-        output_list = []
+        output_list = {'file_list': [], 'text_output': []}
         for node_id in history['outputs']:
-            node_output = history['outputs'][node_id]
-            # print("node_output: ", node_output)
-            if 'gifs' in node_output:
-                for gif in node_output['gifs']:
-                    output_list.append(gif['filename'])
+            if ((output_node_ids and len(output_node_ids) and int(node_id) in output_node_ids) or not output_node_ids):
+                node_output = history['outputs'][node_id]
+                print("node_output: ", node_output)
+                if 'gifs' in node_output:
+                    for gif in node_output['gifs']:
+                        output_list['file_list'].append(gif['filename'])
+                
+                if 'text' in node_output:
+                    for txt in node_output['text']:
+                        output_list['text_output'].append(txt)
 
         return output_list
 
@@ -232,27 +239,25 @@ class ComfyRunner:
             'status': True
         }
 
-    def load_workflow(self, workflow_path):
-        if not os.path.exists(workflow_path):
-            return None
+    def load_workflow(self, workflow_input):
+        if os.path.exists(workflow_input):
+            try:
+                with open(workflow_input, 'r') as file:
+                    workflow_input = json.load(file)
 
-        try:
-            with open(workflow_path, 'r') as file:
-                data = json.load(file)
-
-            if not ComfyMethod.is_api_json(data):
+            except Exception as e:
+                app_logger.log(LoggingType.ERROR, "Exception: ", str(e))
                 return None
-        except Exception as e:
-            app_logger.log(LoggingType.ERROR, "Exception: ", str(e))
-            return None   
+        else:
+            workflow_input = json.loads(workflow_input)
 
-        return data
+        return workflow_input if ComfyMethod.is_api_json(workflow_input) else None
 
-    def predict(self, workflow_path, file_path_list=[], extra_models_list=[], extra_node_urls=[], stop_server_after_completion=False, clear_comfy_logs=True):
-        output_list = []
+    def predict(self, workflow_input, file_path_list=[], extra_models_list=[], extra_node_urls=[], stop_server_after_completion=False, clear_comfy_logs=True, output_folder="./output", output_node_ids=None):
+        output_list = {}
         try:    
             # TODO: add support for image and normal json files
-            workflow = self.load_workflow(workflow_path)
+            workflow = self.load_workflow(workflow_input)
             if not workflow:
                 app_logger.log(LoggingType.ERROR, "Invalid workflow file")
                 return
@@ -269,7 +274,7 @@ class ComfyRunner:
                 os.chdir("../../")
             
             # installing requirements
-            app_logger.log(LoggingType.DEBUG, "Checking comfy requirements")
+            app_logger.log(LoggingType.DEBUG, "Checking comfy requirements, please wait...")
             subprocess.run(["pip", "install", "-r", "./ComfyUI/requirements.txt"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
 
             # start the comfy server if not already running
@@ -334,9 +339,14 @@ class ComfyRunner:
             host = SERVER_ADDR + ":" + str(APP_PORT)
             host = host.replace("http://", "").replace("https://", "")
             ws.connect("ws://{}/ws?clientId={}".format(host, client_id))
-            _ = self.get_output(ws, workflow, client_id, None)
-            output_list = copy_files("./ComfyUI/output", "./output", overwrite=False, delete_original=True)
+            node_output = self.get_output(ws, workflow, client_id, output_node_ids)
+            output_list = copy_files("./ComfyUI/output", output_folder, overwrite=False, delete_original=True)
             clear_directory("./ComfyUI/output")
+
+            output_list = {
+                'file_paths': output_list,
+                'text_output': node_output['text_output']
+            }
         except Exception as e:
             app_logger.log(LoggingType.INFO, "Error generating output " + str(e))
         
@@ -347,5 +357,5 @@ class ComfyRunner:
         # TODO: implement a proper way to remove the logs
         if clear_comfy_logs:
             self.clear_comfy_logs()
-        
+
         return output_list

@@ -14,5 +14,33 @@
     "inpaint.fooocus.patch": {
         "url": "https://huggingface.co/lllyasviel/fooocus_inpaint/resolve/main/inpaint.fooocus.patch?download=true",
         "dest": "ComfyUI/models/inpaint"
+    },
+    "llama-2-7b.Q5_0.gguf": {
+        "url": "https://huggingface.co/TheBloke/Llama-2-7B-GGUF/resolve/main/llama-2-7b.Q5_0.gguf?download=true",
+        "dest": "ComfyUI/custom_nodes/ComfyUI-Llama/models/"
+    },
+    "canny_diffusion_pytorch_model.safetensors": {
+        "url": "https://huggingface.co/diffusers/controlnet-canny-sdxl-1.0/resolve/main/diffusion_pytorch_model.safetensors?download=true",
+        "dest": "ComfyUI/models/controlnet/canny_diffusion_pytorch_model.safetensors"
+    },
+    "canny_diffusion_pytorch_model.16.safetensors": {
+        "url": "https://huggingface.co/diffusers/controlnet-canny-sdxl-1.0/resolve/main/diffusion_pytorch_model.16.safetensors?download=true",
+        "dest": "ComfyUI/models/controlnet/canny_diffusion_pytorch_model.16.safetensors"
+    },
+    "canny_diffusion_pytorch_model.f16.bin": {
+        "url": "https://huggingface.co/diffusers/controlnet-canny-sdxl-1.0/resolve/main/diffusion_pytorch_model.f16.bin?download=true",
+        "dest": "ComfyUI/models/controlnet/canny_diffusion_pytorch_model.f16.bin"
+    },
+    "canny_diffusion_pytorch_model.bin": {
+        "url": "https://huggingface.co/diffusers/controlnet-canny-sdxl-1.0/resolve/main/diffusion_pytorch_model.bin?download=true",
+        "dest": "ComfyUI/models/controlnet/canny_diffusion_pytorch_model.bin"
+    },
+    "inpainting_diffusion_pytorch_model.fp16.safetensors": {
+        "url": "https://huggingface.co/diffusers/stable-diffusion-xl-1.0-inpainting-0.1/resolve/main/unet/diffusion_pytorch_model.fp16.safetensors?download=true",
+        "dest": "ComfyUI/models/unet/inpainting_diffusion_pytorch_model.fp16.safetensors"
+    },
+    "inpainting_diffusion_pytorch_model.safetensors": {
+        "url": "https://huggingface.co/diffusers/stable-diffusion-xl-1.0-inpainting-0.1/resolve/main/unet/diffusion_pytorch_model.safetensors?download=true",
+        "dest": "ComfyUI/models/unet/inpainting_diffusion_pytorch_model.safetensors"
     }
 }

@@ -18,5 +18,7 @@ MODEL_FILETYPES = [
     ".bin",
     ".onnx",
     ".torchscript",
-    ".patch"
+    ".patch",
+    ".gguf",
+    ".ggml"
 ]
