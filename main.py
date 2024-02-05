@@ -1,8 +1,8 @@
 from inf import ComfyRunner
 
 runner = ComfyRunner()
-runner.predict(
-    workflow_path="examples/test.json",
+output = runner.predict(
+    workflow_path="output/workflows/sdxl_workflow_api.json",
     file_path_list=[
         "./examples/vid2vid/boy_sunshine.png",
         "./examples/vid2vid/king_dark.png"
@@ -14,8 +14,11 @@ runner.predict(
             "dest": "ComfyUI/models/checkpoints"
         }
     ],
-    stop_server_after_completion=True
+    stop_server_after_completion=True,
+    output_node_ids=[19]
 )
+
+print("final output: ", output)
 
 # ***************** EXAMPLES ******************
 

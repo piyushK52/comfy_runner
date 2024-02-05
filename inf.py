@@ -64,7 +64,7 @@ class ComfyRunner:
             if os.path.exists(file):
                 os.remove(file)
 
-    def get_output(self, ws, prompt, client_id, ext=None):
+    def get_output(self, ws, prompt, client_id, output_node_ids):
         prompt_id = self.comfy_api.queue_prompt(prompt, client_id)['prompt_id']
         
         # waiting for the execution to finish
@@ -79,15 +79,20 @@ class ComfyRunner:
             else:
                 continue #previews are binary data
 
-        # fetching results (not is use rn)
+        # fetching results
         history = self.comfy_api.get_history(prompt_id)[prompt_id]
-        output_list = []
+        output_list = {'file_list': [], 'text_output': []}
         for node_id in history['outputs']:
-            node_output = history['outputs'][node_id]
-            # print("node_output: ", node_output)
-            if 'gifs' in node_output:
-                for gif in node_output['gifs']:
-                    output_list.append(gif['filename'])
+            if ((output_node_ids and len(output_node_ids) and int(node_id) in output_node_ids) or not output_node_ids):
+                node_output = history['outputs'][node_id]
+                print("node_output: ", node_output)
+                if 'gifs' in node_output:
+                    for gif in node_output['gifs']:
+                        output_list['file_list'].append(gif['filename'])
+                
+                if 'text' in node_output:
+                    for txt in node_output['text']:
+                        output_list['text_output'].append(txt)
 
         return output_list
 
@@ -248,8 +253,8 @@ class ComfyRunner:
 
         return data
 
-    def predict(self, workflow_path, file_path_list=[], extra_models_list=[], extra_node_urls=[], stop_server_after_completion=False, clear_comfy_logs=True):
-        output_list = []
+    def predict(self, workflow_path, file_path_list=[], extra_models_list=[], extra_node_urls=[], stop_server_after_completion=False, clear_comfy_logs=True, output_node_ids=None):
+        output_list = {}
         try:    
             # TODO: add support for image and normal json files
             workflow = self.load_workflow(workflow_path)
@@ -269,7 +274,7 @@ class ComfyRunner:
                 os.chdir("../../")
             
             # installing requirements
-            app_logger.log(LoggingType.DEBUG, "Checking comfy requirements")
+            app_logger.log(LoggingType.DEBUG, "Checking comfy requirements, please wait...")
             subprocess.run(["pip", "install", "-r", "./ComfyUI/requirements.txt"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
 
             # start the comfy server if not already running
@@ -334,9 +339,14 @@ class ComfyRunner:
             host = SERVER_ADDR + ":" + str(APP_PORT)
             host = host.replace("http://", "").replace("https://", "")
             ws.connect("ws://{}/ws?clientId={}".format(host, client_id))
-            _ = self.get_output(ws, workflow, client_id, None)
+            node_output = self.get_output(ws, workflow, client_id, output_node_ids)
             output_list = copy_files("./ComfyUI/output", "./output", overwrite=False, delete_original=True)
             clear_directory("./ComfyUI/output")
+
+            output_list = {
+                'file_paths': output_list,
+                'text_output': node_output['text_output']
+            }
         except Exception as e:
             app_logger.log(LoggingType.INFO, "Error generating output " + str(e))
         
