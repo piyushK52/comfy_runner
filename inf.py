@@ -58,7 +58,9 @@ class ComfyRunner:
     def stop_server(self):
         pid = find_process_by_port(APP_PORT)
         if pid:
-            psutil.Process(pid).terminate()
+            process = psutil.Process(pid)
+            process.terminate()
+            process.wait()
 
     def clear_comfy_logs(self):
         log_file_list = glob.glob("comfyui*.log")
