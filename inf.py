@@ -98,6 +98,10 @@ class ComfyRunner:
                     for txt in node_output['text']:
                         output_list['text_output'].append(txt)
 
+                if 'images' in node_output:
+                    for img in node_output['images']:
+                        output_list["file_list"].append(img['filename'])
+
         return output_list
 
     def filter_missing_node(self, workflow):
@@ -342,7 +346,15 @@ class ComfyRunner:
             host = host.replace("http://", "").replace("https://", "")
             ws.connect("ws://{}/ws?clientId={}".format(host, client_id))
             node_output = self.get_output(ws, workflow, client_id, output_node_ids)
-            output_list = copy_files("./ComfyUI/output", output_folder, overwrite=False, delete_original=True)
+            output_list = []
+            for file in node_output['file_list']:
+                path = find_file_in_directory("./ComfyUI/output", file)
+                # some intermediary temp files are deleted at this point
+                if path:
+                    output_list.append(copy_files(path, output_folder, overwrite=False, delete_original=True))
+            print("node output: ", node_output)
+            print("output_list: ", output_list)
+            app_logger.log(LoggingType.DEBUG, f"output file list len: {len(output_list)}")
             clear_directory("./ComfyUI/output")
 
             output_list = {
