@@ -8,13 +8,13 @@ import re
 import websocket
 import uuid
 from git import Repo
-from constants import APP_PORT, DEBUG_LOG_ENABLED, MODEL_DOWNLOAD_PATH_LIST, MODEL_FILETYPES, \
+from .constants import APP_PORT, DEBUG_LOG_ENABLED, MODEL_DOWNLOAD_PATH_LIST, MODEL_FILETYPES, \
     OPTIONAL_MODELS, SERVER_ADDR
-from utils.comfy.api import ComfyAPI
-from utils.comfy.methods import ComfyMethod
-from utils.common import clear_directory, copy_files, find_file_in_directory, find_process_by_port
-from utils.file_downloader import ModelDownloader
-from utils.logger import LoggingType, app_logger
+from .utils.comfy.api import ComfyAPI
+from .utils.comfy.methods import ComfyMethod
+from .utils.common import clear_directory, copy_files, find_file_in_directory, find_process_by_port
+from .utils.file_downloader import ModelDownloader
+from .utils.logger import LoggingType, app_logger
 
 
 class ComfyRunner:
@@ -352,8 +352,8 @@ class ComfyRunner:
                 # some intermediary temp files are deleted at this point
                 if path:
                     output_list.append(copy_files(path, output_folder, overwrite=False, delete_original=True))
-            print("node output: ", node_output)
-            print("output_list: ", output_list)
+            # print("node output: ", node_output)
+            # print("output_list: ", output_list)
             app_logger.log(LoggingType.DEBUG, f"output file list len: {len(output_list)}")
             clear_directory("./ComfyUI/output")
 

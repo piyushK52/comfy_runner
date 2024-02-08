@@ -1,4 +1,4 @@
-from inf import ComfyRunner
+from .inf import ComfyRunner
 
 runner = ComfyRunner()
 output = runner.predict(

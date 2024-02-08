@@ -4,9 +4,9 @@ import os
 import shutil
 import psutil
 
-from utils.logger import app_logger
+from .logger import app_logger
 
-from utils.logger import LoggingType
+from .logger import LoggingType
 
 def get_file_size(url):
     response = requests.get(url, stream=True)
@@ -82,3 +82,11 @@ def clear_directory(directory):
             os.remove(item_path)
         elif os.path.isdir(item_path):
             shutil.rmtree(item_path)
+
+# recursively moves up directories till it finds the .git file (root of the repo)
+def find_git_root(path):
+    if '.git' in os.listdir(path):
+        return path
+    
+    parent_path = os.path.abspath(os.path.join(path, os.pardir))
+    return find_git_root(parent_path)

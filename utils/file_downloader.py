@@ -5,11 +5,11 @@ import tarfile
 import zipfile
 import json
 from tqdm import tqdm
-from constants import APP_PORT, COMFY_MODEL_PATH_LIST, SERVER_ADDR
-from utils.comfy.api import ComfyAPI
+from ..constants import APP_PORT, COMFY_MODEL_PATH_LIST, SERVER_ADDR
+from .comfy.api import ComfyAPI
 
-from utils.common import fuzzy_text_match, get_file_size
-from utils.logger import LoggingType, app_logger
+from .common import find_git_root, fuzzy_text_match, get_file_size
+from .logger import LoggingType, app_logger
 
 class FileDownloader:
     def __init__(self):
@@ -71,7 +71,10 @@ class ModelDownloader(FileDownloader):
 
         # loading local data
         for model_weights_file_path in model_weights_file_path_list:
-            with open(model_weights_file_path, 'r') as file:
+            current_dir = find_git_root(os.path.dirname(__file__))      # finding root
+            file_path = os.path.abspath(os.path.join(current_dir, model_weights_file_path))
+            # print("------- opening file path: ", file_path)
+            with open(file_path, 'r') as file:
                 data = json.load(file)
                 for model_name in data:
                     # weight files with lower index have preference
@@ -96,6 +99,8 @@ class ModelDownloader(FileDownloader):
     def load_comfy_models(self):
         self.comfy_model_dict = {}
         for model_list_path in COMFY_MODEL_PATH_LIST:
+            current_dir = find_git_root(os.path.dirname(__file__))      # finding root
+            model_list_path = os.path.abspath(os.path.join(current_dir, model_list_path))
             if not os.path.exists(model_list_path):
                 app_logger.log(LoggingType.DEBUG, f"model list path not found - {model_list_path}")
                 continue

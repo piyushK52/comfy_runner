@@ -2,7 +2,7 @@ from enum import Enum
 import logging
 import colorlog
 
-from constants import DEBUG_LOG_ENABLED
+from ..constants import DEBUG_LOG_ENABLED
 
 class LoggingType(Enum):
     DEBUG = 'debug'
