@@ -86,8 +86,9 @@ class ComfyRunner:
         # fetching results
         history = self.comfy_api.get_history(prompt_id)[prompt_id]
         output_list = {'file_list': [], 'text_output': []}
+        output_node_ids = [str(id) for id in output_node_ids]
         for node_id in history['outputs']:
-            if ((output_node_ids and len(output_node_ids) and int(node_id) in output_node_ids) or not output_node_ids):
+            if ((output_node_ids and len(output_node_ids) and node_id in output_node_ids) or not output_node_ids):
                 node_output = history['outputs'][node_id]
                 print("node_output: ", node_output)
                 if 'gifs' in node_output:
