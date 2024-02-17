@@ -13,8 +13,9 @@ from .constants import APP_PORT, DEBUG_LOG_ENABLED, MODEL_DOWNLOAD_PATH_LIST, MO
 from .utils.comfy.api import ComfyAPI
 from .utils.comfy.methods import ComfyMethod
 from .utils.common import clear_directory, copy_files, find_file_in_directory, find_process_by_port
-from .utils.file_downloader import ModelDownloader
+from .utils.file_downloader import FileStatus, ModelDownloader
 from .utils.logger import LoggingType, app_logger
+
 
 
 class ComfyRunner:
@@ -86,7 +87,7 @@ class ComfyRunner:
         # fetching results
         history = self.comfy_api.get_history(prompt_id)[prompt_id]
         output_list = {'file_list': [], 'text_output': []}
-        output_node_ids = [str(id) for id in output_node_ids]
+        output_node_ids = [str(id) for id in output_node_ids] if output_node_ids else []
         for node_id in history['outputs']:
             if ((output_node_ids and len(output_node_ids) and node_id in output_node_ids) or not output_node_ids):
                 node_output = history['outputs'][node_id]
@@ -167,13 +168,13 @@ class ComfyRunner:
 
         models_not_found = []
         for model in models_to_download:
-            status, similar_models = self.model_downloader.download_model(model)
+            status, similar_models, file_status = self.model_downloader.download_model(model)
             if not status:
                 models_not_found.append({
                     'model': model,
                     'similar_models': similar_models
                 })
-            else:
+            elif file_status == FileStatus.NEW_DOWNLOAD.value:
                 models_downloaded = True
 
         for model in extra_models_list:

@@ -2,20 +2,12 @@ from .inf import ComfyRunner
 
 runner = ComfyRunner()
 output = runner.predict(
-    workflow_input="./examples/txt2img/sdxl_workflow_api.json",
+    workflow_input="examples/steerable_motion/workflow_api.json",
     file_path_list=[
         "./examples/vid2vid/boy_sunshine.png",
         "./examples/vid2vid/king_dark.png"
     ],
-    extra_models_list=[
-        {
-            "filename": "artUniverse_v80.safetensors",
-            "url": "https://civitai.com/api/download/models/158155",
-            "dest": "ComfyUI/models/checkpoints"
-        }
-    ],
-    stop_server_after_completion=True,
-    output_node_ids=[19]
+    stop_server_after_completion=True
 )
 
 print("final output: ", output)
@@ -34,7 +26,7 @@ print("final output: ", output)
 
 # -- vid2vid sample
 # runner.predict(
-#     workflow_path="examples/vid2vid/workflow_api.json",
+#     workflow_input="examples/vid2vid/workflow_api.json",
 #     file_path_list=[
 #         "./examples/vid2vid/lab.mp4",
 #         "./examples/vid2vid/boy_sunshine.png",
@@ -45,7 +37,7 @@ print("final output: ", output)
 
 # -- sample params
 # runner.predict(
-#     workflow_path="examples/img2img/i2i_workflow_api.json",
+#     workflow_input="examples/img2img/i2i_workflow_api.json",
 #     extra_models_list=[
 #         {
 #             "filename": "mod_sdxl.safetensors",
