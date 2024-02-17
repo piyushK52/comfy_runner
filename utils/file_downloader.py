@@ -1,3 +1,4 @@
+from enum import Enum
 import os
 
 import requests
@@ -10,6 +11,11 @@ from utils.comfy.api import ComfyAPI
 
 from utils.common import fuzzy_text_match, get_file_size
 from utils.logger import LoggingType, app_logger
+
+class FileStatus(Enum):
+    NEW_DOWNLOAD = 'new_download'
+    ALREADY_PRESENT = 'already_present'
+    UNAVAILABLE = 'unavailable'
 
 class FileDownloader:
     def __init__(self):
@@ -25,13 +31,25 @@ class FileDownloader:
             return os.path.getsize(dest_path) == get_file_size(url)
         return False
 
+    # hackish sol for checking if a file is already downloaded by the comfy manager
+    # possible issues 
+    # 1. a different file of same name can be present in some other directory
+    # 2. file may be corrupted
+    def search_file(self, filename, directory):
+        for root, dirs, files in os.walk(directory):
+            for file in files:
+                if file == filename:
+                    return True
+
+        return False
+
     def download_file(self, filename, url, dest):
         os.makedirs(dest, exist_ok=True)
 
         # checking if the file is already downloaded
         if self.is_file_downloaded(filename, url, dest):
             app_logger.log(LoggingType.DEBUG, f"{filename} already present")
-            return True
+            return True, FileStatus.ALREADY_PRESENT.value
         else:
             # deleting partial downloads
             if os.path.exists(f"{dest}/{filename}"):
@@ -59,7 +77,7 @@ class FileDownloader:
                     tar_ref.extractall(dest)
             # os.remove(f"{dest}/{new_filename}")
                     
-        return True
+        return True, FileStatus.NEW_DOWNLOAD.value
 
 
 class ModelDownloader(FileDownloader):
@@ -113,15 +131,17 @@ class ModelDownloader(FileDownloader):
     def download_model(self, model_name):
         # handling nomenclature like "SD1.5/pytorch_model.bin"
         base, model_name = model_name.split("/") if "/" in model_name else ("", model_name)
+        file_status = FileStatus.NEW_DOWNLOAD.value
 
         if model_name in self.comfy_model_dict:
             for model in self.comfy_model_dict[model_name]:
                 if ((base and model['base'] == base) or not base):
                     app_logger.log(LoggingType.INFO, f"Downloading {model['filename']}")
+                    file_status = FileStatus.ALREADY_PRESENT.value if self.search_file(model['filename'], 'ComfyUI') else FileStatus.NEW_DOWNLOAD.value
                     self.comfy_api.install_custom_model(model)  # TODO: remove/streamline api dependency
 
         elif model_name in self.model_download_dict:
-            self.download_file(
+            _, file_status = self.download_file(
                 filename=model_name,
                 url=self.model_download_dict[model_name]['url'],
                 dest=self.model_download_dict[model_name]['dest']
@@ -133,7 +153,7 @@ class ModelDownloader(FileDownloader):
             if self.download_similar_model and len(similar_models):
                 pass
             else:
-                return (False, similar_models)
+                return (False, similar_models, FileStatus.UNAVAILABLE.value)
             
-        return (True, [])
+        return (True, [], file_status)
     
