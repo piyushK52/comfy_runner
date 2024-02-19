@@ -375,6 +375,8 @@ class ComfyRunner:
                         if isinstance(input, str) and any(
                             input.endswith(ft) for ft in MODEL_FILETYPES
                         ) and not any(input.endswith(m) for m in OPTIONAL_MODELS):
+                            if "/" in input:
+                                input = input.split("/")[-1]
                             model_path = find_file_in_directory(comfy_directory, input)
                             if model_path:
                                 model_path = model_path.replace(comfy_directory, "")
