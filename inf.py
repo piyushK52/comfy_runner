@@ -2,6 +2,7 @@ import glob
 import json
 import os
 import time
+import traceback
 import psutil
 import subprocess
 import re
@@ -86,7 +87,7 @@ class ComfyRunner:
         # fetching results
         history = self.comfy_api.get_history(prompt_id)[prompt_id]
         output_list = {'file_list': [], 'text_output': []}
-        output_node_ids = [str(id) for id in output_node_ids]
+        output_node_ids = [str(id) for id in output_node_ids] if output_node_ids else []
         for node_id in history['outputs']:
             if ((output_node_ids and len(output_node_ids) and node_id in output_node_ids) or not output_node_ids):
                 node_output = history['outputs'][node_id]
@@ -152,7 +153,7 @@ class ComfyRunner:
         # print("********* missing nodes found: ", ans)
         return ans
 
-    def download_models(self, workflow, extra_models_list) -> dict:
+    def download_models(self, workflow, extra_models_list, ignore_model_list = []) -> dict:
         models_downloaded = False
         self.model_downloader.load_comfy_models()
         models_to_download = []
@@ -165,7 +166,27 @@ class ComfyRunner:
                     ) and not any(input.endswith(m) for m in OPTIONAL_MODELS):
                         models_to_download.append(input)
 
+        # filtering ignored models
+        m_l = []
+        ignored_models_found = []
+        ignored_model_names_map = {m['filename']:m for m in ignore_model_list}
+        for m in models_to_download:
+            if m in ignored_model_names_map:
+                ignored_models_found.append(ignored_model_names_map[m])
+            else:
+                m_l.append(m)
+        models_to_download = m_l
+        
         models_not_found = []
+        for m in ignored_models_found:
+            if 'filepath' in m and m['filepath'] and not os.path.exists(m['filepath']):
+                models_not_found.append({
+                    'model': m['filename'],
+                    'similar_models': []
+                })
+            else:
+                app_logger.log(LoggingType.DEBUG, f"Ignoring model {m['filename']}")
+        
         for model in models_to_download:
             status, similar_models, file_status = self.model_downloader.download_model(model)
             if not status:
@@ -176,6 +197,7 @@ class ComfyRunner:
             elif file_status == FileStatus.NEW_DOWNLOAD.value:
                 models_downloaded = True
 
+        # downloading extra models
         for model in extra_models_list:
             status = self.model_downloader.download_file(model["filename"], model["url"], model["dest"])
             if status:
@@ -260,7 +282,29 @@ class ComfyRunner:
 
         return workflow_input if ComfyMethod.is_api_json(workflow_input) else None
 
-    def predict(self, workflow_input, file_path_list=[], extra_models_list=[], extra_node_urls=[], stop_server_after_completion=False, clear_comfy_logs=True, output_folder="./output", output_node_ids=None):
+    def predict(
+            self, 
+            workflow_input, 
+            file_path_list=[], 
+            extra_models_list=[], 
+            extra_node_urls=[], 
+            stop_server_after_completion=False, 
+            clear_comfy_logs=True, 
+            output_folder="./output", 
+            output_node_ids=None,
+            ignore_model_list=[]
+        ):
+        '''
+        workflow_input:                 API json of the workflow. Can be a filepath or str
+        file_path_list:                 files to copy inside the '/input' folder which are being used in the workflow
+        extra_models_list:              extra models to be downloaded
+        extra_node_urls:                extra nodes to be downloaded
+        stop_server_after_completion:   stop server as soon as inference completes (or fails)
+        clear_comfy_logs:               clears the temp comfy logs after every inference
+        output_folder:                  for storing inference output
+        output_node_ids:                nodes to look in for the output
+        ignore_model_list:                  these models won't be downloaded (in cases where these are manually placed)
+        '''
         output_list = {}
         try:    
             # TODO: add support for image and normal json files
@@ -294,7 +338,7 @@ class ComfyRunner:
                 return
 
             # download models if not already present
-            res_models = self.download_models(workflow, extra_models_list)
+            res_models = self.download_models(workflow, extra_models_list, ignore_model_list)
             if not res_models['status']:
                 app_logger.log(LoggingType.ERROR, res_models['message'])
                 if len(res_models['data']['models_not_found']):
