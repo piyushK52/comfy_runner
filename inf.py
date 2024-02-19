@@ -91,7 +91,6 @@ class ComfyRunner:
         for node_id in history['outputs']:
             if ((output_node_ids and len(output_node_ids) and node_id in output_node_ids) or not output_node_ids):
                 node_output = history['outputs'][node_id]
-                print("node_output: ", node_output)
                 if 'gifs' in node_output:
                     for gif in node_output['gifs']:
                         output_list['file_list'].append(gif['filename'])
@@ -375,10 +374,21 @@ class ComfyRunner:
                         if isinstance(input, str) and any(
                             input.endswith(ft) for ft in MODEL_FILETYPES
                         ) and not any(input.endswith(m) for m in OPTIONAL_MODELS):
+                            base = None
                             if "/" in input:
-                                input = input.split("/")[-1]
-                            model_path = find_file_in_directory(comfy_directory, input)
-                            if model_path:
+                                base, input = input.split("/")[0], input.split("/")[-1]
+                            model_path_list = find_file_in_directory(comfy_directory, input)
+                            if len(model_path_list):
+                                # selecting the model_path which has the base, if neither has the base then selecting the first one
+                                model_path = model_path_list[0]
+                                if base:
+                                    matching_text_seq = ["SD1.5"] if base in ["SD1.5", "SD1.x"] else ["SDXL"]
+                                    for txt in matching_text_seq:
+                                        for p in model_path_list:
+                                            if txt in p:
+                                                model_path = p
+                                                break
+                                
                                 model_path = model_path.replace(comfy_directory, "")
                                 if any(model_path.startswith(folder) for folder in comfy_model_folders):
                                     model_path = model_path.split('/', 1)[-1]
@@ -398,7 +408,7 @@ class ComfyRunner:
                 path = find_file_in_directory("./ComfyUI/output", file)
                 # some intermediary temp files are deleted at this point
                 if path:
-                    output_list.append(copy_files(path, output_folder, overwrite=False, delete_original=True))
+                    output_list.append(copy_files(path[0], output_folder, overwrite=False, delete_original=True))
             # print("node output: ", node_output)
             # print("output_list: ", output_list)
             app_logger.log(LoggingType.DEBUG, f"output file list len: {len(output_list)}")
