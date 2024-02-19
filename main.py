@@ -2,7 +2,7 @@ from .inf import ComfyRunner
 
 runner = ComfyRunner()
 output = runner.predict(
-    workflow_input="examples/steerable_motion/workflow_api.json",
+    workflow_input="examples/txt2img/sdxl_workflow_api.json",
     file_path_list=[
         "./examples/vid2vid/boy_sunshine.png",
         "./examples/vid2vid/king_dark.png"
@@ -32,7 +32,11 @@ print("final output: ", output)
 #         "./examples/vid2vid/boy_sunshine.png",
 #         "./examples/vid2vid/king_dark.png"
 #     ],
-#     stop_server_after_completion=True
+#     stop_server_after_completion=True,
+#     ignore_model_list=[{
+#     "filename": "sd_xl_base_18897557.0.safetensors",
+#     "filepath": "./ComfyUI/models/checkpoints/sd_xl_base_18897557.0.safetensors"
+# }]
 # )
 
 # -- sample params
