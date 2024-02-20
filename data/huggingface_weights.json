@@ -3,6 +3,10 @@
         "url": "https://huggingface.co/lllyasviel/fooocus_inpaint/resolve/main/fooocus_inpaint_head.pth?download=true",
         "dest": "ComfyUI/models/inpaint"
     },
+    "film_net_fp32.pt": {
+        "url": "https://github.com/dajes/frame-interpolation-pytorch/releases/download/v1.0.2/film_net_fp32.pt",
+        "dest": "ComfyUI/custom_nodes/ComfyUI-Frame-Interpolation/ckpts/film"
+    },
     "inpaint_v26.fooocus.patch": {
         "url": "https://huggingface.co/lllyasviel/fooocus_inpaint/resolve/main/inpaint_v26.fooocus.patch?download=true",
         "dest": "ComfyUI/models/inpaint"
