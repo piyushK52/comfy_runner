@@ -22,13 +22,21 @@ class FileDownloader:
         pass
 
     def is_file_downloaded(self, filename, url, dest):
+        zip_file = False
+        percentage_diff = lambda a,b : int(round(abs(a - b) / b, 2) * 100)
         if url.endswith(".zip") or url.endswith(".tar"):
-            filename = filename + (".zip" if url.endswith(".zip") else ".tar")
+            # filename = filename + (".zip" if url.endswith(".zip") else ".tar")
+            zip_file = True
 
         dest_path = f"{dest}/{filename}"
         app_logger.log(LoggingType.DEBUG, "checking file: ", dest_path)
         if os.path.exists(dest_path):
-            return os.path.getsize(dest_path) == get_file_size(url)
+            downloaded_file_size = os.path.getsize(dest_path)
+            url_file_size = get_file_size(url)
+            # NOTE: hackish sol of checking if zip file is downloaded or not (by checking if the extracted file is approximately the same size)
+            # possible issues 1. partially downloaded zip file 2. new model file with smaller size
+            return downloaded_file_size == url_file_size if not zip_file else \
+                percentage_diff(downloaded_file_size, url_file_size) <= 2
         return False
 
     # hackish sol for checking if a file is already downloaded by the comfy manager
