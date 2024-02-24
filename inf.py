@@ -1,6 +1,7 @@
 import glob
 import json
 import os
+import platform
 import time
 import sys
 import psutil
@@ -32,7 +33,7 @@ class ComfyRunner:
         # checking if comfy is already running
         if not self.is_server_running():
             kwargs = {
-                "shell" : True,
+                "shell" : platform.system() == "Windows",
             }
             # TODO: remove comfyUI output from the console
             if not DEBUG_LOG_ENABLED:
