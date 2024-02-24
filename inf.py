@@ -42,7 +42,7 @@ class ComfyRunner:
                 kwargs["stderr"] = subprocess.DEVNULL
 
             python_executable = sys.executable
-            self.server_process = subprocess.Popen([python_executable, "./ComfyUI/main.py"], **kwargs)
+            self.server_process = subprocess.Popen([python_executable, "./ComfyUI/main.py", "--port", str(APP_PORT)], **kwargs)
 
             # waiting for server to start accepting requests
             while not self.is_server_running():
