@@ -100,7 +100,7 @@ class ModelDownloader(FileDownloader):
             current_dir = find_git_root(os.path.dirname(__file__))      # finding root
             file_path = os.path.abspath(os.path.join(current_dir, model_weights_file_path))
             # print("------- opening file path: ", file_path)
-            with open(file_path, 'r', encoding="utf-8s") as file:
+            with open(file_path, 'r', encoding="utf-8") as file:
                 data = json.load(file)
                 for model_name in data:
                     # weight files with lower index have preference
