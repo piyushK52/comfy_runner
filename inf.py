@@ -2,7 +2,7 @@ import glob
 import json
 import os
 import time
-import traceback
+import sys
 import psutil
 import subprocess
 import re
@@ -31,7 +31,6 @@ class ComfyRunner:
     def start_server(self):
         # checking if comfy is already running
         if not self.is_server_running():
-            command = "python ./ComfyUI/main.py"
             kwargs = {
                 "shell" : True,
             }
@@ -40,7 +39,8 @@ class ComfyRunner:
                 kwargs["stdout"] = subprocess.DEVNULL
                 kwargs["stderr"] = subprocess.DEVNULL
 
-            self.server_process = subprocess.Popen(command, **kwargs)
+            python_executable = sys.executable
+            self.server_process = subprocess.Popen([python_executable, "./ComfyUI/main.py"], **kwargs)
 
             # waiting for server to start accepting requests
             while not self.is_server_running():
@@ -375,8 +375,8 @@ class ComfyRunner:
                             input.endswith(ft) for ft in MODEL_FILETYPES
                         ) and not any(input.endswith(m) for m in OPTIONAL_MODELS):
                             base = None
-                            if "/" in input:
-                                base, input = input.split("/")[0], input.split("/")[-1]
+                            if os.path.sep in input:
+                                base, input = os.path.split(input)
                             model_path_list = find_file_in_directory(comfy_directory, input)
                             if len(model_path_list):
                                 # selecting the model_path which has the base, if neither has the base then selecting the first one
@@ -391,7 +391,7 @@ class ComfyRunner:
                                 
                                 model_path = model_path.replace(comfy_directory, "")
                                 if any(model_path.startswith(folder) for folder in comfy_model_folders):
-                                    model_path = model_path.split('/', 1)[-1]
+                                    model_path = model_path.split(os.path.sep, 1)[-1]
                                 app_logger.log(LoggingType.DEBUG, f"Updating {input} to {model_path}")
                                 workflow[node]["inputs"][key] = model_path
 
