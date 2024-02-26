@@ -271,7 +271,7 @@ class ComfyRunner:
     def load_workflow(self, workflow_input):
         if os.path.exists(workflow_input):
             try:
-                with open(workflow_input, 'r') as file:
+                with open(workflow_input, 'r', encoding='utf-8') as file:
                     workflow_input = json.load(file)
 
             except Exception as e:
@@ -376,8 +376,8 @@ class ComfyRunner:
                             input.endswith(ft) for ft in MODEL_FILETYPES
                         ) and not any(input.endswith(m) for m in OPTIONAL_MODELS):
                             base = None
-                            if os.path.sep in input:
-                                base, input = os.path.split(input)
+                            # if os.path.sep in input:
+                            base, input = os.path.split(input)
                             model_path_list = find_file_in_directory(comfy_directory, input)
                             if len(model_path_list):
                                 # selecting the model_path which has the base, if neither has the base then selecting the first one

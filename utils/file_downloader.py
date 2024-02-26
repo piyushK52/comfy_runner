@@ -97,7 +97,7 @@ class ModelDownloader(FileDownloader):
 
         # loading local data
         for model_weights_file_path in model_weights_file_path_list:
-            with open(model_weights_file_path, 'r') as file:
+            with open(model_weights_file_path, 'r', encoding='utf-8') as file:
                 data = json.load(file)
                 for model_name in data:
                     # weight files with lower index have preference
