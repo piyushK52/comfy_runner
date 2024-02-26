@@ -30,14 +30,14 @@ class FileDownloader:
 
         dest_path = f"{dest}/{filename}"
         app_logger.log(LoggingType.DEBUG, "checking file: ", dest_path)
-        if os.path.exists(dest_path):
-            downloaded_file_size = os.path.getsize(dest_path)
-            url_file_size = get_file_size(url)
-            # NOTE: hackish sol of checking if zip file is downloaded or not (by checking if the extracted file is approximately the same size)
-            # possible issues 1. partially downloaded zip file 2. new model file with smaller size
-            return downloaded_file_size == url_file_size if not zip_file else \
-                percentage_diff(downloaded_file_size, url_file_size) <= 2
-        return False
+        return os.path.exists(dest_path)
+        #     downloaded_file_size = os.path.getsize(dest_path)
+        #     url_file_size = get_file_size(url)
+        #     # NOTE: hackish sol of checking if zip file is downloaded or not (by checking if the extracted file is approximately the same size)
+        #     # possible issues 1. partially downloaded zip file 2. new model file with smaller size
+        #     return downloaded_file_size == url_file_size if not zip_file else \
+        #         percentage_diff(downloaded_file_size, url_file_size) <= 2
+        # return False
 
     # hackish sol for checking if a file is already downloaded by the comfy manager
     # possible issues 
