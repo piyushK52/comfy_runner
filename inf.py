@@ -329,6 +329,10 @@ class ComfyRunner:
             app_logger.log(LoggingType.DEBUG, "Checking comfy requirements, please wait...")
             subprocess.run(["pip", "install", "-r", "./ComfyUI/requirements.txt"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
 
+            # clearing the previous logs
+            if not self.is_server_running():
+                self.clear_comfy_logs()
+            
             # start the comfy server if not already running
             self.start_server()
 
@@ -428,7 +432,7 @@ class ComfyRunner:
             self.stop_server()
 
         # TODO: implement a proper way to remove the logs
-        if clear_comfy_logs:
+        if not self.is_server_running() and clear_comfy_logs:
             self.clear_comfy_logs()
 
         return output_list
