@@ -14,7 +14,7 @@ from .constants import APP_PORT, DEBUG_LOG_ENABLED, MODEL_DOWNLOAD_PATH_LIST, MO
     OPTIONAL_MODELS, SERVER_ADDR
 from .utils.comfy.api import ComfyAPI
 from .utils.comfy.methods import ComfyMethod
-from .utils.common import clear_directory, copy_files, find_file_in_directory, find_process_by_port
+from .utils.common import clear_directory, copy_files, find_file_in_directory, find_process_by_port, search_file
 from .utils.file_downloader import FileStatus, ModelDownloader
 from .utils.logger import LoggingType, app_logger
 
@@ -207,6 +207,11 @@ class ComfyRunner:
                     if m['model'] == model['filename']:
                         models_not_found.remove(m)
                         break
+                    
+        # checking if models_not_found are already inside comfy
+        for model in models_not_found:
+            if search_file(model['model'].split("/")[-1], 'ComfyUI'):
+                models_not_found.remove(model)
 
         return {
             'data': {'models_not_found': models_not_found, 'models_downloaded': models_downloaded},

@@ -9,7 +9,7 @@ from tqdm import tqdm
 from ..constants import APP_PORT, COMFY_MODEL_PATH_LIST, SERVER_ADDR
 from .comfy.api import ComfyAPI
 
-from .common import find_git_root, fuzzy_text_match, get_file_size
+from .common import find_git_root, fuzzy_text_match, get_file_size, search_file
 from .logger import LoggingType, app_logger
 
 class FileStatus(Enum):
@@ -38,18 +38,6 @@ class FileDownloader:
         #     return downloaded_file_size == url_file_size if not zip_file else \
         #         percentage_diff(downloaded_file_size, url_file_size) <= 2
         # return False
-
-    # hackish sol for checking if a file is already downloaded by the comfy manager
-    # possible issues 
-    # 1. a different file of same name can be present in some other directory
-    # 2. file may be corrupted
-    def search_file(self, filename, directory):
-        for root, dirs, files in os.walk(directory):
-            for file in files:
-                if file == filename:
-                    return True
-
-        return False
 
     def download_file(self, filename, url, dest):
         os.makedirs(dest, exist_ok=True)
@@ -145,12 +133,12 @@ class ModelDownloader(FileDownloader):
         # handling nomenclature like "SD1.5/pytorch_model.bin"
         base, model_name = (model_name.split("/")[0], model_name.split("/")[-1]) if "/" in model_name else ("", model_name)
         file_status = FileStatus.NEW_DOWNLOAD.value
-
+        
         if model_name in self.comfy_model_dict:
             for model in self.comfy_model_dict[model_name]:
                 if ((base and model['base'] == base) or not base or (base in ["SD1.5", "SD1.x"] and model["base"] in ["SD1.5", "SD1.x"])):
                     app_logger.log(LoggingType.INFO, f"Downloading {model['filename']}")
-                    file_status = FileStatus.ALREADY_PRESENT.value if self.search_file(model['filename'], 'ComfyUI') else FileStatus.NEW_DOWNLOAD.value
+                    file_status = FileStatus.ALREADY_PRESENT.value if search_file(model['filename'], 'ComfyUI') else FileStatus.NEW_DOWNLOAD.value
                     self.comfy_api.install_custom_model(model)  # TODO: remove/streamline api dependency
 
         elif model_name in self.model_download_dict:

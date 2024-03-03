@@ -91,3 +91,18 @@ def find_git_root(path):
     
     parent_path = os.path.abspath(os.path.join(path, os.pardir))
     return find_git_root(parent_path)
+
+# hackish sol for checking if a file is already downloaded by the comfy manager
+# possible issues 
+# 1. a different file of same name can be present in some other directory
+# 2. file may be corrupted
+def search_file(filename, directory):
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            if file == filename:
+                return True
+        for subdir in dirs:
+            subdir_path = os.path.join(root, subdir)
+            if search_file(filename, subdir_path):
+                return True  # File found in subdirectory
+    return False
