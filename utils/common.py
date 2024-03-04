@@ -96,10 +96,10 @@ def find_git_root(path):
 # possible issues 
 # 1. a different file of same name can be present in some other directory
 # 2. file may be corrupted
-def search_file(filename, directory):
+def search_file(filename, directory, parent_folder=None):
     for root, dirs, files in os.walk(directory):
         for file in files:
-            if file == filename:
+            if file == filename and (not parent_folder or (parent_folder and os.path.basename(root) == parent_folder)):
                 return True
         for subdir in dirs:
             subdir_path = os.path.join(root, subdir)
