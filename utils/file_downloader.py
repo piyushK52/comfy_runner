@@ -71,7 +71,7 @@ class FileDownloader:
             else:
                 with tarfile.open(f"{dest}/{new_filename}", "r") as tar_ref:
                     tar_ref.extractall(dest)
-            # os.remove(f"{dest}/{new_filename}")
+            os.remove(f"{dest}/{new_filename}")
                     
         return True, FileStatus.NEW_DOWNLOAD.value
 
