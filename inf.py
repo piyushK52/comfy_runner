@@ -188,6 +188,14 @@ class ComfyRunner:
             else:
                 app_logger.log(LoggingType.DEBUG, f"Ignoring model {m['filename']}")
         
+        m_l = []
+        for model in models_to_download:
+            base = None
+            base, model = os.path.split(model)
+            if not search_file(model, 'ComfyUI', parent_folder=base):
+                m_l.append(model)
+        models_to_download = m_l
+        
         for model in models_to_download:
             status, similar_models, file_status = self.model_downloader.download_model(model)
             if not status:
