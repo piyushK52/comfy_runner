@@ -46,5 +46,9 @@
     "inpainting_diffusion_pytorch_model.safetensors": {
         "url": "https://huggingface.co/diffusers/stable-diffusion-xl-1.0-inpainting-0.1/resolve/main/unet/diffusion_pytorch_model.safetensors?download=true",
         "dest": "ComfyUI/models/unet/inpainting_diffusion_pytorch_model.safetensors"
+    },
+    "ip_plus_composition_sd15.safetensors":{
+        "url": "https://huggingface.co/ostris/ip-composition-adapter/resolve/main/ip_plus_composition_sd15.safetensors?download=true",
+        "dest": "ComfyUI/models/ipadapter/ip_plus_composition_sd15.safetensors"
     }
 }
