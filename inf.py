@@ -381,7 +381,11 @@ class ComfyRunner:
             if len(file_path_list):
                 clear_directory("./ComfyUI/input")
                 for filepath in file_path_list:
-                    copy_files(filepath, "./ComfyUI/input/", overwrite=True)
+                    if isinstance(filepath, str):
+                        filepath, dest_path = filepath, "./ComfyUI/input/"
+                    else:
+                        filepath, dest_path = filepath['filepath'], "./ComfyUI/input/" + filepath['dest_folder'] + "/"
+                    copy_files(filepath, dest_path, overwrite=True)
 
             # checkpoints, lora, default etc..
             comfy_directory = "./ComfyUI/models/"
