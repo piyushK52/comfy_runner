@@ -4,13 +4,14 @@ import os
 import platform
 import time
 import sys
+import traceback
 import psutil
 import subprocess
 import re
 import websocket
 import uuid
 from git import Repo
-from .constants import APP_PORT, DEBUG_LOG_ENABLED, MODEL_DOWNLOAD_PATH_LIST, MODEL_FILETYPES, \
+from .constants import APP_PORT, COMFY_BASE_PATH, DEBUG_LOG_ENABLED, MODEL_DOWNLOAD_PATH_LIST, MODEL_FILETYPES, \
     OPTIONAL_MODELS, SERVER_ADDR
 from .utils.comfy.api import ComfyAPI
 from .utils.comfy.methods import ComfyMethod
@@ -192,7 +193,7 @@ class ComfyRunner:
         for model in models_to_download:
             base = None
             base, model = os.path.split(model)
-            if not search_file(model, 'ComfyUI', parent_folder=base):
+            if not search_file(model, COMFY_BASE_PATH, parent_folder=base):
                 m_l.append(model)
         models_to_download = m_l
         
@@ -218,7 +219,7 @@ class ComfyRunner:
                     
         # checking if models_not_found are already inside comfy
         for model in models_not_found:
-            if search_file(model['model'].split("/")[-1], 'ComfyUI'):
+            if search_file(model['model'].split("/")[-1], COMFY_BASE_PATH):
                 models_not_found.remove(model)
 
         return {
@@ -331,16 +332,16 @@ class ComfyRunner:
             app_logger.log(LoggingType.DEBUG, "cloning comfy repo")
             comfy_repo_url = "https://github.com/comfyanonymous/ComfyUI"
             comfy_manager_url = "https://github.com/ltdrdata/ComfyUI-Manager"
-            if not os.path.exists("ComfyUI"):
-                Repo.clone_from(comfy_repo_url, "ComfyUI")
-            if not os.path.exists("./ComfyUI/custom_nodes/ComfyUI-Manager"):
-                os.chdir("./ComfyUI/custom_nodes/")
+            if not os.path.exists(COMFY_BASE_PATH):
+                Repo.clone_from(comfy_repo_url, COMFY_BASE_PATH)
+            if not os.path.exists(COMFY_BASE_PATH + "custom_nodes/ComfyUI-Manager"):
+                os.chdir(COMFY_BASE_PATH + "custom_nodes/")
                 Repo.clone_from(comfy_manager_url, "ComfyUI-Manager")
                 os.chdir("../../")
             
             # installing requirements
             app_logger.log(LoggingType.DEBUG, "Checking comfy requirements, please wait...")
-            subprocess.run(["pip", "install", "-r", "./ComfyUI/requirements.txt"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
+            subprocess.run(["pip", "install", "-r", COMFY_BASE_PATH + "requirements.txt"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
 
             # clearing the previous logs
             if not self.is_server_running():
@@ -388,7 +389,7 @@ class ComfyRunner:
                     copy_files(filepath, dest_path, overwrite=True)
 
             # checkpoints, lora, default etc..
-            comfy_directory = "./ComfyUI/models/"
+            comfy_directory = COMFY_BASE_PATH + "models/"
             comfy_model_folders = [folder for folder in os.listdir(comfy_directory) if os.path.isdir(os.path.join(comfy_directory, folder))]
             # update model paths e.g. 'v3_sd15_sparsectrl_rgb.ckpt' --> 'SD1.5/animatediff/v3_sd15_sparsectrl_rgb.ckpt'
             for node in workflow:
@@ -435,7 +436,7 @@ class ComfyRunner:
             # print("node output: ", node_output)
             # print("output_list: ", output_list)
             app_logger.log(LoggingType.DEBUG, f"output file list len: {len(output_list)}")
-            clear_directory("./ComfyUI/output")
+            clear_directory(COMFY_BASE_PATH + "output")
 
             output_list = {
                 'file_paths': output_list,
@@ -443,6 +444,7 @@ class ComfyRunner:
             }
         except Exception as e:
             app_logger.log(LoggingType.INFO, "Error generating output " + str(e))
+            print(traceback.format_exc())
         
         # stopping the server
         if stop_server_after_completion:

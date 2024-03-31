@@ -7,6 +7,7 @@ comfyui*.log
 # environment
 venv
 .vscode
+.env
 
 # system
 .DS_Store
