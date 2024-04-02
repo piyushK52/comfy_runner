@@ -4,6 +4,7 @@ import os
 import platform
 import time
 import sys
+import traceback
 import psutil
 import subprocess
 import re
@@ -340,7 +341,7 @@ class ComfyRunner:
             
             # installing requirements
             app_logger.log(LoggingType.DEBUG, "Checking comfy requirements, please wait...")
-            subprocess.run(["pip", "install", "-r", "./ComfyUI/requirements.txt"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
+            subprocess.run([sys.executable, "-m", "pip", "install", "-r", "./ComfyUI/requirements.txt"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
 
             # clearing the previous logs
             if not self.is_server_running():
@@ -443,6 +444,7 @@ class ComfyRunner:
             }
         except Exception as e:
             app_logger.log(LoggingType.INFO, "Error generating output " + str(e))
+            traceback.print_exc()
         
         # stopping the server
         if stop_server_after_completion:
