@@ -1053,11 +1053,11 @@
     },
     "v3_sd15_sparsectrl_rgb.ckpt": {
       "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/ComfyUI-AnimateDiff-Evolved/v3_sd15_sparsectrl_rgb.ckpt.tar",
-      "dest": "ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/models"
+      "dest": "ComfyUI/models/controlnet"
     },
     "v3_sd15_sparsectrl_scribble.ckpt": {
       "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/ComfyUI-AnimateDiff-Evolved/v3_sd15_sparsectrl_scribble.ckpt.tar",
-      "dest": "ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/models"
+      "dest": "ComfyUI/models/controlnet"
     },
     "temporaldiff-v1-animatediff.ckpt": {
       "url": "https://weights.replicate.delivery/default/comfy-ui/custom_nodes/ComfyUI-AnimateDiff-Evolved/temporaldiff-v1-animatediff.ckpt.tar",
