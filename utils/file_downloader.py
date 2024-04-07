@@ -6,10 +6,10 @@ import tarfile
 import zipfile
 import json
 from tqdm import tqdm
-from ..constants import APP_PORT, COMFY_MODEL_PATH_LIST, SERVER_ADDR
+from ..constants import APP_PORT, COMFY_BASE_PATH, COMFY_MODEL_PATH_LIST, SERVER_ADDR
 from .comfy.api import ComfyAPI
 
-from .common import find_git_root, fuzzy_text_match, get_file_size, search_file
+from .common import find_git_root, convert_to_relative_path, fuzzy_text_match, get_default_save_path, get_file_size, search_file
 from .logger import LoggingType, app_logger
 
 class FileStatus(Enum):
@@ -95,7 +95,7 @@ class ModelDownloader(FileDownloader):
                     if model_name not in self.model_download_dict:
                         self.model_download_dict[model_name] = {
                             'url': data[model_name]['url'],
-                            'dest': data[model_name]['dest']
+                            'dest': convert_to_relative_path(data[model_name]['dest'])
                         }
 
     def _get_similar_models(self, model_name):
@@ -136,16 +136,24 @@ class ModelDownloader(FileDownloader):
         
         if model_name in self.comfy_model_dict:
             for model in self.comfy_model_dict[model_name]:
-                if ((base and model['base'] == base) or not base or (base in ["SD1.5", "SD1.x"] and model["base"] in ["SD1.5", "SD1.x"])):
-                    app_logger.log(LoggingType.INFO, f"Downloading {model['filename']}")
-                    file_status = FileStatus.ALREADY_PRESENT.value if search_file(model['filename'], 'ComfyUI') else FileStatus.NEW_DOWNLOAD.value
-                    self.comfy_api.install_custom_model(model)  # TODO: remove/streamline api dependency
+                # if ((base and model['base'] == base) or not base or (base in ["SD1.5", "SD1.x"] and model["base"] in ["SD1.5", "SD1.x"])):
+                #     app_logger.log(LoggingType.INFO, f"Downloading {model['filename']}")
+                #     file_status = FileStatus.ALREADY_PRESENT.value if search_file(model['filename'], COMFY_BASE_PATH) else FileStatus.NEW_DOWNLOAD.value
+                #     self.comfy_api.install_custom_model(model)  # TODO: remove/streamline api dependency
+                if model["save_path"] and model["save_path"].endswith("default"):
+                    model["save_path"] = get_default_save_path(model["type"])
+                    
+                _, file_status = self.download_file(
+                    filename=model['filename'],
+                    url=model['url'],
+                    dest=os.path.join(COMFY_BASE_PATH, "models", model["save_path"])
+                )
 
         elif model_name in self.model_download_dict:
             _, file_status = self.download_file(
                 filename=model_name,
                 url=self.model_download_dict[model_name]['url'],
-                dest=self.model_download_dict[model_name]['dest']
+                dest=convert_to_relative_path(self.model_download_dict[model_name]['dest'])
             )
             
         else:

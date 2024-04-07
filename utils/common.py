@@ -4,6 +4,8 @@ import os
 import shutil
 import psutil
 
+from constants import COMFY_BASE_PATH
+
 from .logger import app_logger
 
 from .logger import LoggingType
@@ -106,3 +108,39 @@ def search_file(filename, directory, parent_folder=None):
             if search_file(filename, subdir_path):
                 return True  # File found in subdirectory
     return False
+
+def convert_to_relative_path(path):
+    local_paths = ["ComfyUI/", "./ComfyUI/", "../ComfyUI/"]
+    mod_path = path
+    for pth in local_paths:
+        if path.startswith(pth):
+            mod_path = COMFY_BASE_PATH + path[len(pth):]
+
+    return mod_path
+
+def get_default_save_path(model_type):
+    base_model = "etc"
+    if model_type == "checkpoints":
+        base_model = "checkpoints"
+    elif model_type == "unclip":
+        base_model = "checkpoints"
+    elif model_type == "VAE":
+        base_model = "vae"
+    elif model_type == "lora":
+        base_model = "loras"
+    elif model_type == "T2I-Adapter":
+        base_model = "controlnet"
+    elif model_type == "T2I-Style":
+        base_model = "controlnet"
+    elif model_type == "controlnet":
+        base_model = "controlnet"
+    elif model_type == "clip_vision":
+        base_model = "clip_vision"
+    elif model_type == "gligen":
+        base_model = "gligen"
+    elif model_type == "upscale":
+        base_model = "upscale_models"
+    elif model_type == "embeddings":
+        base_model = "embeddings"
+
+    return base_model
