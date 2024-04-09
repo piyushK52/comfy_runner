@@ -4,7 +4,7 @@ import os
 import shutil
 import psutil
 
-from constants import COMFY_BASE_PATH
+from ..constants import COMFY_BASE_PATH
 
 from .logger import app_logger
 
