@@ -209,9 +209,9 @@ class ComfyRunner:
 
         # downloading extra models
         for model in extra_models_list:
-            status = self.model_downloader.download_file(model["filename"], model["url"], model["dest"])
+            status, file_status = self.model_downloader.download_file(model["filename"], model["url"], model["dest"])
             if status:
-                models_downloaded = True
+                models_downloaded = True if file_status == FileStatus.NEW_DOWNLOAD.value else False
                 for m in models_not_found:
                     if m['model'] == model['filename']:
                         models_not_found.remove(m)

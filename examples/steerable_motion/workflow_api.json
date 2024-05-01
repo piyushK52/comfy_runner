@@ -422,18 +422,18 @@
   },
   "584": {
     "inputs": {
-      "Value": 512
+      "value": 512
     },
-    "class_type": "Integer",
+    "class_type": "JWInteger",
     "_meta": {
       "title": "Integer"
     }
   },
   "585": {
     "inputs": {
-      "Value": 768
+      "value": 768
     },
-    "class_type": "Integer",
+    "class_type": "JWInteger",
     "_meta": {
       "title": "Integer"
     }
