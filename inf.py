@@ -12,7 +12,7 @@ import websocket
 import uuid
 from git import Repo
 from .constants import APP_PORT, COMFY_BASE_PATH, DEBUG_LOG_ENABLED, MODEL_DOWNLOAD_PATH_LIST, MODEL_FILETYPES, \
-    OPTIONAL_MODELS, SERVER_ADDR
+    OPTIONAL_MODELS, SERVER_ADDR, comfy_dir
 from .utils.comfy.api import ComfyAPI
 from .utils.comfy.methods import ComfyMethod
 from .utils.common import clear_directory, copy_files, find_file_in_directory, find_process_by_port, search_file
@@ -436,7 +436,7 @@ class ComfyRunner:
             # print("node output: ", node_output)
             # print("output_list: ", output_list)
             app_logger.log(LoggingType.DEBUG, f"output file list len: {len(output_list)}")
-            clear_directory(COMFY_BASE_PATH + "output")
+            clear_directory("./ComfyUI/output")
 
             output_list = {
                 'file_paths': output_list,
