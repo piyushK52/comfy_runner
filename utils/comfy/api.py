@@ -54,6 +54,7 @@ class ComfyAPI(BaseAPI):
         self.NODE_MAPPING_LIST_URL = "/customnode/getmappings"
         self.MODEL_LIST_URL = "/externalmodel/getlist"
         self.CUSTOM_MODEL_URL = '/model/'
+        self.INTERRUPT_URL = '/interrupt'
 
     def get_all_custom_node_list(self):
         return self.http_get(self.CUSTOM_NODE_LIST_URL + "?mode=local")
@@ -85,3 +86,7 @@ class ComfyAPI(BaseAPI):
     def queue_prompt(self, prompt, client_id):
         p = {"prompt": prompt, "client_id": client_id}
         return self.http_post(self.QUEUE_PROMPT_URL, data=p)
+    
+    # NOTE: stops the current generation in progress
+    def interrupt_prompt(self):
+        return self.http_post(self.INTERRUPT_URL, data=None)

@@ -296,6 +296,15 @@ class ComfyRunner:
             workflow_input = json.loads(workflow_input)
 
         return workflow_input if ComfyMethod.is_api_json(workflow_input) else None
+    
+    def stop_current_generation(self):
+        '''
+        CAUTION: This stops any running generation on active comfyui APP_PORT (default 8188)
+        '''
+        try:
+            self.comfy_api.interrupt_prompt()
+        except Exception as e:
+            app_logger.log(LoggingType.DEBUG, f"Error stopping the generation {str(e)}")
 
     def predict(
             self, 
