@@ -55,6 +55,7 @@ class ComfyAPI(BaseAPI):
         self.MODEL_LIST_URL = "/externalmodel/getlist"
         self.CUSTOM_MODEL_URL = '/model/'
         self.INTERRUPT_URL = '/interrupt'
+        self.QUEUE_URL = '/queue'
 
     def get_all_custom_node_list(self):
         return self.http_get(self.CUSTOM_NODE_LIST_URL + "?mode=local")
@@ -90,3 +91,6 @@ class ComfyAPI(BaseAPI):
     # NOTE: stops the current generation in progress
     def interrupt_prompt(self):
         return self.http_post(self.INTERRUPT_URL, data=None)
+    
+    def get_queue(self):
+        return self.http_get(self.QUEUE_URL) 

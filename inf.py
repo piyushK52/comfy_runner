@@ -297,14 +297,41 @@ class ComfyRunner:
 
         return workflow_input if ComfyMethod.is_api_json(workflow_input) else None
     
-    def stop_current_generation(self):
+    def stop_current_generation(self, client_id=None, retry_window=5):
         '''
         CAUTION: This stops any running generation on active comfyui APP_PORT (default 8188)
+        client_id: tag used to identify generations
+        retry_window: the amount of time (in secs) it will try to find the process (as it takes a while for comfy to start the generation)
         '''
         try:
-            self.comfy_api.interrupt_prompt()
+            if not client_id:
+                self.comfy_api.interrupt_prompt()
+            else:
+                while retry_window > 0:
+                    current_running_gen = self.get_queue_items()
+                    current_running_gen = current_running_gen.get('queue_running', []) if current_running_gen else []
+                    if len(current_running_gen):
+                        info = current_running_gen[-1][-2]
+                        if "client_id" in info and info["client_id"] == str(client_id):
+                            self.comfy_api.interrupt_prompt()
+                            app_logger.log(LoggingType.DEBUG, "Comfy generation terminated")
+                            return True
+                    
+                    time.sleep(1)
+                    app_logger.log(LoggingType.DEBUG, "Comfy generation not found")
+                    retry_window -= 1
         except Exception as e:
-            app_logger.log(LoggingType.DEBUG, f"Error stopping the generation {str(e)}")
+            # app_logger.log(LoggingType.DEBUG, f"Error stopping the generation {str(e)}")
+            pass
+            
+        return False
+            
+    def get_queue_items(self):
+        try:
+            return self.comfy_api.get_queue()
+        except Exception as e:
+            app_logger.log(LoggingType.DEBUG, 'Error connecting with comfy')
+            return None
 
     def predict(
             self, 
@@ -316,7 +343,8 @@ class ComfyRunner:
             clear_comfy_logs=True, 
             output_folder="./output", 
             output_node_ids=None,
-            ignore_model_list=[]
+            ignore_model_list=[],
+            client_id=None
         ):
         '''
         workflow_input:                 API json of the workflow. Can be a filepath or str
@@ -327,7 +355,8 @@ class ComfyRunner:
         clear_comfy_logs:               clears the temp comfy logs after every inference
         output_folder:                  for storing inference output
         output_node_ids:                nodes to look in for the output
-        ignore_model_list:                  these models won't be downloaded (in cases where these are manually placed)
+        ignore_model_list:              these models won't be downloaded (in cases where these are manually placed)
+        client_id:                      this can be used as a tag for the generations
         '''
         output_list = {}
         try:    
@@ -430,7 +459,7 @@ class ComfyRunner:
 
             # get the result
             app_logger.log(LoggingType.INFO, "Generating output please wait")
-            client_id = str(uuid.uuid4())
+            client_id = client_id or str(uuid.uuid4())
             ws = websocket.WebSocket()
             host = SERVER_ADDR + ":" + str(APP_PORT)
             host = host.replace("http://", "").replace("https://", "")
