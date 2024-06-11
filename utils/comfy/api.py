@@ -1,6 +1,7 @@
 import json
 import requests
 
+
 class BaseAPI:
     def __init__(self, base_url):
         self.base_url = base_url
@@ -13,25 +14,36 @@ class BaseAPI:
 
         return headers
 
-    def http_get(self, url, params = None):
-        res = requests.get(self.base_url + url, params = params, headers=self._get_headers())
+    def http_get(self, url, params=None):
+        res = requests.get(
+            self.base_url + url, params=params, headers=self._get_headers()
+        )
         return res.json()
 
-    def http_post(self, url, data = {}, file_content = None):
+    def http_post(self, url, data={}, file_content=None):
         if file_content:
-            files = {'file': file_content}
-            res = requests.post(self.base_url + url, data=data, files=files, headers=self._get_headers(None))
+            files = {"file": file_content}
+            res = requests.post(
+                self.base_url + url,
+                data=data,
+                files=files,
+                headers=self._get_headers(None),
+            )
         else:
-            res = requests.post(self.base_url + url, json=data, headers=self._get_headers())
+            res = requests.post(
+                self.base_url + url, json=data, headers=self._get_headers()
+            )
 
         return res.json()
-    
-    def http_put(self, url, data = None):
+
+    def http_put(self, url, data=None):
         res = requests.put(self.base_url + url, json=data, headers=self._get_headers())
         return res.json()
-    
+
     def http_delete(self, url, params=None):
-        res = requests.delete(self.base_url + url, params=params, headers=self._get_headers())
+        res = requests.delete(
+            self.base_url + url, params=params, headers=self._get_headers()
+        )
         return res.json()
 
 
@@ -49,21 +61,23 @@ class ComfyAPI(BaseAPI):
         self.QUEUE_PROMPT_URL = "/prompt"
         self.HISTORY_URL = "/history"
         self.CUSTOM_NODE_LIST_URL = "/customnode/getlist"
-        self.CUSTOM_NODE_URL = "/customnode/"    # mode can be added infront {install, uninstall, update}
+        self.CUSTOM_NODE_URL = (
+            "/customnode/"  # mode can be added infront {install, uninstall, update}
+        )
         self.REGISTERED_NODE_LIST_URL = "/object_info"
         self.NODE_MAPPING_LIST_URL = "/customnode/getmappings"
         self.MODEL_LIST_URL = "/externalmodel/getlist"
-        self.CUSTOM_MODEL_URL = '/model/'
-        self.INTERRUPT_URL = '/interrupt'
-        self.QUEUE_URL = '/queue'
+        self.CUSTOM_MODEL_URL = "/model/"
+        self.INTERRUPT_URL = "/interrupt"
+        self.QUEUE_URL = "/queue"
 
     def get_all_custom_node_list(self):
         return self.http_get(self.CUSTOM_NODE_LIST_URL + "?mode=local")
-    
+
     def get_all_model_list(self):
         res = self.http_get(self.MODEL_LIST_URL + "?mode=local")
-        return res['models'] if 'models' in res else []
-    
+        return res["models"] if "models" in res else []
+
     # TODO: add health check api
     def health_check(self):
         res = requests.get(self.SERVER_URL + self.HISTORY_URL + "/123")
@@ -74,23 +88,23 @@ class ComfyAPI(BaseAPI):
 
     def install_custom_node(self, node):
         return self.http_post(self.CUSTOM_NODE_URL + "install", data=node)
-    
+
     def install_custom_model(self, model):
         return self.http_post(self.CUSTOM_MODEL_URL + "install", data=model)
-    
+
     def get_node_mapping_list(self):
         return self.http_get(self.NODE_MAPPING_LIST_URL + "?mode=local")
-    
+
     def get_registered_nodes(self):
         return self.http_get(self.REGISTERED_NODE_LIST_URL)
-    
+
     def queue_prompt(self, prompt, client_id):
         p = {"prompt": prompt, "client_id": client_id}
         return self.http_post(self.QUEUE_PROMPT_URL, data=p)
-    
+
     # NOTE: stops the current generation in progress
     def interrupt_prompt(self):
         return self.http_post(self.INTERRUPT_URL, data=None)
-    
+
     def get_queue(self):
-        return self.http_get(self.QUEUE_URL) 
+        return self.http_get(self.QUEUE_URL)
