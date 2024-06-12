@@ -381,7 +381,12 @@ class ComfyRunner:
                 self.comfy_api.interrupt_prompt()
             else:
                 while retry_window > 0:
+                    retry_gap = 2
                     current_running_gen = self.get_queue_items()
+                    # exiting if unable to connect to comfy
+                    if not current_running_gen:
+                        retry_window = -1
+                        break
                     current_running_gen = (
                         current_running_gen.get("queue_running", [])
                         if current_running_gen
@@ -392,25 +397,31 @@ class ComfyRunner:
                         if "client_id" in info and info["client_id"] == str(client_id):
                             self.comfy_api.interrupt_prompt()
                             app_logger.log(
-                                LoggingType.DEBUG, "Comfy generation terminated"
+                                LoggingType.INFO, "Comfy generation terminated"
                             )
                             return True
 
-                    time.sleep(1)
-                    app_logger.log(LoggingType.DEBUG, "Comfy generation not found")
-                    retry_window -= 1
+                    time.sleep(retry_gap)
+                    retry_window -= retry_gap
         except Exception as e:
-            # app_logger.log(LoggingType.DEBUG, f"Error stopping the generation {str(e)}")
+            app_logger.log(LoggingType.DEBUG, f"Error stopping the generation {str(e)}")
             pass
 
+        app_logger.log(LoggingType.ERROR, "Generation not found, aborting process")
         return False
 
     def get_queue_items(self):
-        try:
-            return self.comfy_api.get_queue()
-        except Exception as e:
-            app_logger.log(LoggingType.DEBUG, "Error connecting with comfy")
-            return None
+        connection_attempts = 12
+        for i in range(connection_attempts):
+            try:
+                return self.comfy_api.get_queue()
+            except Exception as e:
+                time.sleep(1)
+
+        app_logger.log(
+            LoggingType.ERROR, "Unable to stop generation, comfy server unreachable"
+        )
+        return None
 
     def predict(
         self,

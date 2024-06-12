@@ -20,7 +20,7 @@ class BaseAPI:
         )
         return res.json()
 
-    def http_post(self, url, data={}, file_content=None):
+    def http_post(self, url, data={}, file_content=None, json_output=True):
         if file_content:
             files = {"file": file_content}
             res = requests.post(
@@ -34,7 +34,7 @@ class BaseAPI:
                 self.base_url + url, json=data, headers=self._get_headers()
             )
 
-        return res.json()
+        return res.json() if json_output else res
 
     def http_put(self, url, data=None):
         res = requests.put(self.base_url + url, json=data, headers=self._get_headers())
@@ -104,7 +104,7 @@ class ComfyAPI(BaseAPI):
 
     # NOTE: stops the current generation in progress
     def interrupt_prompt(self):
-        return self.http_post(self.INTERRUPT_URL, data=None)
+        return self.http_post(self.INTERRUPT_URL, data={}, json_output=False)
 
     def get_queue(self):
         return self.http_get(self.QUEUE_URL)
