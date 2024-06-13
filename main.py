@@ -5,7 +5,7 @@ output = runner.predict(
     workflow_input="examples/txt2img/workflow_api.json",
     file_path_list=[
         "./examples/vid2vid/boy_sunshine.png",
-        "./examples/vid2vid/king_dark.png"
+        "./examples/vid2vid/king_dark.png",
     ],
     stop_server_after_completion=True,
 )
@@ -49,6 +49,22 @@ print("final output: ", output)
 #             "dest": "./ComfyUI/models/checkpoints/"
 #         }
 #     ],
-#     extra_node_urls=["https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite"],
+#     extra_node_urls=extra_node_urls=[
+#     {
+#         "title": "ComfyUI-AnimateDiff-Evolved",
+#         "url": "https://github.com/Kosinkadink/ComfyUI-AnimateDiff-Evolved",
+#         "commit_hash": "bbb1280213d351abea9e87fd1f08ba5d47158ad5",
+#     },
+#     {
+#         "title": "ComfyUI-Advanced-ControlNet",
+#         "url": "https://github.com/Kosinkadink/ComfyUI-Advanced-ControlNet",
+#         "commit_hash": "576426a73495609f7a565db8dd25d77c670574a3",
+#     },
+#     {
+#         "title": "ComfyUI_FizzNodes",
+#         "url": "https://github.com/FizzleDorf/ComfyUI_FizzNodes",
+#         "commit_hash": "51a29ce041f504583efdd3b9488ee6144dfda7de",
+#     },
+# ],
 #     stop_server_after_completion=True
 # )
