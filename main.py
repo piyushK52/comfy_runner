@@ -1,3 +1,6 @@
+#########################################################################################################
+# NOTE: This file is supposed to be run outside comfy_runner. Please check the video in the README.md. ##
+#########################################################################################################
 from .inf import ComfyRunner
 
 runner = ComfyRunner()
@@ -49,7 +52,7 @@ print("final output: ", output)
 #             "dest": "./ComfyUI/models/checkpoints/"
 #         }
 #     ],
-#     extra_node_urls=extra_node_urls=[
+#     extra_node_urls=[
 #     {
 #         "title": "ComfyUI-AnimateDiff-Evolved",
 #         "url": "https://github.com/Kosinkadink/ComfyUI-AnimateDiff-Evolved",
