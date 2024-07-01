@@ -72,7 +72,7 @@ def find_process_by_port(port):
 
 def find_file_in_directory(directory, target_file):
     file_list = []
-    for root, dirs, files in os.walk(directory):
+    for root, dirs, files in os.walk(directory, followlinks=True):
         if target_file in files:
             file_list.append(os.path.join(root, target_file))
 
