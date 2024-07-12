@@ -216,9 +216,14 @@ class ComfyRunner:
 
         m_l = []
         for model in models_to_download:
-            base = None
-            base, model = os.path.split(model)
-            if not search_file(model, COMFY_BASE_PATH, parent_folder=base):
+            _, model = os.path.split(model)
+            _, _, base_path = self.model_downloader.get_model_details(model)
+            base_path = os.path.basename(base_path) if base_path else None
+            if not search_file(
+                model,
+                COMFY_BASE_PATH,
+                parent_folder=base_path,
+            ):
                 m_l.append(model)
         models_to_download = m_l
 
