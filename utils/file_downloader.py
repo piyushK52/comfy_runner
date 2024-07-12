@@ -9,13 +9,22 @@ from tqdm import tqdm
 from ..constants import APP_PORT, COMFY_BASE_PATH, COMFY_MODEL_PATH_LIST, SERVER_ADDR
 from .comfy.api import ComfyAPI
 
-from .common import find_git_root, convert_to_relative_path, fuzzy_text_match, get_default_save_path, get_file_size, search_file
+from .common import (
+    find_git_root,
+    convert_to_relative_path,
+    fuzzy_text_match,
+    get_default_save_path,
+    get_file_size,
+    search_file,
+)
 from .logger import LoggingType, app_logger
 
+
 class FileStatus(Enum):
-    NEW_DOWNLOAD = 'new_download'
-    ALREADY_PRESENT = 'already_present'
-    UNAVAILABLE = 'unavailable'
+    NEW_DOWNLOAD = "new_download"
+    ALREADY_PRESENT = "already_present"
+    UNAVAILABLE = "unavailable"
+
 
 class FileDownloader:
     def __init__(self):
@@ -23,7 +32,7 @@ class FileDownloader:
 
     def is_file_downloaded(self, filename, url, dest):
         zip_file = False
-        percentage_diff = lambda a,b : int(round(abs(a - b) / b, 2) * 100)
+        percentage_diff = lambda a, b: int(round(abs(a - b) / b, 2) * 100)
         if url.endswith(".zip") or url.endswith(".tar"):
             # filename = filename + (".zip" if url.endswith(".zip") else ".tar")
             zip_file = True
@@ -54,8 +63,8 @@ class FileDownloader:
         # download progress bar
         app_logger.log(LoggingType.INFO, f"Downloading {filename}")
         response = requests.get(url, stream=True)
-        total_size = int(response.headers.get('content-length', 0))
-        progress_bar = tqdm(total=total_size, unit='B', unit_scale=True)
+        total_size = int(response.headers.get("content-length", 0))
+        progress_bar = tqdm(total=total_size, unit="B", unit_scale=True)
         with open(f"{dest}/{filename}", "wb") as handle:
             for data in tqdm(response.iter_content(chunk_size=1024)):
                 handle.write(data)
@@ -72,7 +81,7 @@ class FileDownloader:
                 with tarfile.open(f"{dest}/{new_filename}", "r") as tar_ref:
                     tar_ref.extractall(dest)
             os.remove(f"{dest}/{new_filename}")
-                    
+
         return True, FileStatus.NEW_DOWNLOAD.value
 
 
@@ -85,17 +94,19 @@ class ModelDownloader(FileDownloader):
 
         # loading local data
         for model_weights_file_path in model_weights_file_path_list:
-            current_dir = find_git_root(os.path.dirname(__file__))      # finding root
-            file_path = os.path.abspath(os.path.join(current_dir, model_weights_file_path))
+            current_dir = find_git_root(os.path.dirname(__file__))  # finding root
+            file_path = os.path.abspath(
+                os.path.join(current_dir, model_weights_file_path)
+            )
             # print("------- opening file path: ", file_path)
-            with open(file_path, 'r', encoding="utf-8") as file:
+            with open(file_path, "r", encoding="utf-8") as file:
                 data = json.load(file)
                 for model_name in data:
                     # weight files with lower index have preference
                     if model_name not in self.model_download_dict:
                         self.model_download_dict[model_name] = {
-                            'url': data[model_name]['url'],
-                            'dest': convert_to_relative_path(data[model_name]['dest'])
+                            "url": data[model_name]["url"],
+                            "dest": convert_to_relative_path(data[model_name]["dest"]),
                         }
 
     def _get_similar_models(self, model_name):
@@ -113,56 +124,74 @@ class ModelDownloader(FileDownloader):
     def load_comfy_models(self):
         self.comfy_model_dict = {}
         for model_list_path in COMFY_MODEL_PATH_LIST:
-            current_dir = find_git_root(os.path.dirname(__file__))      # finding root
-            model_list_path = os.path.abspath(os.path.join(current_dir, model_list_path))
+            current_dir = find_git_root(os.path.dirname(__file__))  # finding root
+            model_list_path = os.path.abspath(
+                os.path.join(current_dir, model_list_path)
+            )
             if not os.path.exists(model_list_path):
-                app_logger.log(LoggingType.DEBUG, f"model list path not found - {model_list_path}")
+                app_logger.log(
+                    LoggingType.DEBUG, f"model list path not found - {model_list_path}"
+                )
                 continue
 
-            with open(model_list_path, 'rb') as file:
+            with open(model_list_path, "rb") as file:
                 model_list = json.load(file)["models"]
-                
+
             # loading comfy data
             for model in model_list:
-                if model['filename'] not in self.comfy_model_dict:
-                    self.comfy_model_dict[model['filename']] = [model]
+                if model["filename"] not in self.comfy_model_dict:
+                    self.comfy_model_dict[model["filename"]] = [model]
                 else:
-                    self.comfy_model_dict[model['filename']].append(model)
+                    self.comfy_model_dict[model["filename"]].append(model)
 
-    def download_model(self, model_name):
-        # handling nomenclature like "SD1.5/pytorch_model.bin"
-        base, model_name = (model_name.split("/")[0], model_name.split("/")[-1]) if "/" in model_name else ("", model_name)
-        file_status = FileStatus.NEW_DOWNLOAD.value
-        
+    def get_model_details(self, model_name):
+        """
+        If a model_name is present in the database it returns
+        filename: the filename it should be downloaded as
+        url:      it's download url
+        dest:     where this file needs to be downloaded
+        """
         if model_name in self.comfy_model_dict:
             for model in self.comfy_model_dict[model_name]:
-                # if ((base and model['base'] == base) or not base or (base in ["SD1.5", "SD1.x"] and model["base"] in ["SD1.5", "SD1.x"])):
-                #     app_logger.log(LoggingType.INFO, f"Downloading {model['filename']}")
-                #     file_status = FileStatus.ALREADY_PRESENT.value if search_file(model['filename'], COMFY_BASE_PATH) else FileStatus.NEW_DOWNLOAD.value
-                #     self.comfy_api.install_custom_model(model)  # TODO: remove/streamline api dependency
                 if model["save_path"] and model["save_path"].endswith("default"):
                     model["save_path"] = get_default_save_path(model["type"])
-                    
-                _, file_status = self.download_file(
-                    filename=model['filename'],
-                    url=model['url'],
-                    dest=os.path.join(COMFY_BASE_PATH, "models", model["save_path"])
+
+                return (
+                    model["filename"],
+                    model["url"],
+                    os.path.join(COMFY_BASE_PATH, "models", model["save_path"]),
                 )
 
         elif model_name in self.model_download_dict:
-            _, file_status = self.download_file(
-                filename=model_name,
-                url=self.model_download_dict[model_name]['url'],
-                dest=convert_to_relative_path(self.model_download_dict[model_name]['dest'])
+            return (
+                model_name,
+                self.model_download_dict[model_name]["url"],
+                convert_to_relative_path(self.model_download_dict[model_name]["dest"]),
             )
-            
+
+        return None, None, None
+
+    def download_model(self, model_name):
+        # handling nomenclature like "SD1.5/pytorch_model.bin"
+        base, model_name = (
+            (model_name.split("/")[0], model_name.split("/")[-1])
+            if "/" in model_name
+            else ("", model_name)
+        )
+        file_status = FileStatus.NEW_DOWNLOAD.value
+        filename, url, dest = self.get_model_details(model_name)
+
+        if filename and url and dest:
+            _, file_status = self.download_file(filename=filename, url=url, dest=dest)
+
         else:
-            app_logger.log(LoggingType.DEBUG, f"Model {model_name} not found in model weights")
+            app_logger.log(
+                LoggingType.DEBUG, f"Model {model_name} not found in model weights"
+            )
             similar_models = self._get_similar_models(model_name)
             if self.download_similar_model and len(similar_models):
                 pass
             else:
                 return (False, similar_models, FileStatus.UNAVAILABLE.value)
-            
+
         return (True, [], file_status)
-    
