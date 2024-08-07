@@ -16,6 +16,7 @@ from .utils.node_installer import get_node_installer
 from .constants import (
     APP_PORT,
     COMFY_BASE_PATH,
+    COMFY_MODELS_BASE_PATH,
     DEBUG_LOG_ENABLED,
     MODEL_DOWNLOAD_PATH_LIST,
     MODEL_FILETYPES,
@@ -27,6 +28,7 @@ from .utils.comfy.api import ComfyAPI
 from .utils.comfy.methods import ComfyMethod
 from .utils.common import (
     clear_directory,
+    convert_to_relative_path,
     copy_files,
     find_file_in_directory,
     find_process_by_port,
@@ -209,7 +211,8 @@ class ComfyRunner:
 
         models_not_found = []
         for m in ignored_models_found:
-            if "filepath" in m and m["filepath"] and not os.path.exists(m["filepath"]):
+            model_path = convert_to_relative_path(m["filepath"], COMFY_MODELS_BASE_PATH) if "filepath" in m else None
+            if model_path and not os.path.exists(model_path):
                 models_not_found.append({"model": m["filename"], "similar_models": []})
             else:
                 app_logger.log(LoggingType.DEBUG, f"Ignoring model {m['filename']}")
@@ -221,7 +224,7 @@ class ComfyRunner:
             base_path = os.path.basename(base_path) if base_path else None
             if not search_file(
                 model,
-                COMFY_BASE_PATH,
+                COMFY_MODELS_BASE_PATH,
                 parent_folder=base_path,
             ):
                 m_l.append(model)
@@ -233,7 +236,7 @@ class ComfyRunner:
             )
             if not status:
                 models_not_found.append(
-                    {"model": model, "similar_models": similar_models}
+                    {"model": model, "similar_models": similar_models,}
                 )
             elif file_status == FileStatus.NEW_DOWNLOAD.value:
                 models_downloaded = True
@@ -562,7 +565,7 @@ class ComfyRunner:
                     copy_files(filepath, dest_path, overwrite=True)
 
             # checkpoints, lora, default etc..
-            comfy_directory = COMFY_BASE_PATH + "models/"
+            comfy_directory = COMFY_MODELS_BASE_PATH + "models/"
             comfy_model_folders = [
                 folder
                 for folder in os.listdir(comfy_directory)

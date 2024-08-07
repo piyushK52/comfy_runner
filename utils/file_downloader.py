@@ -6,7 +6,12 @@ import tarfile
 import zipfile
 import json
 from tqdm import tqdm
-from ..constants import APP_PORT, COMFY_BASE_PATH, COMFY_MODEL_PATH_LIST, SERVER_ADDR
+from ..constants import (
+    APP_PORT,
+    COMFY_MODELS_BASE_PATH,
+    COMFY_MODEL_PATH_LIST,
+    SERVER_ADDR,
+)
 from .comfy.api import ComfyAPI
 
 from .common import (
@@ -106,7 +111,10 @@ class ModelDownloader(FileDownloader):
                     if model_name not in self.model_download_dict:
                         self.model_download_dict[model_name] = {
                             "url": data[model_name]["url"],
-                            "dest": convert_to_relative_path(data[model_name]["dest"]),
+                            "dest": convert_to_relative_path(
+                                data[model_name]["dest"],
+                                base_comfy=COMFY_MODELS_BASE_PATH,
+                            ),
                         }
 
     def _get_similar_models(self, model_name):
@@ -159,14 +167,17 @@ class ModelDownloader(FileDownloader):
                 return (
                     model["filename"],
                     model["url"],
-                    os.path.join(COMFY_BASE_PATH, "models", model["save_path"]),
+                    os.path.join(COMFY_MODELS_BASE_PATH, "models", model["save_path"]),
                 )
 
         elif model_name in self.model_download_dict:
             return (
                 model_name,
                 self.model_download_dict[model_name]["url"],
-                convert_to_relative_path(self.model_download_dict[model_name]["dest"]),
+                convert_to_relative_path(
+                    self.model_download_dict[model_name]["dest"],
+                    base_comfy=COMFY_MODELS_BASE_PATH,
+                ),
             )
 
         return None, None, None

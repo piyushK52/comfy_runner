@@ -140,12 +140,12 @@ def search_file(filename, directory, parent_folder=None):
     return False
 
 
-def convert_to_relative_path(path):
+def convert_to_relative_path(path, base_comfy=COMFY_BASE_PATH):
     local_paths = ["ComfyUI/", "./ComfyUI/", "../ComfyUI/"]
     mod_path = path
     for pth in local_paths:
         if path.startswith(pth):
-            mod_path = COMFY_BASE_PATH + path[len(pth) :]
+            mod_path = base_comfy + path[len(pth) :]
 
     return mod_path
 
