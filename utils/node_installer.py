@@ -1,7 +1,9 @@
+import shutil
 import subprocess
 import sys
 import os
 import platform
+import time
 import urllib
 from urllib.parse import urlparse
 import zipfile
@@ -107,23 +109,38 @@ class NodeInstaller:
         repo_name = os.path.splitext(os.path.basename(url))[0]
         repo_path = os.path.join(custom_nodes_path, repo_name)
 
-        try:
-            repo = git.Repo.clone_from(
-                url,
-                repo_path,
-                recursive=True,
-                progress=GitProgress(),
-            )
+        max_retries = 5
+        for attempt in range(max_retries):
+            try:
+                if os.path.exists(repo_path):
+                    shutil.rmtree(repo_path)
+                
+                repo = git.Repo.clone_from(
+                    url,
+                    repo_path,
+                    recursive=True,
+                    progress=GitProgress(),
+                )
 
-            if target_hash is not None:
-                print(f"CHECKOUT: {repo_name} [{target_hash}]")
-                repo.git.checkout(target_hash)
+                if target_hash is not None:
+                    print(f"CHECKOUT: {repo_name} [{target_hash}]")
+                    repo.git.checkout(target_hash)
 
-            repo.git.clear_cache()
-            repo.close()
-            return True
-        except Exception as e:
-            return False
+                repo.git.clear_cache()
+                repo.close()
+                print(f"Successfully cloned {repo_name}")
+                return True
+            
+            except Exception as e:
+                print(f"An unexpected error occurred while cloning {repo_name}: {str(e)}")
+                if attempt < max_retries - 1:
+                    delay = 0.5
+                    print(f"Retrying in {delay} seconds...")
+                    time.sleep(delay)
+                else:
+                    print(f"Failed to clone {repo_name} after {max_retries} attempts")
+        
+        return False
 
     def _unzip_install(self, files):
         # simply downloads the url and extracts it
