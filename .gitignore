@@ -16,3 +16,5 @@ venv
 ComfyUI/
 test.py
 output/
+
+generation_status.txt

@@ -12,6 +12,8 @@ import websocket
 import uuid
 from git import Repo
 
+from .utils.gen_status_tracker import GenerationStatusTracker
+
 from .utils.node_installer import get_node_installer
 from .constants import (
     APP_PORT,
@@ -42,6 +44,7 @@ class ComfyRunner:
     def __init__(self):
         self.comfy_api = ComfyAPI(SERVER_ADDR, APP_PORT)
         self.model_downloader = ModelDownloader(MODEL_DOWNLOAD_PATH_LIST)
+        self.gen_status_tracker = GenerationStatusTracker()
 
     # TODO: create mixins for these kind of methods
     def is_server_running(self):
@@ -182,7 +185,11 @@ class ComfyRunner:
         return ans
 
     def download_models(
-        self, workflow, extra_models_list, ignore_model_list=[]
+        self,
+        workflow,
+        extra_models_list,
+        ignore_model_list=[],
+        client_id=None,
     ) -> dict:
         models_downloaded = False
         self.model_downloader.load_comfy_models()
@@ -211,7 +218,11 @@ class ComfyRunner:
 
         models_not_found = []
         for m in ignored_models_found:
-            model_path = convert_to_relative_path(m["filepath"], COMFY_MODELS_BASE_PATH) if "filepath" in m else None
+            model_path = (
+                convert_to_relative_path(m["filepath"], COMFY_MODELS_BASE_PATH)
+                if "filepath" in m
+                else None
+            )
             if model_path and not os.path.exists(model_path):
                 models_not_found.append({"model": m["filename"], "similar_models": []})
             else:
@@ -231,21 +242,33 @@ class ComfyRunner:
         models_to_download = m_l
 
         for model in models_to_download:
+            if self.gen_status_tracker.is_generation_cancelled(client_id):
+                break
+
             status, similar_models, file_status = self.model_downloader.download_model(
                 model
             )
             if not status:
                 models_not_found.append(
-                    {"model": model, "similar_models": similar_models,}
+                    {
+                        "model": model,
+                        "similar_models": similar_models,
+                    }
                 )
             elif file_status == FileStatus.NEW_DOWNLOAD.value:
                 models_downloaded = True
 
         # downloading extra models
         for model in extra_models_list:
+            if self.gen_status_tracker.is_generation_cancelled(client_id):
+                break
+
             status, file_status = self.model_downloader.download_file(
-                model["filename"], model["url"], model["dest"]
+                model["filename"],
+                model["url"],
+                model["dest"],
             )
+
             if status:
                 models_downloaded = (
                     True if file_status == FileStatus.NEW_DOWNLOAD.value else False
@@ -269,7 +292,12 @@ class ComfyRunner:
             "status": False if len(models_not_found) else True,
         }
 
-    def download_custom_nodes(self, workflow, extra_node_urls) -> dict:
+    def download_custom_nodes(
+        self,
+        workflow,
+        extra_node_urls,
+        client_id=None,
+    ) -> dict:
         nodes_installed = False
 
         # installing missing nodes
@@ -290,6 +318,9 @@ class ComfyRunner:
                     node["files"][0]
                 ]
                 continue
+
+            if self.gen_status_tracker.is_generation_cancelled(client_id):
+                break
 
             app_logger.log(LoggingType.DEBUG, f"Installing {node['title']}")
             if node["installed"] in ["False", False]:
@@ -335,6 +366,9 @@ class ComfyRunner:
                     nodes_to_install.append(node)
 
             for n in nodes_to_install:
+                if self.gen_status_tracker.is_generation_cancelled(client_id):
+                    break
+
                 nodes_installed = True
                 app_logger.log(LoggingType.DEBUG, f"Installing {n['reference']}")
                 status = self.comfy_api.install_custom_node(n)
@@ -345,6 +379,9 @@ class ComfyRunner:
 
             custom_node_installer = get_node_installer()
             for n in nodes_to_install_with_commit_hash:
+                if self.gen_status_tracker.is_generation_cancelled(client_id):
+                    break
+
                 app_logger.log(LoggingType.DEBUG, f"Installing {n['title']}")
                 nodes_installed = True
                 json_data = {
@@ -378,18 +415,19 @@ class ComfyRunner:
 
         return workflow_input if ComfyMethod.is_api_json(workflow_input) else None
 
-    def stop_current_generation(self, client_id=None, retry_window=5):
+    def stop_current_generation(self, client_id=None, retry_window=3):
         """
         CAUTION: This stops any running generation on active comfyui APP_PORT (default 8188)
         client_id: tag used to identify generations
         retry_window: the amount of time (in secs) it will try to find the process (as it takes a while for comfy to start the generation)
         """
+        self.gen_status_tracker.mark_generation_cancelled(client_id)
         try:
             if not client_id:
                 self.comfy_api.interrupt_prompt()
             else:
                 while retry_window > 0:
-                    retry_gap = 2
+                    retry_gap = 1
                     current_running_gen = self.get_queue_items()
                     # exiting if unable to connect to comfy
                     if not current_running_gen:
@@ -409,14 +447,16 @@ class ComfyRunner:
                             )
                             return True
 
-                    time.sleep(retry_gap)
                     retry_window -= retry_gap
+                    if retry_window > 0:
+                        time.sleep(retry_gap)
+
         except Exception as e:
             app_logger.log(LoggingType.DEBUG, f"Error stopping the generation {str(e)}")
             pass
 
-        app_logger.log(LoggingType.ERROR, "Generation not found, aborting process")
-        return False
+        app_logger.log(LoggingType.INFO, "Generation marked as cancelled")
+        return True
 
     def get_queue_items(self):
         connection_attempts = 12
@@ -461,6 +501,7 @@ class ComfyRunner:
         output_list = {}
         try:
             # TODO: add support for image and normal json files
+            client_id = client_id or str(uuid.uuid4())
             workflow = self.load_workflow(workflow_input)
             if not workflow:
                 app_logger.log(LoggingType.ERROR, "Invalid workflow file")
@@ -489,7 +530,10 @@ class ComfyRunner:
                         )
                         comfy_repo.git.checkout(comfy_commit_hash)
                 except Exception as e:
-                    print("unable to checkout Comfy, aborting")
+                    app_logger.log(
+                        LoggingType.ERROR,
+                        "unable to checkout Comfy, aborting " + str(e),
+                    )
                     return None
 
             if not os.path.exists(COMFY_BASE_PATH + "custom_nodes/ComfyUI-Manager"):
@@ -499,7 +543,8 @@ class ComfyRunner:
 
             # installing requirements
             app_logger.log(
-                LoggingType.DEBUG, "Checking comfy requirements, please wait..."
+                LoggingType.DEBUG,
+                "Checking comfy requirements, please wait...",
             )
             subprocess.run(
                 ["pip", "install", "-r", COMFY_BASE_PATH + "requirements.txt"],
@@ -516,16 +561,25 @@ class ComfyRunner:
             self.start_server()
 
             # download custom nodes
-            res_custom_nodes = self.download_custom_nodes(workflow, extra_node_urls)
+            res_custom_nodes = self.download_custom_nodes(
+                workflow,
+                extra_node_urls,
+                client_id,
+            )
             if not res_custom_nodes["status"]:
                 app_logger.log(LoggingType.ERROR, res_custom_nodes["message"])
                 return
 
             # download models if not already present
             res_models = self.download_models(
-                workflow, extra_models_list, ignore_model_list
+                workflow,
+                extra_models_list,
+                ignore_model_list,
+                client_id,
             )
-            if not res_models["status"]:
+            if not res_models[
+                "status"
+            ] and not self.gen_status_tracker.is_generation_cancelled(client_id):
                 app_logger.log(LoggingType.ERROR, res_models["message"])
                 if len(res_models["data"]["models_not_found"]):
                     app_logger.log(
@@ -615,7 +669,10 @@ class ComfyRunner:
 
             # get the result
             app_logger.log(LoggingType.INFO, "Generating output please wait")
-            client_id = client_id or str(uuid.uuid4())
+            if self.gen_status_tracker.is_generation_cancelled(client_id):
+                app_logger.log(LoggingType.INFO, "Generation cancelled by the user")
+                return None
+
             ws = websocket.WebSocket()
             host = SERVER_ADDR + ":" + str(APP_PORT)
             host = host.replace("http://", "").replace("https://", "")
