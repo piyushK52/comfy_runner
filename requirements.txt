@@ -9,3 +9,4 @@ requests==2.31.0
 tqdm==4.66.1
 python-dotenv==0.19.2
 onnxruntime-gpu
+portalocker==2.10.1
