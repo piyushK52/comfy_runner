@@ -1,15 +1,18 @@
 import glob
+import importlib
 import json
 import os
 import platform
 import time
 import sys
 import traceback
+import pkg_resources
 import psutil
 import subprocess
 import re
 import websocket
 import uuid
+import git
 from git import Repo
 
 from .utils.gen_status_tracker import GenerationStatusTracker
@@ -471,6 +474,34 @@ class ComfyRunner:
         )
         return None
 
+    def quick_requirements_check(self, requirements_file):
+        """
+        this method only checks for package name and not their version.
+        potential issue - if the installed pkg name is different from the requirements.txt
+        then this will always return the pkg as missing
+        """
+        with open(requirements_file, "r") as f:
+            requirements = []
+            for line in f:
+                if line.strip() and not line.startswith("#"):
+                    delimeter = "=="
+                    if ">=" in line.strip():
+                        delimeter = ">="
+                    elif "<=" in line.strip():
+                        delimeter = "<="
+
+                    requirements.append(line.strip().lower().split(delimeter)[0])
+
+        missing = []
+        installed_pkg_list = sorted(
+            [dist.project_name.lower() for dist in pkg_resources.working_set]
+        )
+        for package in requirements:
+            if package not in installed_pkg_list:
+                missing.append(package)
+
+        return missing
+
     def predict(
         self,
         workflow_input,
@@ -508,31 +539,37 @@ class ComfyRunner:
                 return
 
             # cloning comfy repo
-            app_logger.log(LoggingType.DEBUG, "cloning comfy repo")
             comfy_repo_url = "https://github.com/comfyanonymous/ComfyUI"
             comfy_manager_url = "https://github.com/ltdrdata/ComfyUI-Manager"
             if not os.path.exists(COMFY_BASE_PATH):
+                app_logger.log(LoggingType.DEBUG, "cloning comfy repo")
                 comfy_repo = Repo.clone_from(comfy_repo_url, COMFY_BASE_PATH)
 
             if comfy_commit_hash is not None:
                 try:
                     comfy_repo = Repo(COMFY_BASE_PATH)
                     current_hash = comfy_repo.rev_parse("HEAD")
+
                     if str(current_hash) == comfy_commit_hash:
-                        app_logger.log(
-                            LoggingType.DEBUG,
-                            f"ComfyUI at stable commit hash",
-                        )
+                        # app_logger.log(
+                        #     LoggingType.DEBUG,
+                        #     "ComfyUI already at specified commit hash",
+                        # )
+                        pass
                     else:
                         app_logger.log(
                             LoggingType.DEBUG,
-                            f"Moving ComfyUI to commit {comfy_commit_hash}",
+                            f"Attempting to move ComfyUI to commit {comfy_commit_hash}",
                         )
+                        comfy_repo.remotes.origin.fetch()
                         comfy_repo.git.checkout(comfy_commit_hash)
+                        app_logger.log(
+                            LoggingType.DEBUG,
+                            f"Successfully moved ComfyUI to commit {comfy_commit_hash}",
+                        )
                 except Exception as e:
                     app_logger.log(
-                        LoggingType.ERROR,
-                        "unable to checkout Comfy, aborting " + str(e),
+                        LoggingType.ERROR, f"Unable to checkout ComfyUI: {str(e)}"
                     )
                     return None
 
@@ -546,12 +583,17 @@ class ComfyRunner:
                 LoggingType.DEBUG,
                 "Checking comfy requirements, please wait...",
             )
-            subprocess.run(
-                ["pip", "install", "-r", COMFY_BASE_PATH + "requirements.txt"],
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
-                check=True,
+            missing_pkg_list = self.quick_requirements_check(
+                os.path.join(COMFY_BASE_PATH, "requirements.txt")
             )
+            if missing_pkg_list and len(missing_pkg_list):
+                print("missing packages: ", missing_pkg_list)
+                subprocess.run(
+                    ["pip", "install", "-r", COMFY_BASE_PATH + "requirements.txt"],
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                    check=True,
+                )
 
             # clearing the previous logs
             if not self.is_server_running():
