@@ -1,3 +1,4 @@
+import random
 import shutil
 import subprocess
 import sys
@@ -202,31 +203,41 @@ class NodeInstaller:
                 print(f"Invalid git url: '{url}'")
                 return False
 
+            max_retries = 5
             if url.endswith("/"):
                 url = url[:-1]
-            try:
-                print(f"Download: git clone '{url}'")
-                repo_name = os.path.splitext(os.path.basename(url))[0]
-                repo_path = os.path.join(self.custom_nodes_path, repo_name)
+            
+            status = True
+            for attempt in range(max_retries):
+                try:
+                    print(f"Download: git clone '{url}'")
+                    repo_name = os.path.splitext(os.path.basename(url))[0]
+                    repo_path = os.path.join(self.custom_nodes_path, repo_name)
 
-                # Clone the repository from the remote URL
-                res = self._gitclone(
-                    self.custom_nodes_path,
-                    url,
-                    commit_hash_list[idx] if idx < len(commit_hash_list) else None,
-                )
-                if not res:
-                    return False
+                    # Clone the repository from the remote URL
+                    res = self._gitclone(
+                        self.custom_nodes_path,
+                        url,
+                        commit_hash_list[idx] if idx < len(commit_hash_list) else None,
+                    )
+                    if not res:
+                        status = False
+                        break
+                    
+                    # debugging code
+                    # if not random.random() <= 0.5:
+                    #     raise Exception("manual exception")
 
-                if not self._execute_install_script(url, repo_path):
-                    return False
+                    if not self._execute_install_script(url, repo_path):
+                        status = False
+                    
+                    break
+                except Exception as e:
+                    print(f"Install(git-clone) error: {url} / {e}", file=sys.stderr)
+                    print("***** RETRYING...")
 
-            except Exception as e:
-                print(f"Install(git-clone) error: {url} / {e}", file=sys.stderr)
-                return False
-
-        print("Installation was successful.")
-        return True
+        print("Installation was " + ("successfull" if status else "unsuccessfull"))
+        return status
 
     # ----------- main method -----------------
     def install_node(self, json_data):
