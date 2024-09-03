@@ -515,6 +515,7 @@ class ComfyRunner:
         ignore_model_list=[],
         client_id=None,
         comfy_commit_hash=None,
+        strict_dep_list=None,   # {numpy: 1.24.4, ...}
     ):
         """
         workflow_input:                 API json of the workflow. Can be a filepath or str
@@ -528,6 +529,7 @@ class ComfyRunner:
         ignore_model_list:              these models won't be downloaded (in cases where these are manually placed)
         client_id:                      this can be used as a tag for the generations
         comfy_commit_hash:              specific comfy commit to checkout
+        strict_dep_list:                list of pkgs and their versions that can't be overrided by new nodes installation
         """
         output_list = {}
         try:
@@ -640,10 +642,21 @@ class ComfyRunner:
                 return
 
             # restart the server if custom nodes or models are installed
+            # also check for the strict dependencies (strict_dep_list)
             if (
                 res_custom_nodes["data"]["nodes_installed"]
                 or res_models["data"]["models_downloaded"]
             ):
+                if strict_dep_list and len(strict_dep_list):
+                    for package, version in strict_dep_list.items():
+                        cmd = [sys.executable, "-m", "pip", "install", f"{package}=={version}"]
+                        
+                        try:
+                            subprocess.check_call(cmd)
+                            app_logger.log(LoggingType.DEBUG, f"Moved {package} to {version}")
+                        except subprocess.CalledProcessError as e:
+                            print(f"Failed to move {package} {version}. Error: {e}")
+                
                 app_logger.log(LoggingType.INFO, "Restarting the server")
                 self.stop_server()
                 self.start_server()
