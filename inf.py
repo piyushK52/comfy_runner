@@ -10,6 +10,7 @@ import pkg_resources
 import psutil
 import subprocess
 import re
+import toml
 import websocket
 import uuid
 import git
@@ -38,7 +39,7 @@ from .utils.common import (
     find_file_in_directory,
     find_process_by_port,
     search_file,
-    update_toml_config
+    update_toml_config,
 )
 from .utils.file_downloader import FileStatus, ModelDownloader
 from .utils.logger import LoggingType, app_logger
@@ -516,8 +517,8 @@ class ComfyRunner:
         ignore_model_list=[],
         client_id=None,
         comfy_commit_hash=None,
-        strict_dep_list=None,   # {numpy: 1.24.4, ...}
-        checkpointing_data=None     # { "network_data" : {"type": "Salad", "organisation": "xyz", "api-key": "xyz"}}
+        strict_dep_list=None,  # {numpy: 1.24.4, ...}
+        checkpointing_data=None,  # { "network_data" : {"type": "Salad", "organisation": "xyz", "api-key": "xyz"}}
     ):
         """
         workflow_input:                 API json of the workflow. Can be a filepath or str
@@ -606,24 +607,40 @@ class ComfyRunner:
 
             # start the comfy server if not already running
             self.start_server()
-            
+
             # enabling checkpointing
-            checkpoint_node_path = os.path.join(COMFY_BASE_PATH, "custom_nodes"  "comfy-checkpointing")
+            checkpoint_node_added = False
+            checkpoint_node_path = os.path.join(
+                COMFY_BASE_PATH, "custom_nodes", "comfy-checkpointing"
+            )
+            checkpoint_config_path = os.path.join(checkpoint_node_path, "config.toml")
             if checkpointing_data:
-                custom_node_installer = get_node_installer()
-                json_data = {
-                    "files": ["https://github.com/piyushK52/comfy-checkpointing"],
-                    "install_type": "git-clone",
-                }
-                status = custom_node_installer.install_node(json_data)
+                status = True
+                if not os.path.exists(checkpoint_node_path):
+                    custom_node_installer = get_node_installer()
+                    json_data = {
+                        "files": ["https://github.com/piyushK52/comfy-checkpointing"],
+                        "install_type": "git-clone",
+                    }
+                    status = custom_node_installer.install_node(json_data)
+                    checkpoint_node_added = status
+
                 if not status:
-                    app_logger.log(LoggingType.ERROR, "Unable to enable checkpoint node")
+                    app_logger.log(
+                        LoggingType.ERROR, "Unable to enable checkpoint node"
+                    )
                 else:
-                    update_toml_config(os.path.join(checkpoint_node_path, "config.toml"), checkpointing_data)
+                    if not os.path.exists(checkpoint_config_path):
+                        with open(checkpoint_config_path, "w") as config_file:
+                            toml.dump({}, config_file)
+
+                    update_toml_config(checkpoint_config_path, checkpointing_data)
                     app_logger.log(LoggingType.INFO, "Checkpointing enabled")
             else:
-                if os.path.exists(checkpoint_node_path):
-                    update_toml_config(os.path.join(checkpoint_node_path, "config.toml"), {})
+                if os.path.exists(checkpoint_node_path) and os.path.exists(
+                    checkpoint_config_path
+                ):
+                    update_toml_config(checkpoint_config_path, {})
 
             # download custom nodes
             res_custom_nodes = self.download_custom_nodes(
@@ -667,17 +684,26 @@ class ComfyRunner:
             if (
                 res_custom_nodes["data"]["nodes_installed"]
                 or res_models["data"]["models_downloaded"]
+                or checkpoint_node_added
             ):
                 if strict_dep_list and len(strict_dep_list):
                     for package, version in strict_dep_list.items():
-                        cmd = [sys.executable, "-m", "pip", "install", f"{package}=={version}"]
-                        
+                        cmd = [
+                            sys.executable,
+                            "-m",
+                            "pip",
+                            "install",
+                            f"{package}=={version}",
+                        ]
+
                         try:
                             subprocess.check_call(cmd)
-                            app_logger.log(LoggingType.DEBUG, f"Moved {package} to {version}")
+                            app_logger.log(
+                                LoggingType.DEBUG, f"Moved {package} to {version}"
+                            )
                         except subprocess.CalledProcessError as e:
                             print(f"Failed to move {package} {version}. Error: {e}")
-                
+
                 app_logger.log(LoggingType.INFO, "Restarting the server")
                 self.stop_server()
                 self.start_server()

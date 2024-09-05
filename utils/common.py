@@ -181,7 +181,7 @@ def get_default_save_path(model_type):
 
 def update_toml_config(toml_config_path, toml_dict):
     if not toml_config_path or not os.path.exists(toml_config_path):
-        raise Exception("Invalid toml file path")
+        raise Exception("Invalid toml file path: ", toml_config_path)
 
     with open(toml_config_path, "wb") as f:
         toml_content = toml.dumps(toml_dict)
