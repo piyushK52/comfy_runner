@@ -1,5 +1,6 @@
 from enum import Enum
 import os
+from urllib.parse import urlparse
 
 import requests
 import tarfile
@@ -52,6 +53,19 @@ class FileDownloader:
         #     return downloaded_file_size == url_file_size if not zip_file else \
         #         percentage_diff(downloaded_file_size, url_file_size) <= 2
         # return False
+    
+    def background_download(self, url, dest):
+        # downloads without a progress bar + overwrites existing files (no checks performed)
+        # suited for small quick downloads
+        os.makedirs(dest, exist_ok=True)
+        response = requests.get(url, stream=True)
+        response.raise_for_status()
+        filename = os.path.basename(urlparse(url).path) or 'downloaded_file'
+        filepath = os.path.join(dest, filename)
+        with open(filepath, 'wb') as f:
+            for chunk in response.iter_content(chunk_size=8192):
+                f.write(chunk)
+        return filepath
 
     def download_file(self, filename, url, dest):
         os.makedirs(dest, exist_ok=True)

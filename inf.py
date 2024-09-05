@@ -1,3 +1,4 @@
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import glob
 import importlib
 import json
@@ -38,10 +39,11 @@ from .utils.common import (
     copy_files,
     find_file_in_directory,
     find_process_by_port,
+    is_url,
     search_file,
     update_toml_config,
 )
-from .utils.file_downloader import FileStatus, ModelDownloader
+from .utils.file_downloader import FileDownloader, FileStatus, ModelDownloader
 from .utils.logger import LoggingType, app_logger
 
 
@@ -504,6 +506,14 @@ class ComfyRunner:
 
         return missing
 
+    def process_file(self, item):
+        source, dest_path = item
+        download_file = FileDownloader().background_download
+        if is_url(source):
+            return download_file(source, dest_path)
+        else:
+            return copy_files(source, dest_path, overwrite=True)
+    
     def predict(
         self,
         workflow_input,
@@ -709,16 +719,26 @@ class ComfyRunner:
                 self.start_server()
 
             if len(file_path_list):
+                task_list = []
                 clear_directory("./ComfyUI/input")
                 for filepath in file_path_list:
                     if isinstance(filepath, str):
-                        filepath, dest_path = filepath, "./ComfyUI/input/"
+                        source, dest_path = filepath, "./ComfyUI/input/"
                     else:
-                        filepath, dest_path = (
+                        source, dest_path = (
                             filepath["filepath"],
                             "./ComfyUI/input/" + filepath["dest_folder"] + "/",
                         )
-                    copy_files(filepath, dest_path, overwrite=True)
+                    
+                    task_list.append((source, dest_path))
+                
+                with ThreadPoolExecutor(max_workers=5) as executor:
+                    futures = [executor.submit(self.process_file, task) for task in task_list]
+                    for future in as_completed(futures):
+                        try:
+                            future.result()
+                        except Exception as exc:
+                            print(f'An error occurred: {exc}')
 
             # checkpoints, lora, default etc..
             comfy_directory = COMFY_MODELS_BASE_PATH + "models/"

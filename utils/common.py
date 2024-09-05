@@ -1,3 +1,4 @@
+from urllib.parse import urlparse
 import requests
 from fuzzywuzzy import process
 import os
@@ -186,3 +187,11 @@ def update_toml_config(toml_config_path, toml_dict):
     with open(toml_config_path, "wb") as f:
         toml_content = toml.dumps(toml_dict)
         f.write(toml_content.encode())
+
+
+def is_url(path):
+    try:
+        result = urlparse(path)
+        return all([result.scheme, result.netloc])
+    except ValueError:
+        return False
