@@ -3,6 +3,7 @@ from fuzzywuzzy import process
 import os
 import shutil
 import psutil
+import toml
 
 from ..constants import COMFY_BASE_PATH
 
@@ -176,3 +177,12 @@ def get_default_save_path(model_type):
         base_model = "embeddings"
 
     return base_model
+
+
+def update_toml_config(toml_config_path, toml_dict):
+    if not toml_config_path or not os.path.exists(toml_config_path):
+        raise Exception("Invalid toml file path")
+
+    with open(toml_config_path, "wb") as f:
+        toml_content = toml.dumps(toml_dict)
+        f.write(toml_content.encode())

@@ -38,6 +38,7 @@ from .utils.common import (
     find_file_in_directory,
     find_process_by_port,
     search_file,
+    update_toml_config
 )
 from .utils.file_downloader import FileStatus, ModelDownloader
 from .utils.logger import LoggingType, app_logger
@@ -516,6 +517,7 @@ class ComfyRunner:
         client_id=None,
         comfy_commit_hash=None,
         strict_dep_list=None,   # {numpy: 1.24.4, ...}
+        checkpointing_data=None     # { "network_data" : {"type": "Salad", "organisation": "xyz", "api-key": "xyz"}}
     ):
         """
         workflow_input:                 API json of the workflow. Can be a filepath or str
@@ -530,6 +532,7 @@ class ComfyRunner:
         client_id:                      this can be used as a tag for the generations
         comfy_commit_hash:              specific comfy commit to checkout
         strict_dep_list:                list of pkgs and their versions that can't be overrided by new nodes installation
+        checkpointing_data:             config to enable sampler latent checkpointing
         """
         output_list = {}
         try:
@@ -603,6 +606,24 @@ class ComfyRunner:
 
             # start the comfy server if not already running
             self.start_server()
+            
+            # enabling checkpointing
+            checkpoint_node_path = os.path.join(COMFY_BASE_PATH, "custom_nodes"  "comfy-checkpointing")
+            if checkpointing_data:
+                custom_node_installer = get_node_installer()
+                json_data = {
+                    "files": ["https://github.com/piyushK52/comfy-checkpointing"],
+                    "install_type": "git-clone",
+                }
+                status = custom_node_installer.install_node(json_data)
+                if not status:
+                    app_logger.log(LoggingType.ERROR, "Unable to enable checkpoint node")
+                else:
+                    update_toml_config(os.path.join(checkpoint_node_path, "config.toml"), checkpointing_data)
+                    app_logger.log(LoggingType.INFO, "Checkpointing enabled")
+            else:
+                if os.path.exists(checkpoint_node_path):
+                    update_toml_config(os.path.join(checkpoint_node_path, "config.toml"), {})
 
             # download custom nodes
             res_custom_nodes = self.download_custom_nodes(
