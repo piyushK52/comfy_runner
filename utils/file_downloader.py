@@ -1,5 +1,6 @@
 from enum import Enum
 import os
+import time
 from urllib.parse import urlparse
 
 import requests
@@ -30,6 +31,7 @@ class FileStatus(Enum):
     NEW_DOWNLOAD = "new_download"
     ALREADY_PRESENT = "already_present"
     UNAVAILABLE = "unavailable"
+    FAILED = "failed"   # not proper
 
 
 class FileDownloader:
@@ -79,29 +81,39 @@ class FileDownloader:
             if os.path.exists(f"{dest}/{filename}"):
                 os.remove(f"{dest}/{filename}")
 
-        # download progress bar
-        app_logger.log(LoggingType.INFO, f"Downloading {filename}")
-        response = requests.get(url, stream=True)
-        total_size = int(response.headers.get("content-length", 0))
-        progress_bar = tqdm(total=total_size, unit="B", unit_scale=True)
-        with open(f"{dest}/{filename}", "wb") as handle:
-            for data in tqdm(response.iter_content(chunk_size=1024)):
-                handle.write(data)
-                progress_bar.update(len(data))
+        max_retries = 3
+        retry_delay = 3
+        for _ in range(max_retries):
+            try:
+                # download progress bar
+                app_logger.log(LoggingType.INFO, f"Downloading {filename}")
+                response = requests.get(url, stream=True)
+                total_size = int(response.headers.get("content-length", 0))
+                progress_bar = tqdm(total=total_size, unit="B", unit_scale=True)
+                with open(f"{dest}/{filename}", "wb") as handle:
+                    for data in tqdm(response.iter_content(chunk_size=1024)):
+                        handle.write(data)
+                        progress_bar.update(len(data))
 
-        # extract files if the downloaded file is a .zip or .tar
-        if url.endswith(".zip") or url.endswith(".tar"):
-            new_filename = filename + (".zip" if url.endswith(".zip") else ".tar")
-            os.rename(f"{dest}/{filename}", f"{dest}/{new_filename}")
-            if url.endswith(".zip"):
-                with zipfile.ZipFile(f"{dest}/{new_filename}", "r") as zip_ref:
-                    zip_ref.extractall(dest)
-            else:
-                with tarfile.open(f"{dest}/{new_filename}", "r") as tar_ref:
-                    tar_ref.extractall(dest)
-            os.remove(f"{dest}/{new_filename}")
+                # extract files if the downloaded file is a .zip or .tar
+                if url.endswith(".zip") or url.endswith(".tar"):
+                    new_filename = filename + (".zip" if url.endswith(".zip") else ".tar")
+                    os.rename(f"{dest}/{filename}", f"{dest}/{new_filename}")
+                    if url.endswith(".zip"):
+                        with zipfile.ZipFile(f"{dest}/{new_filename}", "r") as zip_ref:
+                            zip_ref.extractall(dest)
+                    else:
+                        with tarfile.open(f"{dest}/{new_filename}", "r") as tar_ref:
+                            tar_ref.extractall(dest)
+                    os.remove(f"{dest}/{new_filename}")
 
-        return True, FileStatus.NEW_DOWNLOAD.value
+                return True, FileStatus.NEW_DOWNLOAD.value
+            except Exception as e:
+                app_logger.log(LoggingType.ERROR, f"Download failed: {str(e)}. Retrying in {retry_delay} seconds...")
+                time.sleep(retry_delay)
+                
+        app_logger.log(LoggingType.ERROR, f"Failed to download {filename} after {max_retries} attempts")
+        return False, FileStatus.FAILED.value
 
 
 class ModelDownloader(FileDownloader):
