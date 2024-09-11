@@ -507,13 +507,13 @@ class ComfyRunner:
         return missing
 
     def process_file(self, item):
-        source, dest_path = item
+        source, dest_path, filename = item
         download_file = FileDownloader().background_download
         if is_url(source):
-            return download_file(source, dest_path)
+            return download_file(source, dest_path, filename)
         else:
-            return copy_files(source, dest_path, overwrite=True)
-    
+            return copy_files(source, dest_path, overwrite=True, filename=filename)
+
     def predict(
         self,
         workflow_input,
@@ -590,8 +590,14 @@ class ComfyRunner:
                     return None
 
             if not os.path.exists(COMFY_BASE_PATH + "custom_nodes/ComfyUI-Manager"):
+                custom_manager_hash = None
+                for n in extra_node_urls:
+                    if n["title"] == "ComfyUI-Mananger":
+                        custom_manager_hash = n["commit_hash"]
                 os.chdir(COMFY_BASE_PATH + "custom_nodes/")
-                Repo.clone_from(comfy_manager_url, "ComfyUI-Manager")
+                manager_repo = Repo.clone_from(comfy_manager_url, "ComfyUI-Manager")
+                if custom_manager_hash:
+                    manager_repo.git.checkout(custom_manager_hash)
                 os.chdir("../../")
 
             # installing requirements
@@ -724,21 +730,25 @@ class ComfyRunner:
                 for filepath in file_path_list:
                     if isinstance(filepath, str):
                         source, dest_path = filepath, "./ComfyUI/input/"
+                        filename = None
                     else:
                         source, dest_path = (
                             filepath["filepath"],
                             "./ComfyUI/input/" + filepath["dest_folder"] + "/",
                         )
-                    
-                    task_list.append((source, dest_path))
-                
+                        filename = filepath.get("filename", None)
+
+                    task_list.append((source, dest_path, filename))
+
                 with ThreadPoolExecutor(max_workers=5) as executor:
-                    futures = [executor.submit(self.process_file, task) for task in task_list]
+                    futures = [
+                        executor.submit(self.process_file, task) for task in task_list
+                    ]
                     for future in as_completed(futures):
                         try:
                             future.result()
                         except Exception as exc:
-                            print(f'An error occurred: {exc}')
+                            print(f"An error occurred: {exc}")
 
             # checkpoints, lora, default etc..
             comfy_directory = COMFY_MODELS_BASE_PATH + "models/"
@@ -763,8 +773,16 @@ class ComfyRunner:
                                 comfy_directory, input
                             )
                             if len(model_path_list):
-                                # selecting the model_path which has the base, if neither has the base then selecting the first one
-                                model_path = model_path_list[0]
+                                print(model_path_list)
+                                # selecting the model_path which has the base, if neither has the base then selecting the first one or the one in the 'checkpoints' folder
+                                model_path = next(
+                                    (
+                                        path
+                                        for path in model_path_list
+                                        if "checkpoints" in path
+                                    ),
+                                    model_path_list[0],
+                                )  # preferring the "checkpoints" folder
                                 if base:
                                     matching_text_seq = (
                                         ["SD1.5"]
