@@ -506,13 +506,13 @@ class ComfyRunner:
 
         return missing
 
-    def process_file(self, item):
+    def process_file(self, item, filename=None):
         source, dest_path = item
         download_file = FileDownloader().background_download
         if is_url(source):
-            return download_file(source, dest_path)
+            return download_file(source, dest_path, filename)
         else:
-            return copy_files(source, dest_path, overwrite=True)
+            return copy_files(source, dest_path, overwrite=True, filename=filename)
 
     def predict(
         self,
@@ -730,13 +730,15 @@ class ComfyRunner:
                 for filepath in file_path_list:
                     if isinstance(filepath, str):
                         source, dest_path = filepath, "./ComfyUI/input/"
+                        filename = None
                     else:
                         source, dest_path = (
                             filepath["filepath"],
                             "./ComfyUI/input/" + filepath["dest_folder"] + "/",
                         )
+                        filename = filepath.get("filename", None)
 
-                    task_list.append((source, dest_path))
+                    task_list.append((source, dest_path, filename))
 
                 with ThreadPoolExecutor(max_workers=5) as executor:
                     futures = [

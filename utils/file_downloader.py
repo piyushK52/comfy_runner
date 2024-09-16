@@ -31,7 +31,7 @@ class FileStatus(Enum):
     NEW_DOWNLOAD = "new_download"
     ALREADY_PRESENT = "already_present"
     UNAVAILABLE = "unavailable"
-    FAILED = "failed"   # not proper
+    FAILED = "failed"  # not proper
 
 
 class FileDownloader:
@@ -55,16 +55,16 @@ class FileDownloader:
         #     return downloaded_file_size == url_file_size if not zip_file else \
         #         percentage_diff(downloaded_file_size, url_file_size) <= 2
         # return False
-    
-    def background_download(self, url, dest):
+
+    def background_download(self, url, dest, filename=None):
         # downloads without a progress bar + overwrites existing files (no checks performed)
         # suited for small quick downloads
         os.makedirs(dest, exist_ok=True)
         response = requests.get(url, stream=True)
         response.raise_for_status()
-        filename = os.path.basename(urlparse(url).path) or 'downloaded_file'
+        filename = filename or os.path.basename(urlparse(url).path)
         filepath = os.path.join(dest, filename)
-        with open(filepath, 'wb') as f:
+        with open(filepath, "wb") as f:
             for chunk in response.iter_content(chunk_size=8192):
                 f.write(chunk)
         return filepath
@@ -97,7 +97,9 @@ class FileDownloader:
 
                 # extract files if the downloaded file is a .zip or .tar
                 if url.endswith(".zip") or url.endswith(".tar"):
-                    new_filename = filename + (".zip" if url.endswith(".zip") else ".tar")
+                    new_filename = filename + (
+                        ".zip" if url.endswith(".zip") else ".tar"
+                    )
                     os.rename(f"{dest}/{filename}", f"{dest}/{new_filename}")
                     if url.endswith(".zip"):
                         with zipfile.ZipFile(f"{dest}/{new_filename}", "r") as zip_ref:
@@ -109,10 +111,16 @@ class FileDownloader:
 
                 return True, FileStatus.NEW_DOWNLOAD.value
             except Exception as e:
-                app_logger.log(LoggingType.ERROR, f"Download failed: {str(e)}. Retrying in {retry_delay} seconds...")
+                app_logger.log(
+                    LoggingType.ERROR,
+                    f"Download failed: {str(e)}. Retrying in {retry_delay} seconds...",
+                )
                 time.sleep(retry_delay)
-                
-        app_logger.log(LoggingType.ERROR, f"Failed to download {filename} after {max_retries} attempts")
+
+        app_logger.log(
+            LoggingType.ERROR,
+            f"Failed to download {filename} after {max_retries} attempts",
+        )
         return False, FileStatus.FAILED.value
 
 

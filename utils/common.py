@@ -37,7 +37,9 @@ def is_ignored_file(filename):
     return any(ignored_file.lower() in filename.lower() for ignored_file in ignore_list)
 
 
-def copy_files(source_path, destination_path, overwrite=False, delete_original=False):
+def copy_files(
+    source_path, destination_path, overwrite=False, delete_original=False, filename=None
+):
     os.makedirs(destination_path, exist_ok=True)
     destination_file = os.path.join(destination_path, os.path.basename(source_path))
 
@@ -68,7 +70,7 @@ def copy_files(source_path, destination_path, overwrite=False, delete_original=F
             unique_name = f"{base_name}_{count}{extension}"
             destination_file = os.path.join(destination_path, unique_name)
         else:
-            unique_name = os.path.basename(source_path)
+            unique_name = os.path.basename(source_path) if not filename else filename
 
         shutil.copy2(source_path, destination_file)
         if delete_original:
