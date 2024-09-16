@@ -513,7 +513,7 @@ class ComfyRunner:
             return download_file(source, dest_path)
         else:
             return copy_files(source, dest_path, overwrite=True)
-    
+
     def predict(
         self,
         workflow_input,
@@ -590,8 +590,14 @@ class ComfyRunner:
                     return None
 
             if not os.path.exists(COMFY_BASE_PATH + "custom_nodes/ComfyUI-Manager"):
+                custom_manager_hash = None
+                for n in extra_node_urls:
+                    if n["title"] == "ComfyUI-Mananger":
+                        custom_manager_hash = n["commit_hash"]
                 os.chdir(COMFY_BASE_PATH + "custom_nodes/")
-                Repo.clone_from(comfy_manager_url, "ComfyUI-Manager")
+                manager_repo = Repo.clone_from(comfy_manager_url, "ComfyUI-Manager")
+                if custom_manager_hash:
+                    manager_repo.git.checkout(custom_manager_hash)
                 os.chdir("../../")
 
             # installing requirements
@@ -729,16 +735,18 @@ class ComfyRunner:
                             filepath["filepath"],
                             "./ComfyUI/input/" + filepath["dest_folder"] + "/",
                         )
-                    
+
                     task_list.append((source, dest_path))
-                
+
                 with ThreadPoolExecutor(max_workers=5) as executor:
-                    futures = [executor.submit(self.process_file, task) for task in task_list]
+                    futures = [
+                        executor.submit(self.process_file, task) for task in task_list
+                    ]
                     for future in as_completed(futures):
                         try:
                             future.result()
                         except Exception as exc:
-                            print(f'An error occurred: {exc}')
+                            print(f"An error occurred: {exc}")
 
             # checkpoints, lora, default etc..
             comfy_directory = COMFY_MODELS_BASE_PATH + "models/"
