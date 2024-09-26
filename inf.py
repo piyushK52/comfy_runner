@@ -584,17 +584,17 @@ class ComfyRunner:
                 LoggingType.DEBUG,
                 "Checking comfy requirements, please wait...",
             )
-            # missing_pkg_list = self.quick_requirements_check(
-            #     os.path.join(COMFY_BASE_PATH, "requirements.txt")
-            # )
-            # if missing_pkg_list and len(missing_pkg_list):
-            #     print("missing packages: ", missing_pkg_list)
-            #     subprocess.run(
-            #         ["pip", "install", "-r", COMFY_BASE_PATH + "requirements.txt"],
-            #         stdout=subprocess.DEVNULL,
-            #         stderr=subprocess.DEVNULL,
-            #         check=True,
-            #     )
+            missing_pkg_list = self.quick_requirements_check(
+                os.path.join(COMFY_BASE_PATH, "requirements.txt")
+            )
+            if missing_pkg_list and len(missing_pkg_list):
+                print("missing packages: ", missing_pkg_list)
+                subprocess.run(
+                    ["pip", "install", "-r", COMFY_BASE_PATH + "requirements.txt"],
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                    check=True,
+                )
 
             # clearing the previous logs
             if not self.is_server_running():
