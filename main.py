@@ -1,7 +1,4 @@
-#########################################################################################################
-# NOTE: This file is supposed to be run outside comfy_runner. Please check the video in the README.md. ##
-#########################################################################################################
-from .inf import ComfyRunner
+from inf import ComfyRunner
 
 runner = ComfyRunner()
 output = runner.predict(
