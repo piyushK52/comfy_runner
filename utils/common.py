@@ -4,11 +4,11 @@ import os
 import shutil
 import psutil
 
-from ..constants import COMFY_BASE_PATH
+from constants import COMFY_BASE_PATH
 
-from .logger import app_logger
+from utils.logger import app_logger
 
-from .logger import LoggingType
+from utils.logger import LoggingType
 
 
 def get_file_size(url):

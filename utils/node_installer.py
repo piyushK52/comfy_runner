@@ -12,7 +12,7 @@ import zipfile
 import git
 from git import RemoteProgress
 from tqdm import tqdm
-from .common import find_git_root
+from utils.common import find_git_root
 
 
 def get_node_installer():
@@ -115,7 +115,7 @@ class NodeInstaller:
             try:
                 if os.path.exists(repo_path):
                     shutil.rmtree(repo_path)
-                
+
                 repo = git.Repo.clone_from(
                     url,
                     repo_path,
@@ -131,16 +131,18 @@ class NodeInstaller:
                 repo.close()
                 print(f"Successfully cloned {repo_name}")
                 return True
-            
+
             except Exception as e:
-                print(f"An unexpected error occurred while cloning {repo_name}: {str(e)}")
+                print(
+                    f"An unexpected error occurred while cloning {repo_name}: {str(e)}"
+                )
                 if attempt < max_retries - 1:
                     delay = 0.5
                     print(f"Retrying in {delay} seconds...")
                     time.sleep(delay)
                 else:
                     print(f"Failed to clone {repo_name} after {max_retries} attempts")
-        
+
         return False
 
     def _unzip_install(self, files):
@@ -206,7 +208,7 @@ class NodeInstaller:
             max_retries = 5
             if url.endswith("/"):
                 url = url[:-1]
-            
+
             status = True
             for attempt in range(max_retries):
                 try:
@@ -223,14 +225,14 @@ class NodeInstaller:
                     if not res:
                         status = False
                         break
-                    
+
                     # debugging code
                     # if not random.random() <= 0.5:
                     #     raise Exception("manual exception")
 
                     if not self._execute_install_script(url, repo_path):
                         status = False
-                    
+
                     break
                 except Exception as e:
                     print(f"Install(git-clone) error: {url} / {e}", file=sys.stderr)

@@ -15,10 +15,10 @@ import uuid
 import git
 from git import Repo
 
-from .utils.gen_status_tracker import GenerationStatusTracker
+from utils.gen_status_tracker import GenerationStatusTracker
 
-from .utils.node_installer import get_node_installer
-from .constants import (
+from utils.node_installer import get_node_installer
+from constants import (
     APP_PORT,
     COMFY_BASE_PATH,
     COMFY_MODELS_BASE_PATH,
@@ -29,9 +29,9 @@ from .constants import (
     SERVER_ADDR,
     comfy_dir,
 )
-from .utils.comfy.api import ComfyAPI
-from .utils.comfy.methods import ComfyMethod
-from .utils.common import (
+from utils.comfy.api import ComfyAPI
+from utils.comfy.methods import ComfyMethod
+from utils.common import (
     clear_directory,
     convert_to_relative_path,
     copy_files,
@@ -39,8 +39,8 @@ from .utils.common import (
     find_process_by_port,
     search_file,
 )
-from .utils.file_downloader import FileStatus, ModelDownloader
-from .utils.logger import LoggingType, app_logger
+from utils.file_downloader import FileStatus, ModelDownloader
+from utils.logger import LoggingType, app_logger
 
 
 class ComfyRunner:
@@ -67,7 +67,7 @@ class ComfyRunner:
 
             python_executable = sys.executable
             self.server_process = subprocess.Popen(
-                [python_executable, "./ComfyUI/main.py", "--port", str(APP_PORT)],
+                [python_executable, "../ComfyUI/main.py", "--port", str(APP_PORT)],
                 **kwargs,
             )
 
@@ -350,7 +350,6 @@ class ComfyRunner:
                     url_node_map[node["reference"]].append(node)
 
             for git_url, node_info in extra_node_url_dict.items():
-
                 if node_info.get("commit_hash", None):
                     nodes_to_install_with_commit_hash.append(node_info)
                 elif git_url in url_node_map:
@@ -515,7 +514,7 @@ class ComfyRunner:
         ignore_model_list=[],
         client_id=None,
         comfy_commit_hash=None,
-        strict_dep_list=None,   # {numpy: 1.24.4, ...}
+        strict_dep_list=None,  # {numpy: 1.24.4, ...}
     ):
         """
         workflow_input:                 API json of the workflow. Can be a filepath or str
@@ -585,17 +584,17 @@ class ComfyRunner:
                 LoggingType.DEBUG,
                 "Checking comfy requirements, please wait...",
             )
-            missing_pkg_list = self.quick_requirements_check(
-                os.path.join(COMFY_BASE_PATH, "requirements.txt")
-            )
-            if missing_pkg_list and len(missing_pkg_list):
-                print("missing packages: ", missing_pkg_list)
-                subprocess.run(
-                    ["pip", "install", "-r", COMFY_BASE_PATH + "requirements.txt"],
-                    stdout=subprocess.DEVNULL,
-                    stderr=subprocess.DEVNULL,
-                    check=True,
-                )
+            # missing_pkg_list = self.quick_requirements_check(
+            #     os.path.join(COMFY_BASE_PATH, "requirements.txt")
+            # )
+            # if missing_pkg_list and len(missing_pkg_list):
+            #     print("missing packages: ", missing_pkg_list)
+            #     subprocess.run(
+            #         ["pip", "install", "-r", COMFY_BASE_PATH + "requirements.txt"],
+            #         stdout=subprocess.DEVNULL,
+            #         stderr=subprocess.DEVNULL,
+            #         check=True,
+            #     )
 
             # clearing the previous logs
             if not self.is_server_running():
@@ -649,14 +648,22 @@ class ComfyRunner:
             ):
                 if strict_dep_list and len(strict_dep_list):
                     for package, version in strict_dep_list.items():
-                        cmd = [sys.executable, "-m", "pip", "install", f"{package}=={version}"]
-                        
+                        cmd = [
+                            sys.executable,
+                            "-m",
+                            "pip",
+                            "install",
+                            f"{package}=={version}",
+                        ]
+
                         try:
                             subprocess.check_call(cmd)
-                            app_logger.log(LoggingType.DEBUG, f"Moved {package} to {version}")
+                            app_logger.log(
+                                LoggingType.DEBUG, f"Moved {package} to {version}"
+                            )
                         except subprocess.CalledProcessError as e:
                             print(f"Failed to move {package} {version}. Error: {e}")
-                
+
                 app_logger.log(LoggingType.INFO, "Restarting the server")
                 self.stop_server()
                 self.start_server()
