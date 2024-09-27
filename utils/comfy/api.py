@@ -18,6 +18,7 @@ class BaseAPI:
         res = requests.get(
             self.base_url + url, params=params, headers=self._get_headers()
         )
+        print("response: ", res, " base_url: ", self.base_url)
         return res.json()
 
     def http_post(self, url, data={}, file_content=None, json_output=True):
@@ -34,16 +35,19 @@ class BaseAPI:
                 self.base_url + url, json=data, headers=self._get_headers()
             )
 
+        print("response: ", res, " base_url: ", self.base_url)
         return res.json() if json_output else res
 
     def http_put(self, url, data=None):
         res = requests.put(self.base_url + url, json=data, headers=self._get_headers())
+        print("response: ", res, " base_url: ", self.base_url)
         return res.json()
 
     def http_delete(self, url, params=None):
         res = requests.delete(
             self.base_url + url, params=params, headers=self._get_headers()
         )
+        print("response: ", res, " base_url: ", self.base_url)
         return res.json()
 
 
