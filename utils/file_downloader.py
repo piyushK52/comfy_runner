@@ -1,5 +1,7 @@
 from enum import Enum
 import os
+import time
+from urllib.parse import urlparse
 
 import requests
 import tarfile
@@ -29,6 +31,7 @@ class FileStatus(Enum):
     NEW_DOWNLOAD = "new_download"
     ALREADY_PRESENT = "already_present"
     UNAVAILABLE = "unavailable"
+    FAILED = "failed"  # not proper
 
 
 class FileDownloader:
@@ -53,6 +56,19 @@ class FileDownloader:
         #         percentage_diff(downloaded_file_size, url_file_size) <= 2
         # return False
 
+    def background_download(self, url, dest, filename=None):
+        # downloads without a progress bar + overwrites existing files (no checks performed)
+        # suited for small quick downloads
+        os.makedirs(dest, exist_ok=True)
+        response = requests.get(url, stream=True)
+        response.raise_for_status()
+        filename = filename or os.path.basename(urlparse(url).path)
+        filepath = os.path.join(dest, filename)
+        with open(filepath, "wb") as f:
+            for chunk in response.iter_content(chunk_size=8192):
+                f.write(chunk)
+        return filepath
+
     def download_file(self, filename, url, dest):
         os.makedirs(dest, exist_ok=True)
 
@@ -65,29 +81,47 @@ class FileDownloader:
             if os.path.exists(f"{dest}/{filename}"):
                 os.remove(f"{dest}/{filename}")
 
-        # download progress bar
-        app_logger.log(LoggingType.INFO, f"Downloading {filename}")
-        response = requests.get(url, stream=True)
-        total_size = int(response.headers.get("content-length", 0))
-        progress_bar = tqdm(total=total_size, unit="B", unit_scale=True)
-        with open(f"{dest}/{filename}", "wb") as handle:
-            for data in tqdm(response.iter_content(chunk_size=1024)):
-                handle.write(data)
-                progress_bar.update(len(data))
+        max_retries = 3
+        retry_delay = 3
+        for _ in range(max_retries):
+            try:
+                # download progress bar
+                app_logger.log(LoggingType.INFO, f"Downloading {filename}")
+                response = requests.get(url, stream=True)
+                total_size = int(response.headers.get("content-length", 0))
+                progress_bar = tqdm(total=total_size, unit="B", unit_scale=True)
+                with open(f"{dest}/{filename}", "wb") as handle:
+                    for data in tqdm(response.iter_content(chunk_size=1024)):
+                        handle.write(data)
+                        progress_bar.update(len(data))
 
-        # extract files if the downloaded file is a .zip or .tar
-        if url.endswith(".zip") or url.endswith(".tar"):
-            new_filename = filename + (".zip" if url.endswith(".zip") else ".tar")
-            os.rename(f"{dest}/{filename}", f"{dest}/{new_filename}")
-            if url.endswith(".zip"):
-                with zipfile.ZipFile(f"{dest}/{new_filename}", "r") as zip_ref:
-                    zip_ref.extractall(dest)
-            else:
-                with tarfile.open(f"{dest}/{new_filename}", "r") as tar_ref:
-                    tar_ref.extractall(dest)
-            os.remove(f"{dest}/{new_filename}")
+                # extract files if the downloaded file is a .zip or .tar
+                if url.endswith(".zip") or url.endswith(".tar"):
+                    new_filename = filename + (
+                        ".zip" if url.endswith(".zip") else ".tar"
+                    )
+                    os.rename(f"{dest}/{filename}", f"{dest}/{new_filename}")
+                    if url.endswith(".zip"):
+                        with zipfile.ZipFile(f"{dest}/{new_filename}", "r") as zip_ref:
+                            zip_ref.extractall(dest)
+                    else:
+                        with tarfile.open(f"{dest}/{new_filename}", "r") as tar_ref:
+                            tar_ref.extractall(dest)
+                    os.remove(f"{dest}/{new_filename}")
 
-        return True, FileStatus.NEW_DOWNLOAD.value
+                return True, FileStatus.NEW_DOWNLOAD.value
+            except Exception as e:
+                app_logger.log(
+                    LoggingType.ERROR,
+                    f"Download failed: {str(e)}. Retrying in {retry_delay} seconds...",
+                )
+                time.sleep(retry_delay)
+
+        app_logger.log(
+            LoggingType.ERROR,
+            f"Failed to download {filename} after {max_retries} attempts",
+        )
+        return False, FileStatus.FAILED.value
 
 
 class ModelDownloader(FileDownloader):
@@ -131,6 +165,9 @@ class ModelDownloader(FileDownloader):
 
     def load_comfy_models(self):
         self.comfy_model_dict = {}
+        # these models have incorrect details in the Comfy Manager data json
+        # and should be ignored here
+        ignore_manager_models = ["sd_xl_base_1.0.safetensors", "sd_xl_refiner_1.0_0.9vae.safetensors"]
         for model_list_path in COMFY_MODEL_PATH_LIST:
             current_dir = find_git_root(os.path.dirname(__file__))  # finding root
             model_list_path = os.path.abspath(
@@ -147,6 +184,9 @@ class ModelDownloader(FileDownloader):
 
             # loading comfy data
             for model in model_list:
+                if model_list_path.endswith("ComfyUI-Manager/model-list.json") and model["filename"] in ignore_manager_models:     # comfy manager liser
+                    continue
+                
                 if model["filename"] not in self.comfy_model_dict:
                     self.comfy_model_dict[model["filename"]] = [model]
                 else:

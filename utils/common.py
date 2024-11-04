@@ -1,8 +1,10 @@
+from urllib.parse import urlparse
 import requests
 from fuzzywuzzy import process
 import os
 import shutil
 import psutil
+import toml
 
 from ..constants import COMFY_BASE_PATH
 
@@ -35,7 +37,9 @@ def is_ignored_file(filename):
     return any(ignored_file.lower() in filename.lower() for ignored_file in ignore_list)
 
 
-def copy_files(source_path, destination_path, overwrite=False, delete_original=False):
+def copy_files(
+    source_path, destination_path, overwrite=False, delete_original=False, filename=None
+):
     os.makedirs(destination_path, exist_ok=True)
     destination_file = os.path.join(destination_path, os.path.basename(source_path))
 
@@ -66,7 +70,7 @@ def copy_files(source_path, destination_path, overwrite=False, delete_original=F
             unique_name = f"{base_name}_{count}{extension}"
             destination_file = os.path.join(destination_path, unique_name)
         else:
-            unique_name = os.path.basename(source_path)
+            unique_name = os.path.basename(source_path) if not filename else filename
 
         shutil.copy2(source_path, destination_file)
         if delete_original:
@@ -176,3 +180,20 @@ def get_default_save_path(model_type):
         base_model = "embeddings"
 
     return base_model
+
+
+def update_toml_config(toml_config_path, toml_dict):
+    if not toml_config_path or not os.path.exists(toml_config_path):
+        raise Exception("Invalid toml file path: ", toml_config_path)
+
+    with open(toml_config_path, "wb") as f:
+        toml_content = toml.dumps(toml_dict)
+        f.write(toml_content.encode())
+
+
+def is_url(path):
+    try:
+        result = urlparse(path)
+        return all([result.scheme, result.netloc])
+    except ValueError:
+        return False

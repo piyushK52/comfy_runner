@@ -1,3 +1,4 @@
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import glob
 import importlib
 import json
@@ -10,6 +11,7 @@ import pkg_resources
 import psutil
 import subprocess
 import re
+import toml
 import websocket
 import uuid
 import git
@@ -37,9 +39,11 @@ from .utils.common import (
     copy_files,
     find_file_in_directory,
     find_process_by_port,
+    is_url,
     search_file,
+    update_toml_config,
 )
-from .utils.file_downloader import FileStatus, ModelDownloader
+from .utils.file_downloader import FileDownloader, FileStatus, ModelDownloader
 from .utils.logger import LoggingType, app_logger
 
 
@@ -502,6 +506,14 @@ class ComfyRunner:
 
         return missing
 
+    def process_file(self, item):
+        source, dest_path, filename = item
+        download_file = FileDownloader().background_download
+        if is_url(source):
+            return download_file(source, dest_path, filename)
+        else:
+            return copy_files(source, dest_path, overwrite=True, filename=filename)
+
     def predict(
         self,
         workflow_input,
@@ -515,7 +527,8 @@ class ComfyRunner:
         ignore_model_list=[],
         client_id=None,
         comfy_commit_hash=None,
-        strict_dep_list=None,   # {numpy: 1.24.4, ...}
+        strict_dep_list=None,  # {numpy: 1.24.4, ...}
+        checkpointing_data=None,  # { "network_data" : {"type": "Salad", "organisation": "xyz", "api-key": "xyz"}}
     ):
         """
         workflow_input:                 API json of the workflow. Can be a filepath or str
@@ -530,6 +543,7 @@ class ComfyRunner:
         client_id:                      this can be used as a tag for the generations
         comfy_commit_hash:              specific comfy commit to checkout
         strict_dep_list:                list of pkgs and their versions that can't be overrided by new nodes installation
+        checkpointing_data:             config to enable sampler latent checkpointing
         """
         output_list = {}
         try:
@@ -576,8 +590,14 @@ class ComfyRunner:
                     return None
 
             if not os.path.exists(COMFY_BASE_PATH + "custom_nodes/ComfyUI-Manager"):
+                custom_manager_hash = None
+                for n in extra_node_urls:
+                    if n["title"] == "ComfyUI-Mananger":
+                        custom_manager_hash = n["commit_hash"]
                 os.chdir(COMFY_BASE_PATH + "custom_nodes/")
-                Repo.clone_from(comfy_manager_url, "ComfyUI-Manager")
+                manager_repo = Repo.clone_from(comfy_manager_url, "ComfyUI-Manager")
+                if custom_manager_hash:
+                    manager_repo.git.checkout(custom_manager_hash)
                 os.chdir("../../")
 
             # installing requirements
@@ -603,6 +623,40 @@ class ComfyRunner:
 
             # start the comfy server if not already running
             self.start_server()
+
+            # enabling checkpointing
+            checkpoint_node_added = False
+            checkpoint_node_path = os.path.join(
+                COMFY_BASE_PATH, "custom_nodes", "comfy-checkpointing"
+            )
+            checkpoint_config_path = os.path.join(checkpoint_node_path, "config.toml")
+            if checkpointing_data:
+                status = True
+                if not os.path.exists(checkpoint_node_path):
+                    custom_node_installer = get_node_installer()
+                    json_data = {
+                        "files": ["https://github.com/piyushK52/comfy-checkpointing"],
+                        "install_type": "git-clone",
+                    }
+                    status = custom_node_installer.install_node(json_data)
+                    checkpoint_node_added = status
+
+                if not status:
+                    app_logger.log(
+                        LoggingType.ERROR, "Unable to enable checkpoint node"
+                    )
+                else:
+                    if not os.path.exists(checkpoint_config_path):
+                        with open(checkpoint_config_path, "w") as config_file:
+                            toml.dump({}, config_file)
+
+                    update_toml_config(checkpoint_config_path, checkpointing_data)
+                    app_logger.log(LoggingType.INFO, "Checkpointing enabled")
+            else:
+                if os.path.exists(checkpoint_node_path) and os.path.exists(
+                    checkpoint_config_path
+                ):
+                    update_toml_config(checkpoint_config_path, {})
 
             # download custom nodes
             res_custom_nodes = self.download_custom_nodes(
@@ -646,32 +700,55 @@ class ComfyRunner:
             if (
                 res_custom_nodes["data"]["nodes_installed"]
                 or res_models["data"]["models_downloaded"]
+                or checkpoint_node_added
             ):
                 if strict_dep_list and len(strict_dep_list):
                     for package, version in strict_dep_list.items():
-                        cmd = [sys.executable, "-m", "pip", "install", f"{package}=={version}"]
-                        
+                        cmd = [
+                            sys.executable,
+                            "-m",
+                            "pip",
+                            "install",
+                            f"{package}=={version}",
+                        ]
+
                         try:
                             subprocess.check_call(cmd)
-                            app_logger.log(LoggingType.DEBUG, f"Moved {package} to {version}")
+                            app_logger.log(
+                                LoggingType.DEBUG, f"Moved {package} to {version}"
+                            )
                         except subprocess.CalledProcessError as e:
                             print(f"Failed to move {package} {version}. Error: {e}")
-                
+
                 app_logger.log(LoggingType.INFO, "Restarting the server")
                 self.stop_server()
                 self.start_server()
 
             if len(file_path_list):
+                task_list = []
                 clear_directory("./ComfyUI/input")
                 for filepath in file_path_list:
                     if isinstance(filepath, str):
-                        filepath, dest_path = filepath, "./ComfyUI/input/"
+                        source, dest_path = filepath, "./ComfyUI/input/"
+                        filename = None
                     else:
-                        filepath, dest_path = (
+                        source, dest_path = (
                             filepath["filepath"],
                             "./ComfyUI/input/" + filepath["dest_folder"] + "/",
                         )
-                    copy_files(filepath, dest_path, overwrite=True)
+                        filename = filepath.get("filename", None)
+
+                    task_list.append((source, dest_path, filename))
+
+                with ThreadPoolExecutor(max_workers=5) as executor:
+                    futures = [
+                        executor.submit(self.process_file, task) for task in task_list
+                    ]
+                    for future in as_completed(futures):
+                        try:
+                            future.result()
+                        except Exception as exc:
+                            print(f"An error occurred: {exc}")
 
             # checkpoints, lora, default etc..
             comfy_directory = COMFY_MODELS_BASE_PATH + "models/"
@@ -696,8 +773,16 @@ class ComfyRunner:
                                 comfy_directory, input
                             )
                             if len(model_path_list):
-                                # selecting the model_path which has the base, if neither has the base then selecting the first one
-                                model_path = model_path_list[0]
+                                print(model_path_list)
+                                # selecting the model_path which has the base, if neither has the base then selecting the first one or the one in the 'checkpoints' folder
+                                model_path = next(
+                                    (
+                                        path
+                                        for path in model_path_list
+                                        if "checkpoints" in path
+                                    ),
+                                    model_path_list[0],
+                                )  # preferring the "checkpoints" folder
                                 if base:
                                     matching_text_seq = (
                                         ["SD1.5"]
